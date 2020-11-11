@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:layout_marginTop="50dp"
     android:layout_marginBottom="50dp"
-    android:background="@drawable/_xpopup_round3_bg"
+    android:background="@color/white"
     android:orientation="vertical">
 
     <!--搜索结果-->

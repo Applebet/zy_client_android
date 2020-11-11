@@ -2,26 +2,27 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#ffffff">
+    android:background="@color/transparent">
+
     <!--加载中-->
     <LinearLayout
         android:id="@+id/statusLoadingView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
         <ProgressBar
-            android:layout_width="20dp"
-            android:layout_height="20dp" />
+            android:layout_width="@dimen/dp_35"
+            android:layout_height="@dimen/dp_35" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
+            android:layout_marginTop="@dimen/dp_20"
             android:text="@string/data_loading"
             android:textColor="@color/normalFontColor"
-            android:textSize="14sp" />
+            android:textSize="@dimen/font_14" />
     </LinearLayout>
 
     <!--加载失败-->
@@ -38,7 +39,7 @@
             android:layout_gravity="center"
             android:text="加载失败，点击重试"
             android:textColor="@color/normalFontColor"
-            android:textSize="14sp" />
+            android:textSize="@dimen/font_14" />
 
         <TextView
             android:id="@+id/tvToWeb"
@@ -47,7 +48,7 @@
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:layout_gravity="center"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="@dimen/dp_20"
             android:gravity="center"
             android:text="加载不出来? 点这里"
             android:textColor="@color/minorFontColor" />
@@ -63,6 +64,6 @@
         android:gravity="center"
         android:text="没有数据"
         android:textColor="@color/normalFontColor"
-        android:textSize="14sp"
+        android:textSize="@dimen/font_14"
         android:visibility="invisible" />
 </FrameLayout>

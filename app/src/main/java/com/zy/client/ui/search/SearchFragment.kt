@@ -1,6 +1,5 @@
 package com.zy.client.ui.search
 
-import android.os.Bundle
 import androidx.core.widget.addTextChangedListener
 import com.blankj.utilcode.util.KeyboardUtils
 import com.lxj.xpopup.XPopup
@@ -14,7 +13,6 @@ import com.zy.client.base.BaseFragment
 import com.wuhenzhizao.titlebar.widget.CommonTitleBar
 import com.zy.client.utils.ext.visible
 import kotlinx.android.synthetic.main.fragment_search.*
-import kotlinx.android.synthetic.main.fragment_search_result.*
 import kotlinx.android.synthetic.main.layout_search_history.view.*
 
 /**
@@ -26,9 +24,7 @@ import kotlinx.android.synthetic.main.layout_search_history.view.*
 class SearchFragment : BaseFragment() {
 
     private var sourceKey: String? = null
-
     private var searchWord: String = ""
-
     private var selectSourceDialog: BasePopupView? = null
 
     override fun getLayoutId(): Int = R.layout.fragment_search
@@ -53,14 +49,12 @@ class SearchFragment : BaseFragment() {
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        sourceKey = ConfigManager.curUseSourceConfig().key
-    }
-
     override fun initView() {
         super.initView()
+        sourceKey = ConfigManager.curUseSourceConfig().key
         changeEditHint()
+        viewHistory.visible()
+        viewHistory.statusView.setLoadingStatus()
     }
 
     override fun initListener() {
@@ -116,9 +110,6 @@ class SearchFragment : BaseFragment() {
     }
 
     private fun showSearchHistory() {
-        viewHistory.visible()
-        viewHistory.statusView.setLoadingStatus()
-
         viewHistory.ivDelete.setOnClickListener {
             //清除全部记录
             if (SearchHistoryDBUtils.deleteAll()) {

@@ -19,10 +19,9 @@ class SearchHistoryView @JvmOverloads constructor(
 ) : FrameLayout(context, attrs, defStyleAttr) {
 
     init {
-        //  添加Popup窗体内容View
+        // 添加Popup窗体内容View
         val contentView =
             LayoutInflater.from(context).inflate(R.layout.layout_search_history, this, false)
-        // 事先隐藏，等测量完毕恢复，避免View影子跳动现象。
         // 事先隐藏，等测量完毕恢复，避免View影子跳动现象。
         contentView.alpha = 0f
         addView(contentView)
@@ -38,6 +37,8 @@ class SearchHistoryView @JvmOverloads constructor(
         tagGroup.setOnTagClickListener {
             onSelectListener?.invoke(it)
         }
+
+        contentView.alpha =1f
     }
 
     var onSelectListener: ((searchWord: String) -> Unit)? = null
