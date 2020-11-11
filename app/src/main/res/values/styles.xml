@@ -1,0 +1,29 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="DivideLine">
+        <item name="android:background">@color/dividerColor</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1px</item>
+    </style>
+
+    <style name="GuideTheme" parent="FullScreen">
+        <item name="android:windowIsTranslucent">false</item>
+        <item name="android:windowDisablePreview">true</item>
+    </style>
+
+    <style name="FullScreen" parent="AppTheme">
+        <item name="android:windowNoTitle">true</item><!--无标题-->
+        <item name="android:windowActionBar">false</item><!--无ActionBar-->
+        <item name="android:windowFullscreen">true</item><!--全屏即无通知栏-->
+        <item name="android:windowContentOverlay">@null</item><!--是否有遮盖-->
+    </style>
+
+</resources>
