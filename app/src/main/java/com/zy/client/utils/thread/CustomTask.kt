@@ -1,15 +1,11 @@
-package com.zy.client.common
-
-import com.blankj.utilcode.util.ThreadUtils
+package com.zy.client.utils.thread
 
 /**
- * @author javakam
+ * Task，对回调做catch，防止崩溃
  *
- * @date 2020/9/18 19:08
- * @desc Task，对回调做catch，防止崩溃
+ * @author javakam
  */
-
-class Task<T>(private val doInBackground: (() -> (T?))?, private val callback: ((T?) -> Unit)?) :
+class CustomTask<T>(private val doInBackground: (() -> (T?))?, private val callback: ((T?) -> Unit)?) :
     ThreadUtils.Task<T>() {
     override fun doInBackground(): T? {
         try {
@@ -20,7 +16,7 @@ class Task<T>(private val doInBackground: (() -> (T?))?, private val callback: (
         return null
     }
 
-    override fun onSuccess(result: T) {
+    override fun onSuccess(result: T?) {
         try {
             callback?.invoke(result)
         } catch (e: Exception) {

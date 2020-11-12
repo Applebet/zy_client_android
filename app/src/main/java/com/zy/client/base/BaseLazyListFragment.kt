@@ -1,7 +1,7 @@
 package com.zy.client.base
 
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
-import kotlinx.android.synthetic.main.base_list_fragment.*
+import kotlinx.android.synthetic.main.layout_com_title_list.*
 
 /**
  * @author javakam

@@ -5,7 +5,7 @@ import android.util.AttributeSet
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.zy.client.R
-import com.zy.client.utils.ext.textOrDefault
+import com.zy.client.utils.ext.noNull
 
 /**
  * @author javakam
@@ -24,7 +24,7 @@ class TextVideoSelectPanel @JvmOverloads constructor(
     inner class MyAdapter :
         BaseQuickAdapter<String, BaseViewHolder>(R.layout.video_select_panel_item) {
         override fun convert(holder: BaseViewHolder, item: String) {
-            holder.setText(R.id.tvName, item.textOrDefault())
+            holder.setText(R.id.tvName, item.noNull())
         }
     }
 }

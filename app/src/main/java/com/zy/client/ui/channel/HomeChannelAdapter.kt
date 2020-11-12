@@ -4,7 +4,7 @@ import com.bumptech.glide.Glide
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.zy.client.R
 import com.zy.client.common.BaseLoadMoreAdapter
-import com.zy.client.utils.ext.textOrDefault
+import com.zy.client.utils.ext.noNull
 import com.zy.client.bean.entity.HomeChannelData
 
 /**
@@ -19,11 +19,11 @@ class HomeChannelAdapter :
         R.layout.home_channel_item_layout
     ) {
     override fun convert(holder: BaseViewHolder, item: HomeChannelData) {
-        holder.setText(R.id.tvTitle, item.name.textOrDefault("--"))
+        holder.setText(R.id.tvTitle, item.name.noNull("--"))
         Glide.with(context)
             .load(item.pic)
             .centerCrop()
-//            .transform(CenterCrop(), RoundedCorners(ConvertUtils.dp2px(12.0f)))
+//           .transform(CenterCrop(), RoundedCorners(Utils.dp2px(12.0f)))
             .into(holder.getView(R.id.ivPiv))
     }
 

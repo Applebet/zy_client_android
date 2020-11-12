@@ -1,52 +1,50 @@
 package com.zy.client.database
 
-import com.blankj.utilcode.util.ThreadUtils
-import com.zy.client.common.Task
+import com.zy.client.utils.thread.CustomTask
+import com.zy.client.utils.thread.ThreadUtils
 import org.litepal.LitePal
 import java.util.*
 
 /**
- * @author javakam
+ * 搜索历史的数据库操作
  *
- * @date 2020/9/12 20:55
- * @desc 搜索历史的数据库操作
+ * @author javakam
  */
 object SearchHistoryDBUtils {
-    fun saveAsync(searchWord: String, callback: ((Boolean) -> Unit)? = null) {
-        ThreadUtils.executeByCached(Task<Boolean>({
-            save(searchWord)
-        }, {
-            callback?.invoke(it ?: false)
-        }))
-    }
 
+    private fun save(searchWord: String?): Boolean {
+        if (searchWord.isNullOrBlank()) return false
+        val historyModel =
+            LitePal.where("searchWord = ?", searchWord).findFirst(SearchHistoryModel::class.java)
+        if (historyModel.isSaved) return true
 
-    fun save(searchWord: String): Boolean {
-        if (searchWord.isBlank()) {
-            return false
-        }
-        LitePal.where("searchWord = ?", searchWord).findFirst(SearchHistoryModel::class.java)
-            ?.delete()
         val searchHistoryDBModel = SearchHistoryModel()
         searchHistoryDBModel.searchWord = searchWord
         searchHistoryDBModel.updateData = Date()
         return searchHistoryDBModel.save()
     }
 
-    fun searchAll(): ArrayList<SearchHistoryModel>? {
+    private fun searchAll(): ArrayList<SearchHistoryModel>? {
         val list = LitePal.where("searchWord not null").order("updateData")
             .find(SearchHistoryModel::class.java)
         list?.reverse()
         return list as? ArrayList<SearchHistoryModel>?
     }
 
+    fun saveAsync(searchWord: String, callback: ((Boolean) -> Unit)? = null) {
+        ThreadUtils.executeByCpu(CustomTask({
+            save(searchWord)
+        }, {
+            callback?.invoke(it ?: false)
+        }))
+    }
+
     fun searchAllAsync(callback: ((ArrayList<SearchHistoryModel>?) -> Unit)?) {
-        ThreadUtils.executeByCached(Task<ArrayList<SearchHistoryModel>?>({
+        ThreadUtils.executeByCpu(CustomTask({
             searchAll()
         }, {
             callback?.invoke(it)
         }))
-
     }
 
     fun deleteAll(): Boolean {

@@ -14,7 +14,8 @@
         app:tabBackground="@color/white"
         app:tabIndicatorColor="@color/normalFontColor"
         app:tabIndicatorFullWidth="false"
-        app:tabIndicatorHeight="2dp"
+        app:tabIndicatorHeight="@dimen/dp_2"
+        app:tabGravity="start"
         app:tabMode="scrollable"
         app:tabSelectedTextColor="@color/normalFontColor"
         app:tabTextColor="@color/minorFontColor" />

@@ -127,26 +127,27 @@ abstract class BaseSource {
             if (data == null) return null
             val jsonObject = Utils.xmlToJson(data)?.toJson()
             val videoList = ArrayList<SearchResultData>()
-            val video =
-                jsonObject?.getJSONObject("rss")?.getJSONObject("list")?.get("video")
-            if (video is JSONObject) {
-                videoList.add(
-                    SearchResultData(
-                        video.getString("id"),
-                        video.getString("name"),
-                        video.getString("type")
-                    )
-                )
-            } else if (video is JSONArray) {
-                for (i in 0 until video.length()) {
-                    val json = video.getJSONObject(i)
+            val video = jsonObject?.getJSONObject("rss")?.getJSONObject("list")?.get("video")
+            video?.apply {
+                if (video is JSONObject) {
                     videoList.add(
                         SearchResultData(
-                            json.getString("id"),
-                            json.getString("name"),
-                            json.getString("type")
+                            video.getString("id"),
+                            video.getString("name"),
+                            video.getString("type")
                         )
                     )
+                } else if (video is JSONArray) {
+                    for (i in 0 until video.length()) {
+                        val json = video.getJSONObject(i)
+                        videoList.add(
+                            SearchResultData(
+                                json.getString("id"),
+                                json.getString("name"),
+                                json.getString("type")
+                            )
+                        )
+                    }
                 }
             }
             return videoList

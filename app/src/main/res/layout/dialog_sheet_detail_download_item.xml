@@ -13,7 +13,7 @@
         android:layout_height="48dp"
         android:layout_alignParentRight="true"
         android:padding="12dp"
-        android:src="@drawable/dialog_film_download" />
+        android:src="@drawable/ic_dialog_film_download" />
 
     <TextView
         android:id="@+id/tvFilm"

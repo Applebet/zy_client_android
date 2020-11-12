@@ -1,106 +1,83 @@
 package com.zy.client.ui.detail
 
 import android.content.res.Configuration
-import android.os.Bundle
-import androidx.core.os.bundleOf
-import com.blankj.utilcode.util.ToastUtils
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BottomPopupView
 import com.lxj.xpopup.interfaces.OnSelectListener
+import com.wuhenzhizao.titlebar.widget.CommonTitleBar
 import com.zy.client.R
-import com.zy.client.bean.event.CollectEvent
-import com.zy.client.http.sources.BaseSource
+import com.zy.client.base.BaseActivity
 import com.zy.client.bean.entity.DetailData
 import com.zy.client.bean.entity.Video
-import com.zy.client.base.BaseFragment
-import com.zy.client.database.CollectModel
+import com.zy.client.bean.event.CollectEvent
+import com.zy.client.common.ID
+import com.zy.client.common.SOURCE_KEY
 import com.zy.client.database.CollectDBUtils
+import com.zy.client.database.CollectModel
+import com.zy.client.http.ConfigManager
+import com.zy.client.http.sources.BaseSource
 import com.zy.client.ui.detail.controller.VideoController
 import com.zy.client.ui.detail.controller.WebController
 import com.zy.client.utils.ClipboardUtils
 import com.zy.client.utils.Utils
+import com.zy.client.utils.ext.*
 import com.zy.client.views.CustomGSYVideoPlayer
-import com.wuhenzhizao.titlebar.widget.CommonTitleBar
-import com.zy.client.http.ConfigManager
-import com.zy.client.utils.ext.gone
-import com.zy.client.utils.ext.isVideoUrl
-import com.zy.client.utils.ext.textOrDefault
-import com.zy.client.utils.ext.visible
-import kotlinx.android.synthetic.main.fragment_detail.*
+import kotlinx.android.synthetic.main.activity_video_detail.*
 import org.greenrobot.eventbus.EventBus
 
-
 /**
- * @author javakam
+ * 视频详情页
  *
- * @date 2020/9/8 21:48
- * @desc 详情页
+ * @author javakam
+ * @date 2020-11-12 15:00:17
  */
+class VideoDetailActivity : BaseActivity() {
 
-const val SOURCE_KEY = "source_key"
-const val ID = "id"
-
-class DetailFragment : BaseFragment() {
-
-    private var source: BaseSource? = null
+    private lateinit var source: BaseSource
     private lateinit var id: String
+
+    //
+    private var videoController: VideoController? = null
+    private var webController: WebController? = null
     private var playVideo: Video? = null
     private var detailData: DetailData? = null
     private var playVideoList: ArrayList<Video>? = null
     private var curPlayPos = 0
 
-        private var videoController: VideoController? = null
-//    private var videoController: JZVideoController? = null
-    private var webController: WebController? = null
-
+    //
     private var anthologyList: BottomPopupView? = null
 
-    companion object {
-        fun instance(sourceKey: String, id: String): DetailFragment {
-            return DetailFragment().apply {
-                arguments = bundleOf(SOURCE_KEY to sourceKey, ID to id)
-            }
-        }
-    }
+    //
+    private lateinit var titleBar: CommonTitleBar
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        val sourceKey = arguments?.getString(SOURCE_KEY)
-        source = ConfigManager.generateSource(sourceKey.textOrDefault())
-        id = arguments?.getString(ID).textOrDefault()
-
-        CustomGSYVideoPlayer.reset()
-    }
-
-    override fun getLayoutId(): Int = R.layout.fragment_detail
-
-    override fun initTitleBar(titleBar: CommonTitleBar?) {
-        titleBar?.run {
-            setListener { v, action, extra ->
-                when (action) {
-                    CommonTitleBar.ACTION_LEFT_BUTTON -> {
-                        requireActivity().finish()
-                    }
-                }
-            }
-        }
-    }
+    override fun getLayoutId() = R.layout.activity_video_detail
 
     override fun initView() {
-        super.initView()
-        statusView.failRetryClickListener = {
-            initData()
-        }
+        CustomGSYVideoPlayer.reset()
 
-        CollectDBUtils.searchAsync(id + source?.key) {
-            if (it != null && it.isSaved) {
-                ivCollect.isSelected = true
+        val sourceKey = intent?.getStringExtra(SOURCE_KEY)
+        source = ConfigManager.generateSource(sourceKey.noNull())
+        id = intent?.getStringExtra(ID).noNull()
+
+        initTitleBar()
+    }
+
+    private fun initTitleBar() {
+        titleBar = findViewById(R.id.title_bar)
+        titleBar.run {
+            setListener { _, action, _ ->
+                if (action == CommonTitleBar.ACTION_LEFT_BUTTON) {
+                    finish()
+                }
             }
         }
     }
 
     override fun initListener() {
         super.initListener()
+        statusView.failRetryClickListener = {
+            initData()
+        }
         //网页播放
         ivWebPlay.setOnClickListener {
             if (playVideo == null || playVideo?.playUrl.isNullOrBlank()) {
@@ -108,27 +85,28 @@ class DetailFragment : BaseFragment() {
                 return@setOnClickListener
             }
             Utils.openBrowser(
-                requireActivity(),
+                this,
                 if (playVideo?.playUrl.isVideoUrl()) {
-                    "http://zyplayer.fun/player/player.html?url=${playVideo?.playUrl?.textOrDefault()}"
+                    "http://zyplayer.fun/player/player.html?url=${playVideo?.playUrl?.noNull()}"
                 } else {
-                    playVideo?.playUrl.textOrDefault()
+                    playVideo?.playUrl.noNull()
                 }
             )
         }
+
         //选集
         llAnthology.setOnClickListener {
             if (playVideoList?.size ?: 0 > 1) {
                 if (anthologyList == null) {
-                    anthologyList = XPopup.Builder(requireActivity())
+                    anthologyList = XPopup.Builder(this)
                         .asBottomList("选集",
                             playVideoList?.map { it.name }?.toTypedArray(),
                             null,
-                            0,
-                            OnSelectListener { position, text ->
-                                curPlayPos = position
-                                playVideo(playVideoList?.get(position))
-                            })
+                            0
+                        ) { position, _ ->
+                            curPlayPos = position
+                            playVideo(playVideoList?.get(position))
+                        }
                         .bindLayout(R.layout.fragment_search_result)
                 }
                 anthologyList?.show()
@@ -138,7 +116,7 @@ class DetailFragment : BaseFragment() {
         ivCollect.setOnClickListener {
             //收藏
             if (ivCollect.isSelected) {
-                val delete = CollectDBUtils.delete(id + source?.key)
+                val delete = CollectDBUtils.delete(id + source.key)
                 if (delete) {
                     ivCollect.isSelected = false
                     EventBus.getDefault().postSticky(CollectEvent())
@@ -147,17 +125,18 @@ class DetailFragment : BaseFragment() {
                 }
             } else {
                 val collectDBModel = CollectModel()
-                collectDBModel.uniqueKey = id + source?.key
+                collectDBModel.uniqueKey = id + source.key
                 collectDBModel.videoId = id
                 collectDBModel.name = detailData?.name
-                collectDBModel.sourceKey = source?.key
-                collectDBModel.sourceName = source?.name
-                val save = CollectDBUtils.save(collectDBModel)
-                if (save) {
-                    ivCollect.isSelected = true
-                    EventBus.getDefault().postSticky(CollectEvent())
-                } else {
-                    ToastUtils.showShort("收藏失败")
+                collectDBModel.sourceKey = source.key
+                collectDBModel.sourceName = source.name
+                CollectDBUtils.saveAsync(collectDBModel) {
+                    if (it) {
+                        ivCollect.isSelected = true
+                        EventBus.getDefault().postSticky(CollectEvent())
+                    } else {
+                        ToastUtils.showShort("收藏失败")
+                    }
                 }
             }
         }
@@ -184,48 +163,25 @@ class DetailFragment : BaseFragment() {
 //            }
             if (playVideo?.playUrl.isVideoUrl()) {
                 ClipboardUtils.copyText(playVideo?.playUrl)
-                ToastUtils.showShort("地址已复制，快去下载吧~")
+                ToastUtils.showLong("地址已复制，快去下载吧~\n${playVideo?.playUrl}")
             } else {
                 ToastUtils.showShort("该资源暂不支持下载哦~")
             }
         }
-    }
 
-
-    override fun onPause() {
-        webController?.onPause()
-        videoController?.onPause()
-        super.onPause()
-    }
-
-    override fun onResume() {
-        webController?.onResume()
-        videoController?.onResume()
-        super.onResume()
-    }
-
-    override fun onDestroyView() {
-        webController?.onDestroy()
-        videoController?.onDestroy()
-        super.onDestroyView()
-    }
-
-    override fun onBackPressed(): Boolean {
-        if (videoController?.onBackPressed() == true || webController?.onBackPressed() == true){
-            return true
-        }
-        return false
-    }
-
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-        videoController?.onConfigurationChanged(newConfig)
     }
 
     override fun initData() {
         super.initData()
+
+        CollectDBUtils.searchAsync(id + source.key) {
+            if (it != null && it.isSaved) {
+                ivCollect.isSelected = true
+            }
+        }
+
         statusView.setLoadingStatus()
-        source?.requestDetailData(id) {
+        source.requestDetailData(id) {
             when {
                 it == null -> {
                     statusView.setFailStatus()
@@ -239,6 +195,37 @@ class DetailFragment : BaseFragment() {
                 }
             }
         }
+    }
+
+    override fun onPause() {
+        webController?.onPause()
+        videoController?.onPause()
+        super.onPause()
+    }
+
+    override fun onResume() {
+        webController?.onResume()
+        videoController?.onResume()
+        super.onResume()
+    }
+
+
+    override fun onDestroy() {
+        webController?.onDestroy()
+        videoController?.onDestroy()
+        super.onDestroy()
+    }
+
+    override fun onBackPressed() {
+        if (videoController?.onBackPressed() == true || webController?.onBackPressed() == true) {
+            super.onBackPressed()
+        }
+        return
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        videoController?.onConfigurationChanged(newConfig)
     }
 
     private fun setData(detailData: DetailData) {
@@ -258,7 +245,7 @@ class DetailFragment : BaseFragment() {
             tvName.text = name
             titleBar?.centerTextView?.text = name
             //简介
-            tvDesc.text = des.textOrDefault()
+            tvDesc.text = des.noNull()
         }
     }
 
@@ -269,7 +256,7 @@ class DetailFragment : BaseFragment() {
             //初始化视频控制
             if (videoController == null) {
                 videoController = VideoController()
-                videoController?.init(requireActivity(), videoPlayer)
+                videoController?.init(this, videoPlayer)
             }
 
 //            if (videoController == null) {
@@ -278,7 +265,7 @@ class DetailFragment : BaseFragment() {
 //            }
             videoController?.play(
                 playVideo.playUrl,
-                "${detailData?.name.textOrDefault()}   ${playVideo.name.textOrDefault()}"
+                "${detailData?.name.noNull()}   ${playVideo.name.noNull()}"
             )
             videoPlayer.visible()
             flWebView.gone()
@@ -287,12 +274,11 @@ class DetailFragment : BaseFragment() {
             if (webController == null) {
                 webController = WebController()
             }
-            webController?.loadUrl(this@DetailFragment, playVideo.playUrl, flWebView)
+            webController?.loadUrl(this, playVideo.playUrl, flWebView)
             videoPlayer.gone()
             flWebView.visible()
         }
         //正在播放
-        tvCurPlayName.text = playVideo?.name.textOrDefault()
+        tvCurPlayName.text = playVideo?.name.noNull()
     }
-
 }

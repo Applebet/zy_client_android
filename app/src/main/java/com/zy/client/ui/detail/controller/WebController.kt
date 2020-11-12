@@ -1,5 +1,7 @@
 package com.zy.client.ui.detail.controller
 
+import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.graphics.Color
 import android.net.http.SslError
@@ -18,23 +20,28 @@ import com.zy.client.utils.ext.visible
 import kotlinx.android.synthetic.main.custom_web_indicator.view.*
 
 /**
- * @author javakam
+ * 网页控制器
  *
- * @date 2020/9/10 23:38
- * @desc 网页控制器
+ * @author javakam
  */
-
 class WebController {
     private var agentWeb: AgentWeb? = null
+    fun loadUrl(activity: Activity, url: String?, container: ViewGroup) {
+        loadUrl(AgentWeb.with(activity), url, container)
+    }
+
     fun loadUrl(fragment: Fragment, url: String?, container: ViewGroup) {
-        agentWeb = AgentWeb.with(fragment)
-            .setAgentWebParent(
-                container,
-                ViewGroup.LayoutParams(
-                    FrameLayout.LayoutParams.MATCH_PARENT,
-                    FrameLayout.LayoutParams.MATCH_PARENT
-                )
+        loadUrl(AgentWeb.with(fragment), url, container)
+    }
+
+    private fun loadUrl(agentBuilder: AgentWeb.AgentBuilder, url: String?, container: ViewGroup) {
+        agentWeb = agentBuilder.setAgentWebParent(
+            container,
+            ViewGroup.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.MATCH_PARENT
             )
+        )
             .setCustomIndicator(CustomIndicator(container.context))
             .setWebViewClient(getWebViewClient())
             .createAgentWeb()
@@ -99,6 +106,7 @@ class WebController {
             gone()
         }
 
+        @SuppressLint("SetTextI18n")
         override fun setProgress(newProgress: Int) {
             super.setProgress(newProgress)
             tvProgress.text = "$newProgress%"
@@ -109,7 +117,5 @@ class WebController {
             tvProgress.text = "加载中..."
         }
     }
+
 }
-
-
-

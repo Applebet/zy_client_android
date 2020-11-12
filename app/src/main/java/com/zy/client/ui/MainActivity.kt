@@ -4,7 +4,7 @@ import android.os.SystemClock
 import android.util.SparseArray
 import androidx.core.util.forEach
 import androidx.fragment.app.Fragment
-import com.blankj.utilcode.util.ToastUtils
+import com.zy.client.utils.ext.ToastUtils
 import com.zy.client.R
 import com.zy.client.base.BaseActivity
 import com.zy.client.ui.collect.CollectFragment

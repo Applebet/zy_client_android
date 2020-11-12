@@ -1,12 +1,12 @@
 package com.zy.client.http
 
-import com.blankj.utilcode.util.LogUtils
-import com.blankj.utilcode.util.ToastUtils
+import android.util.Log
 import com.lzy.okgo.OkGo
 import com.lzy.okgo.callback.StringCallback
 import com.lzy.okgo.model.Response
 import com.zy.client.ui.detail.model.FilmDetailModel
 import com.zy.client.ui.home.model.FilmModel
+import com.zy.client.utils.ext.ToastUtils
 
 /**
  * @author javakam
@@ -152,7 +152,7 @@ object NetLoader {
             callback?.onResult(t)
         } catch (e: Exception) {
             e.printStackTrace()
-            LogUtils.e(e.toString())
+            Log.e("123", e.toString())
         }
     }
 

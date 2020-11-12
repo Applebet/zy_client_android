@@ -7,11 +7,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.zy.client.common.BaseLoadMoreAdapter
 import com.zy.client.http.ConfigManager
-import com.zy.client.utils.ext.textOrDefault
+import com.zy.client.utils.ext.noNull
 import com.zy.client.http.sources.BaseSource
 import com.zy.client.bean.entity.SearchResultData
 import com.zy.client.base.BaseListFragment
-import com.zy.client.ui.detail.DetailActivity
+import com.zy.client.common.AppRouter
 
 /**
  * @author javakam
@@ -19,10 +19,6 @@ import com.zy.client.ui.detail.DetailActivity
  * @date 2020/9/7 21:19
  * @desc 搜索结果页
  */
-
-const val SOURCE_KEY = "source_key"
-const val SEARCH_WORD = "search_word"
-
 const val SEARCH_RESULT = "search_result"
 
 class SearchResultFragment : BaseListFragment<SearchResultData, BaseViewHolder>() {
@@ -33,24 +29,24 @@ class SearchResultFragment : BaseListFragment<SearchResultData, BaseViewHolder>(
     companion object {
         fun instance(sourceKey: String, searchWord: String): SearchResultFragment {
             return SearchResultFragment().apply {
-                arguments = bundleOf(SOURCE_KEY to sourceKey, SEARCH_WORD to searchWord)
+                arguments = bundleOf("source_key" to sourceKey, "search_word" to searchWord)
             }
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        source = ConfigManager.generateSource(arguments?.getString(SOURCE_KEY).textOrDefault())
-        searchWord = arguments?.getString(SEARCH_WORD).textOrDefault()
+        source = ConfigManager.generateSource(arguments?.getString("source_key").noNull())
+        searchWord = arguments?.getString("search_word").noNull()
     }
 
     override fun getListAdapter(): BaseLoadMoreAdapter<SearchResultData, BaseViewHolder> {
         return SearchResultAdapter().apply {
-            setOnItemClickListener { adapter, view, position ->
-                DetailActivity.jump(
-                    requireActivity(),
+            setOnItemClickListener { _, _, position ->
+                AppRouter.toDetailActivity(
+                    baseActivity,
                     source.key,
-                    data[position].id.textOrDefault()
+                    data[position].id.noNull()
                 )
             }
         }

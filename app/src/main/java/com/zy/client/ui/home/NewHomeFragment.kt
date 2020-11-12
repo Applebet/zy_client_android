@@ -9,12 +9,12 @@ import com.zy.client.R
 import com.zy.client.http.ConfigManager
 import com.zy.client.common.SP_OPEN_FL
 import com.zy.client.utils.ext.gone
-import com.zy.client.utils.ext.textOrDefault
+import com.zy.client.utils.ext.noNull
 import com.zy.client.bean.event.OpenFLEvent
 import com.zy.client.http.sources.BaseSource
 import com.zy.client.base.BaseFragment
-import com.zy.client.ui.search.SearchActivity
 import com.wuhenzhizao.titlebar.widget.CommonTitleBar
+import com.zy.client.common.AppRouter
 import kotlinx.android.synthetic.main.fragment_home_new.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -37,11 +37,9 @@ class NewHomeFragment : BaseFragment() {
     override fun initTitleBar(titleBar: CommonTitleBar?) {
         titleBar?.run {
             centerSearchRightImageView.gone()
-            setListener { v, action, extra ->
-                when (action) {
-                    CommonTitleBar.ACTION_SEARCH -> {
-                        SearchActivity.jump(requireActivity())
-                    }
+            setListener { _, action, _ ->
+                if (action == CommonTitleBar.ACTION_SEARCH) {
+                    AppRouter.toSearchActivity(baseActivity)
                 }
             }
         }
@@ -80,7 +78,7 @@ class NewHomeFragment : BaseFragment() {
 
     override fun initData() {
         super.initData()
-        titleBar?.centerSearchEditText?.hint = source?.name.textOrDefault("搜索")
+        titleBar?.centerSearchEditText?.hint = source?.name.noNull("搜索")
         childFragmentManager
             .beginTransaction()
             .replace(R.id.flContainer, HomeSourceFragment())

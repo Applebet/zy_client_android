@@ -44,7 +44,7 @@
                     android:id="@+id/ivWebPlay"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
-                    android:src="@drawable/web_play" />
+                    android:src="@drawable/ic_web_play" />
 
                 <View
                     android:layout_width="0dp"
@@ -56,7 +56,7 @@
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:layout_marginLeft="15dp"
-                    android:src="@drawable/un_collect" />
+                    android:src="@drawable/ic_collect_un" />
 
                 <View
                     android:layout_width="0dp"
@@ -68,7 +68,7 @@
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:layout_marginLeft="15dp"
-                    android:src="@drawable/film_share" />
+                    android:src="@drawable/ic_film_share" />
 
                 <View
                     android:layout_width="0dp"
@@ -80,7 +80,7 @@
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:layout_marginLeft="15dp"
-                    android:src="@drawable/film_download" />
+                    android:src="@drawable/ic_film_download" />
 
                 <View
                     android:layout_width="0dp"

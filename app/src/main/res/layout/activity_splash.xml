@@ -15,7 +15,7 @@
         android:layout_height="100dp"
         android:layout_gravity="center"
         android:scaleType="centerCrop"
-        android:src="@drawable/logo" />
+        android:src="@drawable/ic_logo" />
 
     <View
         android:layout_width="match_parent"

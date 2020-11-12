@@ -31,14 +31,14 @@
                 <FrameLayout
                     android:id="@+id/flWebView"
                     android:layout_width="match_parent"
-                    android:layout_height="200dp"
+                    android:layout_height="@dimen/dp_210"
                     android:visibility="visible"
                     tools:visibility="visible" />
 
                 <com.zy.client.views.CustomGSYVideoPlayer
                     android:id="@+id/videoPlayer"
                     android:layout_width="match_parent"
-                    android:layout_height="200dp"
+                    android:layout_height="@dimen/dp_210"
                     android:visibility="gone"
                     tools:visibility="visible" />
             </FrameLayout>
@@ -47,7 +47,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:padding="12dp">
+                android:padding="@dimen/dp_12">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -63,7 +63,7 @@
                         android:id="@+id/ivWebPlay"
                         android:layout_width="25dp"
                         android:layout_height="25dp"
-                        android:src="@drawable/web_play" />
+                        android:src="@drawable/ic_web_play" />
 
                     <View
                         android:layout_width="0dp"
@@ -75,7 +75,7 @@
                         android:layout_width="25dp"
                         android:layout_height="25dp"
                         android:layout_marginLeft="15dp"
-                        android:src="@drawable/film_download" />
+                        android:src="@drawable/ic_film_download" />
 
 
                     <!--                <View-->
@@ -100,7 +100,7 @@
                         android:layout_width="25dp"
                         android:layout_height="25dp"
                         android:layout_marginLeft="15dp"
-                        android:src="@drawable/seecter_bg_collect" />
+                        android:src="@drawable/sel_collect_bg" />
 
                     <View
                         android:layout_width="0dp"
@@ -164,7 +164,7 @@
                                 android:id="@+id/ivPlayMore"
                                 android:layout_width="20dp"
                                 android:layout_height="20dp"
-                                android:src="@drawable/arrow_right" />
+                                android:src="@drawable/ic_arrow_right" />
                         </LinearLayout>
                     </LinearLayout>
 

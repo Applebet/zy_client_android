@@ -9,10 +9,9 @@ import com.zy.client.database.SearchHistoryDBUtils
 import kotlinx.android.synthetic.main.layout_search_history.view.*
 
 /**
- * @author javakam
+ * 搜索历史
  *
- * @date 2020/9/12 17:01
- * @desc 搜索历史
+ * @author javakam
  */
 class SearchHistoryView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -38,18 +37,17 @@ class SearchHistoryView @JvmOverloads constructor(
             onSelectListener?.invoke(it)
         }
 
-        contentView.alpha =1f
+        contentView.alpha = 1f
     }
 
     var onSelectListener: ((searchWord: String) -> Unit)? = null
 
-    override fun onAttachedToWindow() {
-        super.onAttachedToWindow()
+    fun updateHistory() {
         statusView.setLoadingStatus()
 
         SearchHistoryDBUtils.searchAllAsync {
             if (it.isNullOrEmpty()) {
-                statusView.setEmptyStatus()
+                statusView.setEmptyStatus("没有记录")
             } else {
                 tagGroup.setTags(it.map { model -> model.searchWord })
 

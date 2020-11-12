@@ -2,11 +2,9 @@ package com.zy.client.ui.home
 
 import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.blankj.utilcode.util.KeyboardUtils
-import com.blankj.utilcode.util.StringUtils
 import com.zy.client.R
 import com.zy.client.http.ConfigManager
-import com.zy.client.utils.ext.textOrDefault
+import com.zy.client.utils.ext.noNull
 import com.zy.client.http.NetLoader
 import com.zy.client.base.BaseFragment
 import com.zy.client.ui.home.adapter.FilmListAdapter
@@ -15,6 +13,7 @@ import com.zy.client.ui.home.model.FilmModelItem
 import com.zy.client.utils.Utils
 import com.wuhenzhizao.titlebar.widget.CommonTitleBar
 import com.zy.client.http.CommonCallback
+import com.zy.client.utils.KeyboardUtils
 import kotlinx.android.synthetic.main.fragment_home.*
 
 class HomeFragment : BaseFragment() {
@@ -56,7 +55,6 @@ class HomeFragment : BaseFragment() {
         }
     }
 
-
     override fun initView() {
         super.initView()
 
@@ -70,7 +68,10 @@ class HomeFragment : BaseFragment() {
                 loadData(true)
             }
             toWebClickListener = {
-                Utils.openBrowser(requireActivity(), ConfigManager.configMap[curKey]?.url.textOrDefault())
+                Utils.openBrowser(
+                    requireActivity(),
+                    ConfigManager.configMap[curKey]?.url.noNull()
+                )
             }
         }
 
@@ -148,7 +149,7 @@ class HomeFragment : BaseFragment() {
     }
 
     private fun loadDataByType(callback: CommonCallback<FilmModel?>) {
-        if (!StringUtils.isEmpty(titleBar!!.centerSearchEditText.text)) {
+        if (titleBar != null && titleBar!!.centerSearchEditText.text.isNotBlank()) {
             NetLoader.searchGet(curKey, keywords, curPage, callback)
         } else {
             NetLoader.filmGet(curKey, curId, curPage, callback)

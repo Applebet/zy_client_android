@@ -1,9 +1,9 @@
 package com.zy.client.ui.detail
 
 import android.content.res.Configuration
-import com.blankj.utilcode.util.ToastUtils
+import com.zy.client.utils.ext.ToastUtils
 import com.zy.client.R
-import com.zy.client.utils.ext.textOrDefault
+import com.zy.client.utils.ext.noNull
 import com.zy.client.http.NetLoader
 import com.zy.client.base.BaseFragment
 import com.zy.client.ui.detail.controller.VideoController
@@ -60,7 +60,7 @@ class FilmDetailFragment : BaseFragment() {
         ivWebPlay.setOnClickListener {
             Utils.openBrowser(
                 requireActivity(),
-                "http://zyplayer.fun/player/player.html?url=${videoController.curFilmItemInfo?.videoUrl.textOrDefault()}&title=${videoController.curFilmItemInfo?.name}"
+                "http://zyplayer.fun/player/player.html?url=${videoController.curFilmItemInfo?.videoUrl.noNull()}&title=${videoController.curFilmItemInfo?.name}"
             )
         }
         //收藏
