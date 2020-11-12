@@ -46,7 +46,7 @@ data class SourceConfig(val key: String, val name: String, val generate: () -> B
 }
 
 object ConfigManager {
-    val config: Config by lazy {
+    private val config: Config by lazy {
         GsonUtils.fromJson(Utils.readAssetsData("config.txt"), Config::class.java)
     }
     val configMap: HashMap<String, ConfigItem> by lazy {

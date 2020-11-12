@@ -3,7 +3,7 @@ package com.zy.client.ui.search
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.zy.client.R
 import com.zy.client.common.BaseLoadMoreAdapter
-import com.zy.client.utils.ext.textOrDefault
+import com.zy.client.utils.ext.noNull
 import com.zy.client.bean.entity.SearchResultData
 
 /**
@@ -15,12 +15,10 @@ import com.zy.client.bean.entity.SearchResultData
 
 class SearchResultAdapter :
     BaseLoadMoreAdapter<SearchResultData, BaseViewHolder>(
-        R.layout.search_result_item_layout
+        R.layout.item_search_result
     ) {
     override fun convert(holder: BaseViewHolder, item: SearchResultData) {
-        holder.setText(R.id.tvName, item.name.textOrDefault("--"))
-        holder.setText(R.id.tvType, item.type.textOrDefault("--"))
+        holder.setText(R.id.tvName, item.name.noNull("--"))
+        holder.setText(R.id.tvType, item.type.noNull("--"))
     }
-
 }
-

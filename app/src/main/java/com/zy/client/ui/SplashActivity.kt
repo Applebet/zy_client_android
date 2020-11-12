@@ -1,11 +1,10 @@
-package com.zy.client.ui.splash
+package com.zy.client.ui
 
 import android.content.Intent
 import android.os.Bundle
-import com.blankj.utilcode.util.ThreadUtils
+import com.zy.client.utils.thread.ThreadUtils
 import com.zy.client.R
 import com.zy.client.base.BaseActivity
-import com.zy.client.ui.MainActivity
 import com.wuhenzhizao.titlebar.statusbar.StatusBarUtils
 
 /**
@@ -19,7 +18,7 @@ class SplashActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         StatusBarUtils.transparentStatusBar(window)
 
-        ThreadUtils.getMainHandler().postDelayed({
+        ThreadUtils.mainHandler.postDelayed({
             startActivity(Intent(this, MainActivity::class.java))
             finish()
         }, 200)

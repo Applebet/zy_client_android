@@ -146,16 +146,6 @@
 
 ####################第三方库的混淆配置####################
 
-#GSYVideoPlayer
--keep class com.shuyu.gsyvideoplayer.video.** { *; }
--dontwarn com.shuyu.gsyvideoplayer.video.**
--keep class com.shuyu.gsyvideoplayer.video.base.** { *; }
--dontwarn com.shuyu.gsyvideoplayer.video.base.**
--keep class com.shuyu.gsyvideoplayer.utils.** { *; }
--dontwarn com.shuyu.gsyvideoplayer.utils.**
--keep class tv.danmaku.ijk.** { *; }
--dontwarn tv.danmaku.ijk.**
-
 -keep public class * extends android.view.View{
     *** get*();
     void set*(***);
@@ -227,12 +217,21 @@
     <init>(java.lang.Throwable);
 }
 
-#JZVideo
--keep public class cn.jzvd.JZMediaSystem {*; }
--keep public class cn.jzvd.demo.CustomMedia.CustomMedia {*; }
--keep public class cn.jzvd.demo.CustomMedia.JZMediaIjk {*; }
--keep public class cn.jzvd.demo.CustomMedia.JZMediaSystemAssertFolder {*; }
 
--keep class tv.danmaku.ijk.media.player.** {*; }
--dontwarn tv.danmaku.ijk.media.player.*
--keep interface tv.danmaku.ijk.media.player.** { *; }
+#GSYVideoPlayer
+-keep class com.shuyu.gsyvideoplayer.video.** { *; }
+-dontwarn com.shuyu.gsyvideoplayer.video.**
+-keep class com.shuyu.gsyvideoplayer.video.base.** { *; }
+-dontwarn com.shuyu.gsyvideoplayer.video.base.**
+-keep class com.shuyu.gsyvideoplayer.utils.** { *; }
+-dontwarn com.shuyu.gsyvideoplayer.utils.**
+
+# dueeeke DKVideoPlayer
+-keep class com.dueeeke.videoplayer.** { *; }
+-dontwarn com.dueeeke.videoplayer.**
+# IjkPlayer
+-keep class tv.danmaku.ijk.** { *; }
+-dontwarn tv.danmaku.ijk.**
+# ExoPlayer
+-keep class com.google.android.exoplayer2.** { *; }
+-dontwarn com.google.android.exoplayer2.**

@@ -1,7 +1,7 @@
 package com.zy.client.database
 
-import com.blankj.utilcode.util.ThreadUtils
-import com.zy.client.common.Task
+import com.zy.client.utils.thread.ThreadUtils
+import com.zy.client.utils.thread.CustomTask
 import org.litepal.LitePal
 import java.util.*
 
@@ -13,35 +13,19 @@ import java.util.*
  */
 
 object CollectDBUtils {
-    fun saveAsync(collectModel: CollectModel, callback: ((Boolean) -> Unit)? = null) {
 
-        ThreadUtils.executeByCached(Task<Boolean>({
-            save(collectModel)
-        }, {
-            callback?.invoke(it ?: false)
-        }))
-    }
-
-
-    fun save(collectModel: CollectModel): Boolean {
+    private fun save(collectModel: CollectModel): Boolean {
         if (collectModel.uniqueKey.isNullOrBlank() || collectModel.videoId.isNullOrBlank() || collectModel.sourceKey.isNullOrBlank()) {
             return false
         }
-        val videoId = collectModel.videoId
-        LitePal.where("videoId = ?", videoId).findFirst(collectModel::class.java)?.delete()
+        if (collectModel.isSaved) return true
+        //val videoId = collectModel.videoId
+        //val c=LitePal.where("videoId = ?", videoId).findFirst(collectModel::class.java)
         return collectModel.save()
     }
 
-    fun searchAll(): ArrayList<CollectModel>? {
+    private fun searchAll(): ArrayList<CollectModel>? {
         return LitePal.findAll(CollectModel::class.java) as? ArrayList<CollectModel>
-    }
-
-    fun searchAllAsync(callback: ((ArrayList<CollectModel>?) -> Unit)?) {
-        ThreadUtils.executeByCached(Task<ArrayList<CollectModel>?>({
-            searchAll()
-        }, {
-            callback?.invoke(it)
-        }))
     }
 
     fun search(uniqueKey: String?): CollectModel? {
@@ -49,9 +33,24 @@ object CollectDBUtils {
         return LitePal.where("uniqueKey = ?", uniqueKey).findFirst(CollectModel::class.java)
     }
 
-    fun searchAsync(uniqueKey: String?, callback: ((CollectModel?) -> Unit)?) {
+    fun saveAsync(collectModel: CollectModel, callback: ((Boolean) -> Unit)? = null) {
+        ThreadUtils.executeByCached(CustomTask({
+            save(collectModel)
+        }, {
+            callback?.invoke(it ?: false)
+        }))
+    }
 
-        ThreadUtils.executeByCached(Task<CollectModel?>({
+    fun searchAllAsync(callback: ((ArrayList<CollectModel>?) -> Unit)?) {
+        ThreadUtils.executeByCached(CustomTask({
+            searchAll()
+        }, {
+            callback?.invoke(it)
+        }))
+    }
+
+    fun searchAsync(uniqueKey: String?, callback: ((CollectModel?) -> Unit)?) {
+        ThreadUtils.executeByCached(CustomTask<CollectModel?>({
             search(uniqueKey)
         }, {
             callback?.invoke(it)

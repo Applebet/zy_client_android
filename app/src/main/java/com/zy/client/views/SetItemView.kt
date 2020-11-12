@@ -6,7 +6,7 @@ import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.zy.client.R
 import com.zy.client.utils.ext.gone
-import com.zy.client.utils.ext.textOrDefault
+import com.zy.client.utils.ext.noNull
 import com.zy.client.utils.ext.visible
 import kotlinx.android.synthetic.main.set_item_view.view.*
 
@@ -23,7 +23,7 @@ class SetItemView @JvmOverloads constructor(
     var itemName: String? = null
         set(value) {
             field = value
-            tvName?.text = value.textOrDefault()
+            tvName?.text = value.noNull()
         }
 
     init {

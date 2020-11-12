@@ -1,4 +1,4 @@
-package com.zy.client.ui.detail.controller
+package com.zy.client.ui.video
 
 import android.app.Activity
 import android.content.res.Configuration
@@ -7,8 +7,8 @@ import com.shuyu.gsyvideoplayer.builder.GSYVideoOptionBuilder
 import com.shuyu.gsyvideoplayer.listener.GSYSampleCallBack
 import com.shuyu.gsyvideoplayer.utils.OrientationUtils
 import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer
+import com.zy.client.bean.entity.VideoDetailInfo
 import com.zy.client.utils.ext.gone
-import com.zy.client.ui.detail.model.FilmItemInfo
 
 /**
  * @author javakam
@@ -22,7 +22,7 @@ class VideoController {
     private var isPlay = false
     private var isPause = false
 
-    var curFilmItemInfo: FilmItemInfo? = null
+    var curVideoDetailInfo: VideoDetailInfo? = null
 
     //外部辅助的旋转，帮助全屏
     private var orientationUtils: OrientationUtils? = null
@@ -36,21 +36,8 @@ class VideoController {
     }
 
     private fun initVideoPlayer() {
-        //增加封面
-//        val imageView = ImageView(this)
-//        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP)
-//        imageView.setImageResource(R.mipmap.xxx1)
-//        videoPlayer.thumbImageView = imageView
-        //增加title
-        videoPlayer.titleTextView.gone()
-        //设置返回键
-//        videoPlayer.backButton.run {
-//            setOnClickListener {
-//                onBackPressed()
-//            }
-//            visible()
-//        }
-        videoPlayer.backButton.gone()
+        videoPlayer.backButton.gone()       //设置返回键
+        videoPlayer.titleTextView.gone()    //增加title
         //外部辅助的旋转，帮助全屏
         orientationUtils = OrientationUtils(activity, videoPlayer).apply {
             //初始化不打开外部的旋转
@@ -59,8 +46,9 @@ class VideoController {
 
         videoOptionBuilder = GSYVideoOptionBuilder()
         videoOptionBuilder
-//            .setThumbImageView(imageView)
-            .setIsTouchWiget(true)
+            //.setThumbImageView(imageView) //增加封面
+            .setIsTouchWiget(false)
+            .setIsTouchWigetFull(true)
             .setRotateViewAuto(false)
             .setLockLand(false)
             .setAutoFullWithSize(false)
@@ -80,23 +68,24 @@ class VideoController {
                     orientationUtils?.backToProtVideo()
                 }
             })
-            .setLockClickListener { view, lock ->
+            .setLockClickListener { _, lock ->
                 orientationUtils?.isEnable = !lock
             }
             .build(videoPlayer)
 
+        //直接横屏
         videoPlayer.fullscreenButton
-            .setOnClickListener { //直接横屏
+            .setOnClickListener {
                 orientationUtils?.resolveByClick()
-                //第一个true是否需要隐藏actionbar，第二个true是否需要隐藏statusbar
+                //第一个true是否需要隐藏actionbar，第二个true是否需要隐藏 statusbar
                 videoPlayer.startWindowFullscreen(activity, true, true)
             }
     }
 
 
-    fun play(filmItemInfo: FilmItemInfo?) {
-        curFilmItemInfo = filmItemInfo
-        filmItemInfo?.let {
+    fun play(videoDetailInfo: VideoDetailInfo?) {
+        curVideoDetailInfo = videoDetailInfo
+        videoDetailInfo?.let {
             videoOptionBuilder
                 .setUrl(it.videoUrl)
                 .setVideoTitle(it.name)
@@ -133,7 +122,7 @@ class VideoController {
     fun onBackPressed(): Boolean {
         orientationUtils?.backToProtVideo()
         if (GSYVideoManager.backFromWindowFull(activity)) {
-            return true
+            return false
         }
         activity.finish()
         return true

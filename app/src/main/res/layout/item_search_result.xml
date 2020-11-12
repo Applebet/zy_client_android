@@ -4,44 +4,48 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#ffffff"
+    android:background="@color/white"
     android:orientation="vertical">
 
     <View
         style="@style/DivideLine"
-        android:layout_marginLeft="12dp" />
+        android:layout_marginStart="@dimen/dp_12" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/dp_45"
         android:orientation="horizontal">
 
         <TextView
             android:id="@+id/tvName"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="7"
-            android:gravity="center_vertical"
-            android:padding="12dp"
+            android:layout_weight="1"
+            android:ellipsize="marquee"
+            android:focusableInTouchMode="true"
+            android:gravity="center_vertical|start"
+            android:paddingStart="@dimen/dp_15"
+            android:paddingEnd="@dimen/dp_5"
             android:singleLine="true"
             android:textColor="@color/normalFontColor"
-            android:textSize="14sp"
+            android:textSize="@dimen/font_14"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="是大家还是觉得时间的还是觉得" />
+            tools:text="是大家还是觉得时间的还是觉" />
 
         <TextView
             android:id="@+id/tvType"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/dp_100"
             android:layout_height="match_parent"
-            android:layout_weight="3"
-            android:gravity="center_vertical|right"
-            android:padding="12dp"
+            android:ellipsize="marquee"
+            android:gravity="center_vertical|end"
+            android:paddingStart="@dimen/dp_5"
+            android:paddingEnd="@dimen/dp_15"
             android:singleLine="true"
             android:textColor="@color/normalFontColor"
-            android:textSize="14sp"
+            android:textSize="@dimen/font_12"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"

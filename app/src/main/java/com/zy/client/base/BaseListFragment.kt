@@ -7,7 +7,7 @@ import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.zy.client.R
 import com.zy.client.common.BaseLoadMoreAdapter
 import com.wuhenzhizao.titlebar.widget.CommonTitleBar
-import kotlinx.android.synthetic.main.base_list_fragment.*
+import kotlinx.android.synthetic.main.layout_com_title_list.*
 
 /**
  * @author javakam
@@ -30,7 +30,7 @@ abstract class BaseListFragment<T, H : BaseViewHolder> : BaseFragment() {
         }
     }
 
-    override fun getLayoutId(): Int = R.layout.base_list_fragment
+    override fun getLayoutId(): Int = R.layout.layout_com_title_list
 
     override fun initTitleBar(titleBar: CommonTitleBar?) {
     }

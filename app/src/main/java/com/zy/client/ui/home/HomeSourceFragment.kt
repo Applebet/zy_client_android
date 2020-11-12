@@ -12,7 +12,6 @@ import com.zy.client.bean.entity.Classify
 import com.zy.client.base.BaseFragment
 import com.zy.client.ui.channel.HomeChannelFragment
 import com.wuhenzhizao.titlebar.widget.CommonTitleBar
-import kotlinx.android.synthetic.main.fragment_home.statusView
 import kotlinx.android.synthetic.main.fragment_home_source.*
 
 /**

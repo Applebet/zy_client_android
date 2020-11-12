@@ -35,6 +35,7 @@ class CustomGSYVideoPlayer : StandardGSYVideoPlayer {
 
     private val scaleTypes = arrayListOf<ScaleType>(
         ScaleType(GSYVideoType.SCREEN_TYPE_DEFAULT, "默认比例"),
+        ScaleType(GSYVideoType.SCREEN_TYPE_18_9, "18:9"),
         ScaleType(GSYVideoType.SCREEN_TYPE_16_9, "16:9"),
         ScaleType(GSYVideoType.SCREEN_TYPE_4_3, "4:3"),
         ScaleType(GSYVideoType.SCREEN_TYPE_FULL, "全屏"),
@@ -42,9 +43,6 @@ class CustomGSYVideoPlayer : StandardGSYVideoPlayer {
     )
 
     private val speeds = arrayListOf<Speed>(
-        Speed(5.0f, "5x"),
-        Speed(4.0f, "4x"),
-        Speed(3.0f, "3x"),
         Speed(2.0f, "2x"),
         Speed(1.75f, "1.75x"),
         Speed(1.5f, "1.5x"),
@@ -88,7 +86,7 @@ class CustomGSYVideoPlayer : StandardGSYVideoPlayer {
 
     private fun showScaleSelectPanel() {
         hideBottomLayout()
-        videoSelectPanel.setOnItemClickListener { s, pos ->
+        videoSelectPanel.setOnItemClickListener { _, pos ->
             val scaleType = scaleTypes[pos]
             tvScaleType.text = scaleType.name
             GSYVideoType.setShowType(scaleType.type)

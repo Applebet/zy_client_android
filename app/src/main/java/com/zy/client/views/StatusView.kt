@@ -65,6 +65,14 @@ class StatusView @JvmOverloads constructor(
         statusEmptyView.visible()
     }
 
+    fun setEmptyStatus(emptyMsg: String) {
+        visible()
+        statusLoadingView.invisible()
+        statusFailView.invisible()
+        statusEmptyView.visible()
+        statusEmptyView.text = emptyMsg
+    }
+
     fun setSuccessStatus() {
         gone()
     }
