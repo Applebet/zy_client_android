@@ -1128,7 +1128,7 @@ object ThreadUtils {
         private val mWorkQueue: LinkedBlockingQueue4Util
         private val submittedCount: Int get() = mSubmittedCount.get()
 
-        override fun afterExecute(r: Runnable, t: Throwable) {
+        override fun afterExecute(r: Runnable, t: Throwable?) {
             mSubmittedCount.decrementAndGet()
             super.afterExecute(r, t)
         }

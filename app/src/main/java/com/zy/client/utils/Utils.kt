@@ -62,7 +62,7 @@ object Utils {
      */
     fun xmlToJson(xmlString: String?): XmlToJson? {
         try {
-            return XmlToJson.Builder(xmlString!!).build()
+            return XmlToJson.Builder(xmlString ?: return null).build()
         } catch (e: Exception) {
         }
         return null

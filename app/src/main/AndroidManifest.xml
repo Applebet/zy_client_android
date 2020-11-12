@@ -30,7 +30,7 @@
         tools:ignore="AllowBackup">
 
         <activity
-            android:name=".ui.splash.SplashActivity"
+            android:name=".ui.SplashActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/GuideTheme">
@@ -49,7 +49,7 @@
             android:windowSoftInputMode="adjustPan" />
 
         <activity
-            android:name=".ui.detail.VideoDetailActivity"
+            android:name=".ui.video.VideoDetailActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />

@@ -1,4 +1,4 @@
-package com.zy.client.ui.detail.controller
+package com.zy.client.ui.video
 
 import android.annotation.SuppressLint
 import android.app.Activity

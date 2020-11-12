@@ -1,164 +1,111 @@
 package com.zy.client.ui.home
 
-import androidx.core.widget.addTextChangedListener
-import androidx.recyclerview.widget.LinearLayoutManager
+import android.os.Bundle
+import com.zy.client.utils.SPUtils
+import com.lxj.xpopup.XPopup
+import com.lxj.xpopup.core.BasePopupView
+import com.lxj.xpopup.interfaces.OnSelectListener
 import com.zy.client.R
 import com.zy.client.http.ConfigManager
+import com.zy.client.common.SP_OPEN_FL
+import com.zy.client.utils.ext.gone
 import com.zy.client.utils.ext.noNull
-import com.zy.client.http.NetLoader
+import com.zy.client.bean.event.OpenFLEvent
+import com.zy.client.http.sources.BaseSource
 import com.zy.client.base.BaseFragment
-import com.zy.client.ui.home.adapter.FilmListAdapter
-import com.zy.client.ui.home.model.FilmModel
-import com.zy.client.ui.home.model.FilmModelItem
-import com.zy.client.utils.Utils
 import com.wuhenzhizao.titlebar.widget.CommonTitleBar
-import com.zy.client.http.CommonCallback
-import com.zy.client.utils.KeyboardUtils
-import kotlinx.android.synthetic.main.fragment_home.*
+import com.zy.client.common.AppRouter
+import kotlinx.android.synthetic.main.fragment_home_new.*
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
+/**
+ * @author javakam
+ *
+ * @date 2020/9/2 22:39
+ */
 class HomeFragment : BaseFragment() {
+    private var source: BaseSource? = null
 
-    private var curPage: Int = 1
-    private var curKey: String = ""
-    private var curId: Int = 0
-    private var keywords: String = ""
+    private var selectSourceDialog: BasePopupView? = null
 
-    private val filmAdapter by lazy {
-        FilmListAdapter(filmList).apply {
-            loadMoreModule.run {
-                isAutoLoadMore = true
-                setOnLoadMoreListener {
-                    loadData(false)
-                }
-            }
-        }
-    }
-    private val filmList = ArrayList<FilmModelItem>()
+    private var openFL = false
 
-    override fun getLayoutId(): Int = R.layout.fragment_home
+    override fun getLayoutId(): Int = R.layout.fragment_home_new
 
     override fun initTitleBar(titleBar: CommonTitleBar?) {
         titleBar?.run {
-            centerSearchEditText.hint = "输入搜索内容"
-            setListener { v, action, extra ->
-                when (action) {
-                    CommonTitleBar.ACTION_SEARCH_DELETE -> {
-                        //删除按钮
-                    }
-                }
-                if (extra != null) {
-                    //按下键盘搜索按钮
-                    loadData(true)
-                    KeyboardUtils.hideSoftInput(requireActivity())
+            centerSearchRightImageView.gone()
+            setListener { _, action, _ ->
+                if (action == CommonTitleBar.ACTION_SEARCH) {
+                    AppRouter.toSearchActivity(baseActivity)
                 }
             }
         }
     }
 
-    override fun initView() {
-        super.initView()
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        source = ConfigManager.curUseSourceConfig()
 
-        rvMovies.run {
-            layoutManager = LinearLayoutManager(requireActivity())
-            adapter = filmAdapter
-        }
-
-        statusView.run {
-            failRetryClickListener = {
-                loadData(true)
-            }
-            toWebClickListener = {
-                Utils.openBrowser(
-                    requireActivity(),
-                    ConfigManager.configMap[curKey]?.url.noNull()
-                )
-            }
-        }
-
+        openFL = SPUtils.get().getBoolean(SP_OPEN_FL)
     }
 
     override fun initListener() {
         super.initListener()
-        //搜索参数选择
-        searchSelectView.onSelectListener = { key, id ->
-            curKey = key
-            curId = id
-            loadData(true)
-        }
-
-        //监听搜索框变化
-        titleBar!!.centerSearchEditText.addTextChangedListener {
-            keywords = it?.toString() ?: ""
-            if (keywords.isBlank()) {
-                searchSelectView.showAll()
-            } else {
-                searchSelectView.onlyShowSite()
+        faBtn.setOnClickListener {
+            //选择视频源
+            if (selectSourceDialog == null) {
+                val values = ConfigManager.sourceConfigs.values
+                val keys = ConfigManager.sourceConfigs.keys.toTypedArray()
+                selectSourceDialog = XPopup.Builder(requireActivity())
+                    .asCenterList("选择视频源",
+                        values.map { it.name }.toTypedArray(),
+                        null,
+                        keys.indexOfFirst { it == source?.key },
+                        OnSelectListener { position, text ->
+                            source =
+                                ConfigManager.generateSource(keys[position])
+                            ConfigManager.saveCurUseSourceConfig(source?.key)
+                            initData()
+                        })
+                    .bindLayout(R.layout.fragment_search_result)
             }
-        }
-    }
-
-    private fun loadData(init: Boolean) {
-        if (init) {
-            curPage = 1
-            statusView.setLoadingStatus()
-        } else {
-            ++curPage
-        }
-        loadDataByType(object : CommonCallback<FilmModel?> {
-            override fun onResult(t: FilmModel?) {
-                if (init) {
-                    filmAdapter.loadMoreModule.isEnableLoadMore = true
-                    filmList.clear()
-                    when {
-                        t == null -> {
-                            statusView.setFailStatus()
-                        }
-                        t.filmModelItemList.isNullOrEmpty() -> {
-                            statusView.setEmptyStatus()
-                        }
-                        else -> {
-                            filmList.addAll(t.filmModelItemList)
-                            statusView.setSuccessStatus()
-                            if (t.total > 0 && t.total <= filmList.size) {
-                                filmAdapter.loadMoreModule.isEnableLoadMore = false
-                            }
-                        }
-                    }
-                } else {
-                    when {
-                        t == null -> {
-                            curPage--
-                            filmAdapter.loadMoreModule.loadMoreFail()
-                        }
-                        t.filmModelItemList.isNullOrEmpty() -> {
-                            filmAdapter.loadMoreModule.isEnableLoadMore = false
-                        }
-                        else -> {
-                            filmList.addAll(t.filmModelItemList)
-                            if (t.total > 0 && t.total <= filmList.size) {
-                                filmAdapter.loadMoreModule.isEnableLoadMore = false
-                            } else {
-                                filmAdapter.loadMoreModule.loadMoreComplete()
-                            }
-                        }
-                    }
-                }
-                filmAdapter.notifyDataSetChanged()
-            }
-        })
-    }
-
-    private fun loadDataByType(callback: CommonCallback<FilmModel?>) {
-        if (titleBar != null && titleBar!!.centerSearchEditText.text.isNotBlank()) {
-            NetLoader.searchGet(curKey, keywords, curPage, callback)
-        } else {
-            NetLoader.filmGet(curKey, curId, curPage, callback)
+            selectSourceDialog?.show()
         }
     }
 
     override fun initData() {
         super.initData()
-        //设置搜索选择视图的数据，会回调选择监听
-        searchSelectView.initData()
+        titleBar?.centerSearchEditText?.hint = source?.name.noNull("搜索")
+        childFragmentManager
+            .beginTransaction()
+            .replace(R.id.flContainer, HomeSourceFragment())
+            .commitNowAllowingStateLoss()
     }
+
+    override fun onStart() {
+        super.onStart()
+        EventBus.getDefault().register(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().unregister(this)
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+    fun onMessageEvent(event: OpenFLEvent) {
+        if (openFL == event.open) {
+            //与当前一样，return
+            return
+        }
+        openFL = event.open
+        //不一样时重新加载数据
+        initData()
+    }
+
 }

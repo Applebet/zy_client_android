@@ -1,11 +1,10 @@
-package com.zy.client.ui.splash
+package com.zy.client.ui
 
 import android.content.Intent
 import android.os.Bundle
 import com.zy.client.utils.thread.ThreadUtils
 import com.zy.client.R
 import com.zy.client.base.BaseActivity
-import com.zy.client.ui.MainActivity
 import com.wuhenzhizao.titlebar.statusbar.StatusBarUtils
 
 /**

@@ -1,9 +1,8 @@
-package com.zy.client.ui.detail
+package com.zy.client.ui.video
 
 import android.content.res.Configuration
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BottomPopupView
-import com.lxj.xpopup.interfaces.OnSelectListener
 import com.wuhenzhizao.titlebar.widget.CommonTitleBar
 import com.zy.client.R
 import com.zy.client.base.BaseActivity
@@ -16,8 +15,6 @@ import com.zy.client.database.CollectDBUtils
 import com.zy.client.database.CollectModel
 import com.zy.client.http.ConfigManager
 import com.zy.client.http.sources.BaseSource
-import com.zy.client.ui.detail.controller.VideoController
-import com.zy.client.ui.detail.controller.WebController
 import com.zy.client.utils.ClipboardUtils
 import com.zy.client.utils.Utils
 import com.zy.client.utils.ext.*
@@ -75,9 +72,6 @@ class VideoDetailActivity : BaseActivity() {
 
     override fun initListener() {
         super.initListener()
-        statusView.failRetryClickListener = {
-            initData()
-        }
         //网页播放
         ivWebPlay.setOnClickListener {
             if (playVideo == null || playVideo?.playUrl.isNullOrBlank()) {
@@ -99,7 +93,8 @@ class VideoDetailActivity : BaseActivity() {
             if (playVideoList?.size ?: 0 > 1) {
                 if (anthologyList == null) {
                     anthologyList = XPopup.Builder(this)
-                        .asBottomList("选集",
+                        .asBottomList(
+                            "选集",
                             playVideoList?.map { it.name }?.toTypedArray(),
                             null,
                             0
@@ -113,8 +108,8 @@ class VideoDetailActivity : BaseActivity() {
             }
         }
 
+        //收藏
         ivCollect.setOnClickListener {
-            //收藏
             if (ivCollect.isSelected) {
                 val delete = CollectDBUtils.delete(id + source.key)
                 if (delete) {
@@ -168,7 +163,6 @@ class VideoDetailActivity : BaseActivity() {
                 ToastUtils.showShort("该资源暂不支持下载哦~")
             }
         }
-
     }
 
     override fun initData() {
@@ -180,17 +174,9 @@ class VideoDetailActivity : BaseActivity() {
             }
         }
 
-        statusView.setLoadingStatus()
         source.requestDetailData(id) {
-            when {
-                it == null -> {
-                    statusView.setFailStatus()
-                }
-                it.videoList.isNullOrEmpty() -> {
-                    statusView.setEmptyStatus()
-                }
-                else -> {
-                    statusView.setSuccessStatus()
+            it?.apply {
+                if (!videoList.isNullOrEmpty()) {
                     setData(it)
                 }
             }
@@ -220,7 +206,6 @@ class VideoDetailActivity : BaseActivity() {
         if (videoController?.onBackPressed() == true || webController?.onBackPressed() == true) {
             super.onBackPressed()
         }
-        return
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
@@ -234,16 +219,12 @@ class VideoDetailActivity : BaseActivity() {
             playVideoList = videoList
 
             //是否支持选集
-            if (playVideoList?.size ?: 0 > 1) {
-                ivPlayMore.visible()
-            } else {
-                ivPlayMore.gone()
-            }
+            if (playVideoList?.size ?: 0 > 1) ivPlayMore.visible() else ivPlayMore.gone()
 
             playVideo(detailData.videoList?.get(0))
             //名字
             tvName.text = name
-            titleBar?.centerTextView?.text = name
+            titleBar.centerTextView?.text = name
             //简介
             tvDesc.text = des.noNull()
         }
@@ -259,10 +240,6 @@ class VideoDetailActivity : BaseActivity() {
                 videoController?.init(this, videoPlayer)
             }
 
-//            if (videoController == null) {
-//                videoController = JZVideoController()
-//                videoController?.init(videoPlayer)
-//            }
             videoController?.play(
                 playVideo.playUrl,
                 "${detailData?.name.noNull()}   ${playVideo.name.noNull()}"
@@ -279,6 +256,6 @@ class VideoDetailActivity : BaseActivity() {
             flWebView.visible()
         }
         //正在播放
-        tvCurPlayName.text = playVideo?.name.noNull()
+        tvCurPlayName.text = playVideo.name.noNull()
     }
 }

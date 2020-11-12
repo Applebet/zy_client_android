@@ -1,7 +1,6 @@
 package com.zy.client.ui.search
 
 import androidx.core.widget.addTextChangedListener
-import com.zy.client.utils.KeyboardUtils
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BasePopupView
 import com.wuhenzhizao.titlebar.widget.CommonTitleBar
@@ -9,10 +8,12 @@ import com.zy.client.R
 import com.zy.client.base.BaseActivity
 import com.zy.client.database.SearchHistoryDBUtils
 import com.zy.client.http.ConfigManager
+import com.zy.client.utils.KeyboardUtils
 import com.zy.client.utils.ext.noNull
 import com.zy.client.utils.ext.visible
 import kotlinx.android.synthetic.main.activity_search.*
 import kotlinx.android.synthetic.main.layout_search_history.view.*
+
 
 /**
  * 搜索页
@@ -46,7 +47,7 @@ class SearchActivity : BaseActivity() {
                     CommonTitleBar.ACTION_LEFT_BUTTON -> {
                         finish()
                     }
-                    CommonTitleBar.ACTION_RIGHT_BUTTON ,CommonTitleBar.ACTION_SEARCH_SUBMIT -> {
+                    CommonTitleBar.ACTION_RIGHT_BUTTON, CommonTitleBar.ACTION_SEARCH_SUBMIT -> {
                         //按下键盘搜索按钮
                         initData()
                         KeyboardUtils.hideSoftInput(this)
@@ -94,8 +95,12 @@ class SearchActivity : BaseActivity() {
 
     override fun initData() {
         super.initData()
+        viewHistory.updateHistory()//搜索历史 tip: saveAsync后执行
+
         if (searchWord.isBlank()) return
-        SearchHistoryDBUtils.saveAsync(searchWord)
+        SearchHistoryDBUtils.saveAsync(searchWord) {
+            if (it) viewHistory.updateHistory()
+        }
         supportFragmentManager
             .beginTransaction()
             .replace(
@@ -104,8 +109,6 @@ class SearchActivity : BaseActivity() {
                 SEARCH_RESULT
             )
             .commitAllowingStateLoss()
-
-        viewHistory.updateHistory()//搜索历史 tip: saveAsync后执行
     }
 
     private fun changeEditHint() {

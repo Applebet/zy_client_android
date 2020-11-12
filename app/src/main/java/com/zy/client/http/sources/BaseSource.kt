@@ -12,7 +12,6 @@ import org.json.JSONObject
  *
  * @date 2020/9/2 21:17
  */
-
 abstract class BaseSource {
     abstract val key: String
     abstract val name: String
@@ -222,17 +221,19 @@ abstract class BaseSource {
             if (data == null) return null
             val jsonObject = Utils.xmlToJson(data)?.toJson()
             val video =
-                jsonObject?.getJSONObject("rss")?.getJSONObject("list")!!.getJSONObject("video")
+                jsonObject?.getJSONObject("rss")?.getJSONObject("list")?.getJSONObject("video")
 
-            return video.getJSONObject("dl")?.getJSONObject("dd")?.getString("content")?.split("#")
-                ?.map {
-                    val split = it.split("$")
-                    if (split.size >= 2) {
-                        DownloadData(split[0], split[1])
-                    } else {
-                        DownloadData(split[0], split[0])
-                    }
-                }?.toMutableList() as ArrayList<DownloadData>? ?: arrayListOf()
+            return video?.let {v->
+                v.getJSONObject("dl").getJSONObject("dd").getString("content").split("#")
+                    .map {
+                        val split = it.split("$")
+                        if (split.size >= 2) {
+                            DownloadData(split[0], split[1])
+                        } else {
+                            DownloadData(split[0], split[0])
+                        }
+                    }.toMutableList() as ArrayList<DownloadData>? ?: arrayListOf()
+            }
         } catch (e: Exception) {
             e.printStackTrace()
         }

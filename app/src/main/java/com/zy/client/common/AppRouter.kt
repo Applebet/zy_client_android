@@ -2,7 +2,7 @@ package com.zy.client.common
 
 import android.content.Intent
 import com.zy.client.base.BaseActivity
-import com.zy.client.ui.detail.VideoDetailActivity
+import com.zy.client.ui.video.VideoDetailActivity
 import com.zy.client.ui.search.SearchActivity
 
 /**

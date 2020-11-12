@@ -1,5 +1,6 @@
 package com.zy.client.database
 
+import android.util.Log
 import com.zy.client.utils.thread.CustomTask
 import com.zy.client.utils.thread.ThreadUtils
 import org.litepal.LitePal
@@ -16,7 +17,8 @@ object SearchHistoryDBUtils {
         if (searchWord.isNullOrBlank()) return false
         val historyModel =
             LitePal.where("searchWord = ?", searchWord).findFirst(SearchHistoryModel::class.java)
-        if (historyModel.isSaved) return true
+
+        if (historyModel != null && historyModel.isSaved) return true
 
         val searchHistoryDBModel = SearchHistoryModel()
         searchHistoryDBModel.searchWord = searchWord
