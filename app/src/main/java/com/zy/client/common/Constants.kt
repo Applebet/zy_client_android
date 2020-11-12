@@ -12,5 +12,4 @@ package com.zy.client.common
 const val SOURCE_KEY = "source_key"
 const val ID = "id"
 
-//打开福利
-const val SP_OPEN_FL = "sp_open_fl"
+const val SP_OPEN_FL = "sp_open_fl"     //福利

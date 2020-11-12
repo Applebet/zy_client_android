@@ -1,13 +1,15 @@
 package com.zy.client.ui.video
 
-import android.content.res.Configuration
+import android.graphics.Color
+import com.dueeeke.videoplayer.ijk.IjkPlayer
+import com.dueeeke.videoplayer.player.VideoView
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BottomPopupView
-import com.wuhenzhizao.titlebar.widget.CommonTitleBar
+import com.wuhenzhizao.titlebar.statusbar.StatusBarUtils
 import com.zy.client.R
 import com.zy.client.base.BaseActivity
-import com.zy.client.bean.entity.DetailData
-import com.zy.client.bean.entity.Video
+import com.zy.client.bean.VideoDetail
+import com.zy.client.bean.Video
 import com.zy.client.bean.event.CollectEvent
 import com.zy.client.common.ID
 import com.zy.client.common.SOURCE_KEY
@@ -18,7 +20,6 @@ import com.zy.client.http.sources.BaseSource
 import com.zy.client.utils.ClipboardUtils
 import com.zy.client.utils.Utils
 import com.zy.client.utils.ext.*
-import com.zy.client.views.CustomGSYVideoPlayer
 import kotlinx.android.synthetic.main.activity_video_detail.*
 import org.greenrobot.eventbus.EventBus
 
@@ -32,41 +33,32 @@ class VideoDetailActivity : BaseActivity() {
 
     private lateinit var source: BaseSource
     private lateinit var id: String
+    private lateinit var videoPlayer: VideoView<IjkPlayer>
 
-    //
     private var videoController: VideoController? = null
     private var webController: WebController? = null
-    private var playVideo: Video? = null
-    private var detailData: DetailData? = null
+    private var mVideoDetail: VideoDetail? = null
+    private var mVideo: Video? = null
     private var playVideoList: ArrayList<Video>? = null
     private var curPlayPos = 0
 
-    //
     private var anthologyList: BottomPopupView? = null
-
-    //
-    private lateinit var titleBar: CommonTitleBar
 
     override fun getLayoutId() = R.layout.activity_video_detail
 
     override fun initView() {
-        CustomGSYVideoPlayer.reset()
+        StatusBarUtils.setStatusBarColor(window, Color.BLACK, 0)
+        //PermissionManager.verifyStoragePermissions(this)
 
         val sourceKey = intent?.getStringExtra(SOURCE_KEY)
         source = ConfigManager.generateSource(sourceKey.noNull())
         id = intent?.getStringExtra(ID).noNull()
 
-        initTitleBar()
-    }
-
-    private fun initTitleBar() {
-        titleBar = findViewById(R.id.title_bar)
-        titleBar.run {
-            setListener { _, action, _ ->
-                if (action == CommonTitleBar.ACTION_LEFT_BUTTON) {
-                    finish()
-                }
-            }
+        videoPlayer = findViewById(R.id.videoPlayer)
+        //初始化视频控制
+        if (videoController == null) {
+            videoController = VideoController()
+            videoController?.init(this, videoPlayer)
         }
     }
 
@@ -74,16 +66,16 @@ class VideoDetailActivity : BaseActivity() {
         super.initListener()
         //网页播放
         ivWebPlay.setOnClickListener {
-            if (playVideo == null || playVideo?.playUrl.isNullOrBlank()) {
+            if (mVideo == null || mVideo?.playUrl.isNullOrBlank()) {
                 ToastUtils.showShort("无法播放")
                 return@setOnClickListener
             }
             Utils.openBrowser(
                 this,
-                if (playVideo?.playUrl.isVideoUrl()) {
-                    "http://zyplayer.fun/player/player.html?url=${playVideo?.playUrl?.noNull()}"
+                if (mVideo?.playUrl.isVideoUrl()) {
+                    "http://zyplayer.fun/player/player.html?url=${mVideo?.playUrl?.noNull()}"
                 } else {
-                    playVideo?.playUrl.noNull()
+                    mVideo?.playUrl.noNull()
                 }
             )
         }
@@ -122,7 +114,7 @@ class VideoDetailActivity : BaseActivity() {
                 val collectDBModel = CollectModel()
                 collectDBModel.uniqueKey = id + source.key
                 collectDBModel.videoId = id
-                collectDBModel.name = detailData?.name
+                collectDBModel.name = mVideoDetail?.name
                 collectDBModel.sourceKey = source.key
                 collectDBModel.sourceName = source.name
                 CollectDBUtils.saveAsync(collectDBModel) {
@@ -156,9 +148,9 @@ class VideoDetailActivity : BaseActivity() {
 //                    } as ArrayList<FilmItemInfo>, childFragmentManager)
 //                }
 //            }
-            if (playVideo?.playUrl.isVideoUrl()) {
-                ClipboardUtils.copyText(playVideo?.playUrl)
-                ToastUtils.showLong("地址已复制，快去下载吧~\n${playVideo?.playUrl}")
+            if (mVideo?.playUrl.isVideoUrl()) {
+                ClipboardUtils.copyText(mVideo?.playUrl)
+                ToastUtils.showLong("地址已复制，快去下载吧~\n${mVideo?.playUrl}")
             } else {
                 ToastUtils.showShort("该资源暂不支持下载哦~")
             }
@@ -208,13 +200,8 @@ class VideoDetailActivity : BaseActivity() {
         }
     }
 
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-        videoController?.onConfigurationChanged(newConfig)
-    }
-
-    private fun setData(detailData: DetailData) {
-        this.detailData = detailData
+    private fun setData(detailData: VideoDetail) {
+        this.mVideoDetail = detailData
         detailData.run {
             playVideoList = videoList
 
@@ -224,7 +211,6 @@ class VideoDetailActivity : BaseActivity() {
             playVideo(detailData.videoList?.get(0))
             //名字
             tvName.text = name
-            titleBar.centerTextView?.text = name
             //简介
             tvDesc.text = des.noNull()
         }
@@ -232,18 +218,9 @@ class VideoDetailActivity : BaseActivity() {
 
     private fun playVideo(playVideo: Video?) {
         if (playVideo == null) return
-        this.playVideo = playVideo
+        this.mVideo = playVideo
         if (playVideo.playUrl.isVideoUrl()) {
-            //初始化视频控制
-            if (videoController == null) {
-                videoController = VideoController()
-                videoController?.init(this, videoPlayer)
-            }
-
-            videoController?.play(
-                playVideo.playUrl,
-                "${detailData?.name.noNull()}   ${playVideo.name.noNull()}"
-            )
+            videoController?.play(playVideo.playUrl, "${mVideoDetail?.name.noNull()}  ${playVideo.name.noNull()}")
             videoPlayer.visible()
             flWebView.gone()
         } else {

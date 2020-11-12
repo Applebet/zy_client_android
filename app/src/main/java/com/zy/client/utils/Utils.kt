@@ -76,11 +76,7 @@ object Utils {
     fun getNavBarHeight(): Int {
         val res = Resources.getSystem()
         val resourceId = res.getIdentifier("navigation_bar_height", "dimen", "android")
-        return if (resourceId != 0) {
-            res.getDimensionPixelSize(resourceId)
-        } else {
-            0
-        }
+        return if (resourceId != 0) res.getDimensionPixelSize(resourceId) else 0
     }
 
     /**
@@ -103,52 +99,6 @@ object Utils {
     fun dp2px(dpValue: Float): Int {
         val scale = Resources.getSystem().displayMetrics.density
         return (dpValue * scale + 0.5f).toInt()
-    }
-
-    /**
-     * Return the width of view.
-     *
-     * @param view The view.
-     * @return the width of view
-     */
-    fun getMeasuredWidth(view: View): Int {
-        return measureView(view)[0]
-    }
-
-    /**
-     * Return the height of view.
-     *
-     * @param view The view.
-     * @return the height of view
-     */
-    fun getMeasuredHeight(view: View): Int {
-        return measureView(view)[1]
-    }
-
-    /**
-     * Measure the view.
-     *
-     * @param view The view.
-     * @return arr[0]: view's width, arr[1]: view's height
-     */
-    fun measureView(view: View): IntArray {
-        var lp = view.layoutParams
-        if (lp == null) {
-            lp = ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            )
-        }
-        val widthSpec = ViewGroup.getChildMeasureSpec(0, 0, lp.width)
-        val lpHeight = lp.height
-        val heightSpec: Int
-        heightSpec = if (lpHeight > 0) {
-            View.MeasureSpec.makeMeasureSpec(lpHeight, View.MeasureSpec.EXACTLY)
-        } else {
-            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
-        }
-        view.measure(widthSpec, heightSpec)
-        return intArrayOf(view.measuredWidth, view.measuredHeight)
     }
 
 }

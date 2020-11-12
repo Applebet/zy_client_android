@@ -2,7 +2,6 @@ package com.zy.client.http
 
 import com.zy.client.http.sources.BaseSource
 import com.zy.client.http.sources.CommonSource
-import com.zy.client.utils.GsonUtils
 import com.zy.client.utils.SPUtils
 import com.zy.client.utils.Utils
 import org.json.JSONArray
@@ -46,19 +45,9 @@ data class SourceConfig(val key: String, val name: String, val generate: () -> B
 }
 
 object ConfigManager {
-    private val config: Config by lazy {
-        GsonUtils.fromJson(Utils.readAssetsData("config.txt"), Config::class.java)
-    }
-    val configMap: HashMap<String, ConfigItem> by lazy {
-        val hashMap = hashMapOf<String, ConfigItem>()
-        config.forEach {
-            hashMap[it.key] = it
-        }
-        hashMap
-    }
 
     val sourceConfigs: LinkedHashMap<String, SourceConfig> by lazy {
-        val configJson = Utils.readAssetsData("SourceConfig.txt")
+        val configJson = Utils.readAssetsData("source.json")
         val configArray = JSONArray(configJson)
         val configMap = LinkedHashMap<String, SourceConfig>()
         for (i in 0 until configArray.length()) {

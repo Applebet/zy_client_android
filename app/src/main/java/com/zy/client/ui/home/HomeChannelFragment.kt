@@ -1,19 +1,21 @@
-package com.zy.client.ui.channel
+package com.zy.client.ui.home
 
 import android.os.Bundle
 import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
+import com.zy.client.R
 import com.zy.client.common.BaseLoadMoreAdapter
 import com.zy.client.http.ConfigManager
 import com.zy.client.common.GridSpaceItemDecoration
 import com.zy.client.utils.ext.noNull
 import com.zy.client.http.sources.BaseSource
-import com.zy.client.bean.entity.HomeChannelData
 import com.zy.client.base.BaseLazyListFragment
+import com.zy.client.bean.VideoSource
 import com.zy.client.common.AppRouter
 import com.zy.client.utils.Utils
+import com.zy.client.utils.ext.loadImage
 import kotlinx.android.synthetic.main.layout_com_title_list.*
 
 /**
@@ -22,7 +24,7 @@ import kotlinx.android.synthetic.main.layout_com_title_list.*
  * @date 2020/9/2 23:31
  * @desc 首页频道页
  */
-class HomeChannelFragment : BaseLazyListFragment<HomeChannelData, BaseViewHolder>() {
+class HomeChannelFragment : BaseLazyListFragment<VideoSource, BaseViewHolder>() {
 
     private lateinit var source: BaseSource
     private lateinit var tid: String
@@ -48,7 +50,7 @@ class HomeChannelFragment : BaseLazyListFragment<HomeChannelData, BaseViewHolder
         )
     }
 
-    override fun getListAdapter(): BaseLoadMoreAdapter<HomeChannelData, BaseViewHolder> {
+    override fun getListAdapter(): BaseLoadMoreAdapter<VideoSource, BaseViewHolder> {
         return HomeChannelAdapter().apply {
             setOnItemClickListener { _, _, position ->
                 AppRouter.toDetailActivity(
@@ -64,9 +66,17 @@ class HomeChannelFragment : BaseLazyListFragment<HomeChannelData, BaseViewHolder
         return GridLayoutManager(requireActivity(), 2, RecyclerView.VERTICAL, false)
     }
 
-    override fun loadData(page: Int, callback: (list: ArrayList<HomeChannelData>?) -> Unit) {
+    override fun loadData(page: Int, callback: (list: ArrayList<VideoSource>?) -> Unit) {
         source.requestHomeChannelData(page, tid) {
             callback.invoke(it)
+        }
+    }
+
+    //首页频道的适配器
+    inner class HomeChannelAdapter : BaseLoadMoreAdapter<VideoSource, BaseViewHolder>(R.layout.home_channel_item_layout) {
+        override fun convert(holder: BaseViewHolder, item: VideoSource) {
+            holder.setText(R.id.tvTitle, item.name.noNull("--"))
+            loadImage(holder.getView(R.id.ivPiv), item.pic)
         }
     }
 

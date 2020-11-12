@@ -3,7 +3,10 @@ package com.zy.client.http.sources
 import com.lzy.okgo.OkGo
 import com.lzy.okgo.callback.StringCallback
 import com.lzy.okgo.model.Response
-import com.zy.client.bean.entity.*
+import com.zy.client.bean.DownloadData
+import com.zy.client.bean.HomeData
+import com.zy.client.bean.VideoDetail
+import com.zy.client.bean.VideoSource
 
 /**
  * @author javakam
@@ -42,7 +45,7 @@ class OKZYWSource(
     override fun requestHomeChannelData(
         page: Int,
         tid: String,
-        callback: (t: ArrayList<HomeChannelData>?) -> Unit
+        callback: (t: ArrayList<VideoSource>?) -> Unit
     ) {
         OkGo.get<String>(if (tid == "new") "$baseUrl?ac=videolist&pg=$page" else "$baseUrl?ac=videolist&t=$tid&pg=$page")
             .tag(key)
@@ -67,14 +70,14 @@ class OKZYWSource(
     override fun requestSearchData(
         searchWord: String,
         page: Int,
-        callback: (t: ArrayList<SearchResultData>?) -> Unit
+        callback: (t: ArrayList<VideoSource>?) -> Unit
     ) {
         OkGo.get<String>("$baseUrl?wd=$searchWord&pg=$page")
             .tag(key)
             .execute(object : StringCallback() {
                 override fun onSuccess(response: Response<String>?) {
                     try {
-                        callback.invoke(parseSearchResultData(response?.body()))
+                        callback.invoke(parseNewVideo(response?.body()))
                     } catch (e: Exception) {
                     }
                 }
@@ -89,7 +92,7 @@ class OKZYWSource(
             })
     }
 
-    override fun requestDetailData(id: String, callback: (t: DetailData?) -> Unit) {
+    override fun requestDetailData(id: String, callback: (t: VideoDetail?) -> Unit) {
         OkGo.get<String>("$baseUrl?ac=videolist&ids=$id")
             .tag(key)
             .execute(object : StringCallback() {

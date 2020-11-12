@@ -77,7 +77,7 @@ abstract class BaseListFragment<T, H : BaseViewHolder> : BaseFragment() {
                 if (it != null) {
                     if (it.isNotEmpty()) {
                         if (curPage == 1) {
-                            listAdapter.setNewData(null)
+                            listAdapter.setList(null)
                             statusView.setSuccessStatus()
                         }else{
                             listAdapter.loadMoreModule.loadMoreComplete()

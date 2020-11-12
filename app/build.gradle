@@ -59,10 +59,15 @@ android {
 //    }
 
     buildTypes {
+        debug{
+//            minifyEnabled true
+//            zipAlignEnabled true
+//            shrinkResources true
+        }
         release {
             minifyEnabled true
             zipAlignEnabled true
-            shrinkResources false
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             //signingConfig signingConfigs.release
         }
@@ -75,21 +80,11 @@ android {
         jvmTarget = '1.8'
     }
 
-//    android.applicationVariants.all { variant ->
-//        variant.getPackageApplication().outputScope.apkDatas.forEach { apkData ->
-//            def outputFile = apkData.outputFileName
-//            if (outputFile != null && outputFile.endsWith('.apk')) {
-//                def fileName = outputFile.replace("app-release", "zy_client_android").replace(".apk", "-${versionName}" + ".apk")
-//                apkData.outputFileName = fileName
-//            }
-//        }
-//    }
-
     android.applicationVariants.all { variant ->
         variant.outputs.all {
             //应用名+版本号+渠道名+构建类型+时间戳${variant.flavorName}
-            def buildType = variant.getBuildType().getName()//release
-            def fileName = "zy_client_android_v${defaultConfig.versionName}_${defaultConfig.versionCode}_${variant.flavorName}_${releaseTime()}_${buildType}.apk"
+            def buildType = variant.getBuildType().getName()
+            def fileName = "zy_android_v${defaultConfig.versionName}_${defaultConfig.versionCode}_${variant.flavorName}_${releaseTime()}_${buildType}.apk"
             outputFileName = fileName
         }
     }
@@ -163,13 +158,7 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
     implementation 'org.greenrobot:eventbus:3.2.0'
 
-    implementation 'com.shuyu:GSYVideoPlayer:7.1.4'
-
-//    implementation 'com.github.dueeeke.dkplayer:dkplayer-java:3.2.6'
-//    implementation 'com.github.dueeeke.dkplayer:dkplayer-ui:3.2.6'
-//    implementation 'com.github.dueeeke.dkplayer:player-exo:3.2.6'
-//    //implementation 'com.github.dueeeke.dkplayer:player-ijk:3.2.6'
-//    implementation 'com.github.dueeeke.dkplayer:videocache:3.2.6'
+    implementation project(':lib_player')
 
 }
 

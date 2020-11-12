@@ -68,7 +68,6 @@ class WebController {
         return agentWeb?.back() == true
     }
 
-
     private fun getWebViewClient(): com.just.agentweb.WebViewClient {
         return object : com.just.agentweb.WebViewClient() {
             override fun onReceivedSslError(

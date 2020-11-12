@@ -1,2 +1,3 @@
+include ':lib_player'
 include ':app'
 rootProject.name = "zy_client_android"

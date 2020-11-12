@@ -21,4 +21,8 @@
 
     <color name="transparent">#00000000</color>
 
+    <color name="dkplayer_theme_color">@color/teal_200</color>
+    <color name="dkplayer_theme_color_translucent">@color/teal_700</color>
+    <color name="dkplayer_background_color">#4D000000</color>
+
 </resources>

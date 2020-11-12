@@ -5,11 +5,12 @@ import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
+import com.zy.client.R
 import com.zy.client.common.BaseLoadMoreAdapter
 import com.zy.client.http.ConfigManager
 import com.zy.client.utils.ext.noNull
 import com.zy.client.http.sources.BaseSource
-import com.zy.client.bean.entity.SearchResultData
+import com.zy.client.bean.VideoSource
 import com.zy.client.base.BaseListFragment
 import com.zy.client.common.AppRouter
 
@@ -19,9 +20,7 @@ import com.zy.client.common.AppRouter
  * @date 2020/9/7 21:19
  * @desc 搜索结果页
  */
-const val SEARCH_RESULT = "search_result"
-
-class SearchResultFragment : BaseListFragment<SearchResultData, BaseViewHolder>() {
+class SearchResultFragment : BaseListFragment<VideoSource, BaseViewHolder>() {
 
     private lateinit var source: BaseSource
     private lateinit var searchWord: String
@@ -40,7 +39,7 @@ class SearchResultFragment : BaseListFragment<SearchResultData, BaseViewHolder>(
         searchWord = arguments?.getString("search_word").noNull()
     }
 
-    override fun getListAdapter(): BaseLoadMoreAdapter<SearchResultData, BaseViewHolder> {
+    override fun getListAdapter(): BaseLoadMoreAdapter<VideoSource, BaseViewHolder> {
         return SearchResultAdapter().apply {
             setOnItemClickListener { _, _, position ->
                 AppRouter.toDetailActivity(
@@ -56,13 +55,24 @@ class SearchResultFragment : BaseListFragment<SearchResultData, BaseViewHolder>(
         return LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
     }
 
-    override fun loadData(page: Int, callback: (list: ArrayList<SearchResultData>?) -> Unit) {
+    override fun loadData(page: Int, callback: (list: ArrayList<VideoSource>?) -> Unit) {
         if (searchWord.isBlank()) {
             callback.invoke(arrayListOf())
         } else {
             source.requestSearchData(searchWord, page) {
                 callback.invoke(it)
             }
+        }
+    }
+
+    //搜索结果适配器
+    inner class SearchResultAdapter :
+        BaseLoadMoreAdapter<VideoSource, BaseViewHolder>(
+            R.layout.item_search_result
+        ) {
+        override fun convert(holder: BaseViewHolder, item: VideoSource) {
+            holder.setText(R.id.tvName, item.name.noNull("--"))
+            holder.setText(R.id.tvType, item.type.noNull("--"))
         }
     }
 

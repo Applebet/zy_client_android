@@ -3,14 +3,11 @@ package com.zy.client.ui.home
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentPagerAdapter
-import com.zy.client.utils.SPUtils
 import com.zy.client.R
 import com.zy.client.http.ConfigManager
-import com.zy.client.common.SP_OPEN_FL
 import com.zy.client.http.sources.BaseSource
-import com.zy.client.bean.entity.Classify
+import com.zy.client.bean.Classify
 import com.zy.client.base.BaseFragment
-import com.zy.client.ui.channel.HomeChannelFragment
 import com.wuhenzhizao.titlebar.widget.CommonTitleBar
 import kotlinx.android.synthetic.main.fragment_home_source.*
 
@@ -45,7 +42,6 @@ class HomeSourceFragment : BaseFragment() {
         }
     }
 
-
     override fun initData() {
         super.initData()
         statusView.setLoadingStatus()
@@ -54,15 +50,14 @@ class HomeSourceFragment : BaseFragment() {
                 statusView.setFailStatus()
                 return@requestHomeData
             }
-            val openFL = SPUtils.get().getBoolean(SP_OPEN_FL)
+            //val openFL = SPUtils.get().getBoolean(SP_OPEN_FL)
+            val openFL = true
             classifyList.clear()
             classifyList.add(Classify("new", "最新"))
             classifyList.addAll(it.classifyList.filter { classify ->
                 !classify.id.isNullOrBlank() && !classify.name.isNullOrBlank() &&
                         //筛去福利
-                        (if (openFL) true else (!classify.name.contains("福利") && !classify.name.contains(
-                            "伦理"
-                        )))
+                        (if (openFL) true else (!classify.name.contains("福利") && !classify.name.contains("伦理")))
             } as ArrayList<Classify>)
             viewpager.adapter = ViewPageAdapter()
             viewpager.offscreenPageLimit = 100
@@ -70,7 +65,6 @@ class HomeSourceFragment : BaseFragment() {
             statusView.setSuccessStatus()
         }
     }
-
 
     inner class ViewPageAdapter : FragmentPagerAdapter(
         childFragmentManager,

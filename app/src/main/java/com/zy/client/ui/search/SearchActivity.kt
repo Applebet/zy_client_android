@@ -106,7 +106,7 @@ class SearchActivity : BaseActivity() {
             .replace(
                 R.id.flContainer,
                 SearchResultFragment.instance(sourceKey, searchWord),
-                SEARCH_RESULT
+                "search_result"
             )
             .commitAllowingStateLoss()
     }

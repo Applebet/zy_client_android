@@ -1,7 +1,9 @@
 package com.zy.client.http.sources
 
+import android.util.Log
 import com.lzy.okgo.OkGo
-import com.zy.client.bean.entity.*
+import com.zy.client.bean.*
+import com.zy.client.utils.GsonUtils
 import com.zy.client.utils.Utils
 import com.zy.client.utils.ext.isVideoUrl
 import org.json.JSONArray
@@ -25,18 +27,18 @@ abstract class BaseSource {
     abstract fun requestHomeChannelData(
         page: Int,
         tid: String,
-        callback: (t: ArrayList<HomeChannelData>?) -> Unit
+        callback: (t: ArrayList<VideoSource>?) -> Unit
     )
 
     //请求搜索数据
     abstract fun requestSearchData(
         searchWord: String,
         page: Int,
-        callback: (t: ArrayList<SearchResultData>?) -> Unit
+        callback: (t: ArrayList<VideoSource>?) -> Unit
     )
 
     //请求详情数据
-    abstract fun requestDetailData(id: String, callback: (t: DetailData?) -> Unit)
+    abstract fun requestDetailData(id: String, callback: (t: VideoDetail?) -> Unit)
 
     //请求下载列表
     abstract fun requestDownloadData(id: String, callback: (t: ArrayList<DownloadData>?) -> Unit)
@@ -47,29 +49,29 @@ abstract class BaseSource {
             if (data == null) return null
             val jsonObject = Utils.xmlToJson(data)?.toJson()
             jsonObject?.getJSONObject("rss")?.run {
-                val videoList = ArrayList<NewVideo>()
+                val videoList = ArrayList<VideoSource>()
                 val video = getJSONObject("list").get("video")
                 try {
                     if (video is JSONObject) {
                         videoList.add(
-                            NewVideo(
-                                video.getString("last"),
-                                video.getString("id"),
-                                video.getString("tid"),
-                                video.getString("name"),
-                                video.getString("type")
+                            VideoSource(
+                                updateTime = video.getString("last"),
+                                id = video.getString("id"),
+                                tid = video.getString("tid"),
+                                name = video.getString("name"),
+                                type = video.getString("type")
                             )
                         )
                     } else if (video is JSONArray) {
                         for (i in 0 until video.length()) {
                             val json = video.getJSONObject(i)
                             videoList.add(
-                                NewVideo(
-                                    json.getString("last"),
-                                    json.getString("id"),
-                                    json.getString("tid"),
-                                    json.getString("name"),
-                                    json.getString("type")
+                                VideoSource(
+                                    updateTime = json.getString("last"),
+                                    id = json.getString("id"),
+                                    tid = json.getString("tid"),
+                                    name = json.getString("name"),
+                                    type = json.getString("type")
                                 )
                             )
                         }
@@ -81,12 +83,15 @@ abstract class BaseSource {
                     val classList = getJSONObject("class").getJSONArray("ty")
                     for (i in 0 until classList.length()) {
                         val json = classList.getJSONObject(i)
-                        classifyList.add(
-                            Classify(
-                                json.getString("id"),
-                                json.getString("content")
+                        val content = json.getString("content")
+                        if (!content.isNullOrBlank()) {
+                            classifyList.add(
+                                Classify(
+                                    json.getString("id"),
+                                    json.getString("content")
+                                )
                             )
-                        )
+                        }
                     }
                 } catch (e: Exception) {
                 }
@@ -97,20 +102,19 @@ abstract class BaseSource {
         return null
     }
 
-    fun parseHomeChannelData(data: String?): ArrayList<HomeChannelData>? {
+    fun parseHomeChannelData(data: String?): ArrayList<VideoSource>? {
         try {
-            if (data == null) return null
+            if (data == null) return arrayListOf()
             val jsonObject = Utils.xmlToJson(data)?.toJson()
-            val videoList = ArrayList<HomeChannelData>()
-            val videos =
-                jsonObject?.getJSONObject("rss")?.getJSONObject("list")!!.getJSONArray("video")
+            val videoList = ArrayList<VideoSource>()
+            val videos = jsonObject?.getJSONObject("rss")?.getJSONObject("list")?.optJSONArray("video") ?: return arrayListOf()
             for (i in 0 until videos.length()) {
                 val json = videos.getJSONObject(i)
                 videoList.add(
-                    HomeChannelData(
-                        json.getString("id"),
-                        json.getString("name"),
-                        json.getString("pic")
+                    VideoSource(
+                        id = json.getString("id"),
+                        name = json.getString("name"),
+                        pic = json.getString("pic")
                     )
                 )
             }
@@ -121,29 +125,29 @@ abstract class BaseSource {
         return arrayListOf()
     }
 
-    fun parseSearchResultData(data: String?): ArrayList<SearchResultData>? {
+    fun parseNewVideo(data: String?): ArrayList<VideoSource>? {
         try {
-            if (data == null) return null
+            if (data == null) return arrayListOf()
             val jsonObject = Utils.xmlToJson(data)?.toJson()
-            val videoList = ArrayList<SearchResultData>()
-            val video = jsonObject?.getJSONObject("rss")?.getJSONObject("list")?.get("video")
+            val videoList = ArrayList<VideoSource>()
+            val video = jsonObject?.getJSONObject("rss")?.getJSONObject("list")?.opt("video")
             video?.apply {
                 if (video is JSONObject) {
                     videoList.add(
-                        SearchResultData(
-                            video.getString("id"),
-                            video.getString("name"),
-                            video.getString("type")
+                        VideoSource(
+                            id = video.getString("id"),
+                            name = video.getString("name"),
+                            type = video.getString("type")
                         )
                     )
                 } else if (video is JSONArray) {
                     for (i in 0 until video.length()) {
                         val json = video.getJSONObject(i)
                         videoList.add(
-                            SearchResultData(
-                                json.getString("id"),
-                                json.getString("name"),
-                                json.getString("type")
+                            VideoSource(
+                                id = json.getString("id"),
+                                name = json.getString("name"),
+                                type = json.getString("type")
                             )
                         )
                     }
@@ -156,27 +160,28 @@ abstract class BaseSource {
         return arrayListOf()
     }
 
-    fun parseDetailData(sourceKey: String, data: String?): DetailData? {
+    fun parseDetailData(sourceKey: String, data: String?): VideoDetail? {
         try {
             if (data == null) return null
             val jsonObject = Utils.xmlToJson(data)?.toJson()
+            Log.e("123", "parseDetailData = ${jsonObject.toString()}")
             val videoInfo =
-                jsonObject?.getJSONObject("rss")?.getJSONObject("list")!!.getJSONObject("video")
+                jsonObject?.optJSONObject("rss")?.optJSONObject("list")?.optJSONObject("video") ?: return null
             val dd = videoInfo.getJSONObject("dl").get("dd")
             var videoList: ArrayList<Video>? = null
             if (dd is JSONObject) {
-                videoList = dd.getString(("content"))?.split("#")
-                    ?.map {
+                videoList = dd.getString(("content")).split("#")
+                    .map {
                         val split = it.split("$")
                         if (split.size >= 2) {
                             Video(split[0], split[1])
                         } else {
                             Video(split[0], split[0])
                         }
-                    }?.toMutableList() as ArrayList<Video>? ?: arrayListOf()
+                    }.toMutableList() as ArrayList<Video>? ?: arrayListOf()
             } else if (dd is JSONArray) {
                 for (i in 0 until dd.length()) {
-                    val list = dd.getJSONObject(i)?.getString("content")?.split("#")
+                    val list = dd.optJSONObject(i)?.getString("content")?.split("#")
                         ?.map {
                             val split = it.split("$")
                             if (split.size >= 2) {
@@ -194,7 +199,7 @@ abstract class BaseSource {
                     }
                 }
             }
-            return DetailData(
+            return VideoDetail(
                 videoInfo.getString("id"),
                 videoInfo.getString("tid"),
                 videoInfo.getString("name"),
@@ -221,9 +226,9 @@ abstract class BaseSource {
             if (data == null) return null
             val jsonObject = Utils.xmlToJson(data)?.toJson()
             val video =
-                jsonObject?.getJSONObject("rss")?.getJSONObject("list")?.getJSONObject("video")
+                jsonObject?.optJSONObject("rss")?.optJSONObject("list")?.optJSONObject("video")
 
-            return video?.let {v->
+            return video?.let { v ->
                 v.getJSONObject("dl").getJSONObject("dd").getString("content").split("#")
                     .map {
                         val split = it.split("$")

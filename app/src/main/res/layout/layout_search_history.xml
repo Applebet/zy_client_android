@@ -38,6 +38,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_10"
+        app:atg_backgroundColor="@color/white"
         app:atg_borderColor="@color/black"
         app:atg_textColor="@color/black" />
 
