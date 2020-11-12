@@ -29,7 +29,6 @@ class SearchHistoryView @JvmOverloads constructor(
             //清除全部记录
             if (SearchHistoryDBUtils.deleteAll()) {
                 tagGroup.setTags(arrayListOf())
-                statusView.setEmptyStatus()
             }
         }
 
@@ -43,15 +42,9 @@ class SearchHistoryView @JvmOverloads constructor(
     var onSelectListener: ((searchWord: String) -> Unit)? = null
 
     fun updateHistory() {
-        statusView.setLoadingStatus()
-
         SearchHistoryDBUtils.searchAllAsync {
-            if (it.isNullOrEmpty()) {
-                statusView.setEmptyStatus("没有记录")
-            } else {
+            if (!it.isNullOrEmpty()) {
                 tagGroup.setTags(it.map { model -> model.searchWord })
-
-                statusView.setSuccessStatus()
             }
         }
     }
