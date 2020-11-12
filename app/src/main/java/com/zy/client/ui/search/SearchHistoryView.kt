@@ -49,7 +49,7 @@ class SearchHistoryView @JvmOverloads constructor(
             if (it.isNullOrEmpty()) {
                 statusView.setEmptyStatus("没有记录")
             } else {
-                tagGroup.setTags(it.map { model -> model.searchWord }))
+                tagGroup.setTags(it.map { model -> model.searchWord })
 
                 statusView.setSuccessStatus()
             }
