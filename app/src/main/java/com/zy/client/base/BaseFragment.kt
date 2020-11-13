@@ -16,7 +16,7 @@ import com.wuhenzhizao.titlebar.widget.CommonTitleBar
 abstract class BaseFragment : Fragment(), IBackPressed {
 
     lateinit var baseActivity: BaseActivity
-    lateinit var rootView: ViewGroup
+    lateinit var rootView: View
     var titleBar: CommonTitleBar? = null
     private var isLoaded = false
 
@@ -30,13 +30,13 @@ abstract class BaseFragment : Fragment(), IBackPressed {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        rootView =
-            (inflater.inflate(R.layout.fragment_base, container, false) as ViewGroup).apply {
-                addView(inflater.inflate(getLayoutId(), this, false))
-            }
+//        rootView =
+//            (inflater.inflate(R.layout.fragment_base, container, false) as ViewGroup).apply {
+//                addView(inflater.inflate(getLayoutId(), this, false))
+//            }
+        rootView = inflater.inflate(getLayoutId(), container, false)
         return rootView
     }
-
 
     abstract fun getLayoutId(): Int
 

@@ -49,7 +49,7 @@ class VideoController {
         val prepareView = PrepareView(activity)
         val thumb = prepareView.findViewById<ImageView>(R.id.thumb)
         //loadImage(thumb, THUMB)
-        loadImage(thumb, ContextCompat.getDrawable(activity, R.drawable.bg_video_place), null)
+        loadImage(thumb, ContextCompat.getDrawable(activity, R.drawable.rectangle_video_preview), null)
         controller.addControlComponent(prepareView)
 
         controller.addControlComponent(CompleteView(activity)) //自动完成播放界面

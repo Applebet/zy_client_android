@@ -4,12 +4,10 @@ import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import kotlinx.android.synthetic.main.layout_com_title_list.*
 
 /**
- * @author javakam
+ * 懒加载
  *
- * @date 2020/9/17 15:45
- * @desc 懒加载的通用列表
+ * @author javakam
  */
-
 abstract class BaseLazyListFragment<T, H : BaseViewHolder> : BaseListFragment<T, H>(), ILazyLoad {
     override fun initView() {
         super.initView()
