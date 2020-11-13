@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.zy.client.App
 import com.zy.client.utils.ext.ToastUtils
+import com.zy.client.utils.ext.toastShort
 import fr.arnaudguyon.xmltojsonlib.XmlToJson
 import java.io.BufferedReader
 import java.io.IOException
@@ -53,7 +54,7 @@ object Utils {
         if (intent.resolveActivity(context.packageManager) != null) {
             context.startActivity(Intent.createChooser(intent, "请选择浏览器"))
         } else {
-            ToastUtils.showShort("没有可用浏览器")
+            context.toastShort("没有可用浏览器")
         }
     }
 

@@ -7,12 +7,17 @@ import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.zy.client.R
 import com.zy.client.common.BaseLoadMoreAdapter
 import com.wuhenzhizao.titlebar.widget.CommonTitleBar
+import com.zy.client.views.loader.LoadState
+import com.zy.client.views.loader.Loader
 import kotlinx.android.synthetic.main.layout_com_title_list.*
 
 /**
+ * 懒加载
+ */
+abstract class BaseLazyListFragment<T, H : BaseViewHolder> : BaseListFragment<T, H>(), ILazyLoad
+
+/**
  * 列表类型的页面父类
- *
- * @author javakam
  */
 abstract class BaseListFragment<T, H : BaseViewHolder> : BaseFragment() {
     private var curPage = 1
@@ -39,30 +44,31 @@ abstract class BaseListFragment<T, H : BaseViewHolder> : BaseFragment() {
 
     override fun initView() {
         super.initView()
+        statusView.setLoadState(LoadState.LOADING)
+
         rvList.run {
             adapter = listAdapter
             layoutManager = getListLayoutManager().apply {
                 if (this is GridLayoutManager) {
                     this.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
                         override fun getSpanSize(position: Int): Int {
-                            if (position == listAdapter.loadMoreModule.loadMoreViewPosition) {
-                                return spanCount
-                            }
-                            return 1
+                            return if (position == listAdapter.loadMoreModule.loadMoreViewPosition) spanCount
+                            else 1
                         }
-
                     }
                 }
             }
         }
-        statusView.failRetryClickListener = {
-            initData()
-        }
+
+        statusView.setOnReloadListener(object : Loader.OnReloadListener {
+            override fun onReload() {
+                initData()
+            }
+        })
     }
 
     override fun initData() {
         super.initData()
-        statusView.setLoadingStatus()
         curPage = 1
         listAdapter.loadMoreModule.isEnableLoadMore = true
         requestData()
@@ -76,21 +82,21 @@ abstract class BaseListFragment<T, H : BaseViewHolder> : BaseFragment() {
                     if (it.isNotEmpty()) {
                         if (curPage == 1) {
                             listAdapter.setList(null)
-                            statusView.setSuccessStatus()
-                        }else{
+                            statusView.setLoadState(LoadState.SUCCESS)
+                        } else {
                             listAdapter.loadMoreModule.loadMoreComplete()
                         }
                         listAdapter.addData(it)
                     } else {
                         if (curPage == 1) {
-                            statusView.setEmptyStatus()
+                            statusView.setLoadState(LoadState.EMPTY)
                         } else {
                             listAdapter.loadMoreModule.isEnableLoadMore = false
                         }
                     }
                 } else {
                     if (curPage == 1) {
-                        statusView.setFailStatus()
+                        statusView.setLoadState(LoadState.ERROR)
                     } else {
                         if (curPage > 1) curPage-- else curPage = 1
                         listAdapter.loadMoreModule.loadMoreFail()

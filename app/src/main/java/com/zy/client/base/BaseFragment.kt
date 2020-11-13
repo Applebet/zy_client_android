@@ -30,10 +30,6 @@ abstract class BaseFragment : Fragment(), IBackPressed {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-//        rootView =
-//            (inflater.inflate(R.layout.fragment_base, container, false) as ViewGroup).apply {
-//                addView(inflater.inflate(getLayoutId(), this, false))
-//            }
         rootView = inflater.inflate(getLayoutId(), container, false)
         return rootView
     }

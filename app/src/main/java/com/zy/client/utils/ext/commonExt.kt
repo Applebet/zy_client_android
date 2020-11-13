@@ -12,6 +12,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
 import com.zy.client.App
+import com.zy.client.utils.NoShakeClickListener
 import java.util.*
 
 /**
@@ -23,21 +24,21 @@ import java.util.*
  * @date 2020/11/11  15:53
  */
 
-fun View?.visibleOrGone(visible:Boolean) {
+fun View?.visibleOrGone(visible: Boolean) {
     this?.run {
-       if (visible){
-           if (!isVisible) visibility = View.VISIBLE
-       }else{
-           if (isVisible) visibility = View.GONE
-       }
+        if (visible) {
+            if (!isVisible) visibility = View.VISIBLE
+        } else {
+            if (isVisible) visibility = View.GONE
+        }
     }
 }
 
-fun View?.visibleOrInvisible(visible:Boolean) {
+fun View?.visibleOrInvisible(visible: Boolean) {
     this?.run {
-        if (visible){
+        if (visible) {
             if (!isVisible) visibility = View.VISIBLE
-        }else{
+        } else {
             if (isVisible) visibility = View.INVISIBLE
         }
     }
@@ -58,6 +59,16 @@ fun View?.invisible() {
 fun View?.gone() {
     this?.run {
         if (isVisible) visibility = View.GONE
+    }
+}
+
+fun View?.noShake(block: (v: View?) -> Unit) {
+    this?.apply {
+        setOnClickListener(object : NoShakeClickListener() {
+            override fun onSingleClick(v: View?) {
+                block.invoke(v)
+            }
+        })
     }
 }
 
@@ -98,7 +109,7 @@ fun String.copyToClipBoard() {
  * https://www.cnblogs.com/jooy/p/12186977.html
 </pre> *
  */
-fun noAnimate(placeholder: Int= -1): RequestOptions {
+fun noAnimate(placeholder: Int = -1): RequestOptions {
     var options = RequestOptions()
         .centerCrop()
         .dontAnimate()
@@ -108,7 +119,7 @@ fun noAnimate(placeholder: Int= -1): RequestOptions {
     return options
 }
 
-fun noAnimate(placeholder: Int= -1, error: Int= -1): RequestOptions {
+fun noAnimate(placeholder: Int = -1, error: Int = -1): RequestOptions {
     var options = RequestOptions()
         .centerCrop()
         .dontAnimate()
@@ -130,7 +141,8 @@ fun loadImage(imageView: ImageView, url: String?, placeholder: Int = -1) {
             .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
             .into(imageView)
     } else {
-        Glide.with(imageView.context).load(placeholder).centerCrop().diskCacheStrategy(DiskCacheStrategy.AUTOMATIC).into(imageView)
+        Glide.with(imageView.context).load(placeholder).centerCrop()
+            .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC).into(imageView)
     }
 }
 

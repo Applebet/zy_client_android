@@ -81,7 +81,8 @@ class VideoDetailActivity : BaseActivity() {
         }
 
         //选集
-        val dialogHeight=screenHeight - resources.getDimensionPixelSize(VIDEO_VIEW_HEIGHT)- DimensionUtils.getStatusBarHeight()
+        val dialogHeight =
+            screenHeight - resources.getDimensionPixelSize(VIDEO_VIEW_HEIGHT) - DimensionUtils.getStatusBarHeight()
         llAnthology.setOnClickListener {
             if (playVideoList?.size ?: 0 > 1) {
                 if (mSelectVideoDialog == null) {
@@ -109,7 +110,7 @@ class VideoDetailActivity : BaseActivity() {
                     ivCollect.isSelected = false
                     EventBus.getDefault().postSticky(CollectEvent())
                 } else {
-                    ToastUtils.showShort("取消收藏失败")
+                    toastShort("取消收藏失败")
                 }
             } else {
                 val collectDBModel = CollectModel()
@@ -123,7 +124,7 @@ class VideoDetailActivity : BaseActivity() {
                         ivCollect.isSelected = true
                         EventBus.getDefault().postSticky(CollectEvent())
                     } else {
-                        ToastUtils.showShort("收藏失败")
+                        toastShort("收藏失败")
                     }
                 }
             }
@@ -151,9 +152,9 @@ class VideoDetailActivity : BaseActivity() {
 //            }
             if (mVideo?.playUrl.isVideoUrl()) {
                 ClipboardUtils.copyText(mVideo?.playUrl)
-                ToastUtils.showLong("地址已复制，快去下载吧~\n${mVideo?.playUrl}")
+                toastLong("地址已复制，快去下载吧~\n${mVideo?.playUrl}")
             } else {
-                ToastUtils.showShort("该资源暂不支持下载哦~")
+                toastShort("该资源暂不支持下载哦~")
             }
         }
     }

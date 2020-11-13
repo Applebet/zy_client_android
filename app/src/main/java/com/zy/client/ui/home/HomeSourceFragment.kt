@@ -9,13 +9,14 @@ import com.zy.client.http.sources.BaseSource
 import com.zy.client.bean.Classify
 import com.zy.client.base.BaseFragment
 import com.wuhenzhizao.titlebar.widget.CommonTitleBar
+import com.zy.client.views.loader.LoadState
+import com.zy.client.views.loader.Loader
 import kotlinx.android.synthetic.main.fragment_home_source.*
 
 /**
  * @author javakam
  *
  * @date 2020/9/13 12:25
- * @desc
  */
 class HomeSourceFragment : BaseFragment() {
     private var classifyList = ArrayList<Classify>()
@@ -35,19 +36,20 @@ class HomeSourceFragment : BaseFragment() {
 
     override fun initListener() {
         super.initListener()
-        statusView.run {
-            failRetryClickListener = {
+        statusView.setLoadState(LoadState.LOADING)
+        statusView.setOnReloadListener(object :Loader.OnReloadListener{
+            override fun onReload() {
                 initData()
             }
-        }
+        })
     }
 
     override fun initData() {
         super.initData()
-        statusView.setLoadingStatus()
+
         source?.requestHomeData {
             if (it == null) {
-                statusView.setFailStatus()
+                statusView.setLoadState(LoadState.ERROR)
                 return@requestHomeData
             }
             //val openFL = SPUtils.get().getBoolean(SP_OPEN_FL)
@@ -62,7 +64,7 @@ class HomeSourceFragment : BaseFragment() {
             viewpager.adapter = ViewPageAdapter()
             viewpager.offscreenPageLimit = 100
             tabLayout.setupWithViewPager(viewpager)
-            statusView.setSuccessStatus()
+            statusView.setLoadState(LoadState.SUCCESS)
         }
     }
 

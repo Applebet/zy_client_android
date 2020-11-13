@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
     <!-- Base application theme. -->
@@ -6,6 +7,20 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <!-- 使用style方式定义activity切换动画 -->
+    <!--
+    activityOpenEnterAnimation   // 打开新的Activity并进入新的Activity展示的动画
+    activityOpenExitAnimation    // 打开新的Activity并销毁之前的Activity展示的动画
+    activityCloseEnterAnimation  // 关闭当前Activity进入上一个Activity展示的动画
+    activityCloseExitAnimation   // 关闭当前Activity时展示的动画
+    -->
+    <style name="videoActivityAnim">
+        <item name="android:activityOpenEnterAnimation">@anim/scale_fade_in</item>
+        <item name="android:activityOpenExitAnimation">@anim/scale_fade_out</item>
+<!--        <item name="android:activityCloseEnterAnimation">@anim/scale_fade_in</item>-->
+<!--        <item name="android:activityCloseExitAnimation">@anim/fade_out</item>-->
     </style>
 
     <style name="DivideLine">

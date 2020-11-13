@@ -12,18 +12,18 @@
         android:visibility="gone"
         app:centerType="textView" />
 
-    <FrameLayout
+    <com.zy.client.views.loader.LoaderLayout
+        android:id="@id/statusView"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvList"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:overScrollMode="never"
+            android:scrollbars="vertical" />
 
-        <com.zy.client.views.StatusView
-            android:id="@id/statusView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </FrameLayout>
+    </com.zy.client.views.loader.LoaderLayout>
+
 </LinearLayout>

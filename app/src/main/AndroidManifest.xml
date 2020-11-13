@@ -6,7 +6,8 @@
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.SYSTEM_OVERLAY_WINDOW" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
 
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
@@ -21,7 +22,8 @@
     <!--  照片的位置信息  -->
     <uses-permission android:name="android.permission.ACCESS_MEDIA_LOCATION" />
 
-    <uses-permission android:name="android.permission.READ_LOGS"
+    <uses-permission
+        android:name="android.permission.READ_LOGS"
         tools:ignore="ProtectedPermissions" />
 
     <application
@@ -29,12 +31,12 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_logo"
         android:label="@string/app_name"
-        android:supportsRtl="true"
         android:networkSecurityConfig="@xml/network_security_config"
         android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
         android:theme="@style/Theme.Zy_client_android"
-        tools:targetApi="n"
-        tools:ignore="AllowBackup">
+        tools:ignore="AllowBackup"
+        tools:targetApi="n">
 
         <!--允许绘制到oppo、vivo刘海屏机型的刘海区域 -->
         <meta-data
@@ -71,14 +73,16 @@
         <activity
             android:name=".ui.video.VideoDetailActivity"
             android:configChanges="keyboardHidden|orientation|screenSize|screenLayout"
-            android:screenOrientation="portrait" />
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Video" />
 
-<!--        <activity-->
-<!--            android:name=".activity.pip.AndroidOPiPActivity"-->
-<!--            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"-->
-<!--            android:excludeFromRecents="true"-->
-<!--            android:supportsPictureInPicture="true"-->
-<!--            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />-->
+        <!--        <activity-->
+        <!--            android:name=".activity.pip.AndroidOPiPActivity"-->
+        <!--            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"-->
+        <!--            android:excludeFromRecents="true"-->
+        <!--            android:supportsPictureInPicture="true"-->
+        <!--            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />-->
 
         <activity
             android:name=".ui.search.SearchActivity"

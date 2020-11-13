@@ -17,6 +17,7 @@ import com.wuhenzhizao.titlebar.widget.CommonTitleBar
 import com.zy.client.common.AppRouter
 import com.zy.client.utils.ext.ToastUtils
 import com.zy.client.utils.ext.toastShort
+import com.zy.client.views.loader.LoadState
 import kotlinx.android.synthetic.main.layout_com_title_list.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -64,7 +65,7 @@ class CollectFragment : BaseListFragment<CollectModel, BaseViewHolder>() {
                             if (delete) {
                                 setNewInstance(null)
                                 if (data.isEmpty()) {
-                                    statusView.setEmptyStatus()
+                                    statusView.setLoadState(LoadState.EMPTY)
                                 }
                             } else {
                                 ToastUtils.showShort("删除失败")
@@ -107,7 +108,7 @@ class CollectFragment : BaseListFragment<CollectModel, BaseViewHolder>() {
                             if (delete) {
                                 remove(item)
                                 if (data.isEmpty()) {
-                                    statusView.setEmptyStatus()
+                                    statusView.setLoadState(LoadState.EMPTY)
                                 }
                             } else {
                                 ToastUtils.showShort("删除失败")
