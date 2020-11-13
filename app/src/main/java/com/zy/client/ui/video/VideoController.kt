@@ -1,12 +1,13 @@
 package com.zy.client.ui.video
 
-import android.app.Activity
+import ando.player.IjkVideoView
+import ando.player.StandardVideoController
+import ando.player.cache.ProxyVideoCacheManager
+import ando.player.component.*
+import android.content.Context
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
-import com.dueeeke.videocontroller.StandardVideoController
-import com.dueeeke.videocontroller.component.*
-import com.dueeeke.videoplayer.ijk.IjkPlayer
-import com.dueeeke.videoplayer.player.VideoView
+import com.danikula.videocache.HttpProxyCacheServer
 import com.dueeeke.videoplayer.player.VideoView.*
 import com.dueeeke.videoplayer.util.L
 import com.zy.client.R
@@ -27,18 +28,18 @@ class VideoController {
         private const val LIVE_URL = "http://220.161.87.62:8800/hls/0/index.m3u8"
     }
 
-    private lateinit var activity: Activity
-    private lateinit var videoPlayer: VideoView<IjkPlayer>
+    private lateinit var context: Context
+    private lateinit var videoPlayer: IjkVideoView
     private lateinit var titleView: TitleView
 
-    fun init(activity: Activity, videoPlayer: VideoView<IjkPlayer>) {
+    fun init(context: Context, videoPlayer: IjkVideoView) {
         this.videoPlayer = videoPlayer
-        this.activity = activity
+        this.context = context
 
-        val controller = StandardVideoController(activity)
+        val controller = StandardVideoController(context)
 
         //在控制器上显示调试信息
-        //controller.addControlComponent(DebugInfoView(activity))
+        //controller.addControlComponent(DebugInfoView(context))
         //在LogCat显示调试信息
         //controller.addControlComponent(PlayerMonitor())
 
@@ -46,30 +47,30 @@ class VideoController {
         controller.setEnableOrientation(false)
 
         //准备播放界面
-        val prepareView = PrepareView(activity)
+        val prepareView = PrepareView(context)
         val thumb = prepareView.findViewById<ImageView>(R.id.thumb)
         //loadImage(thumb, THUMB)
-        loadImage(thumb, ContextCompat.getDrawable(activity, R.drawable.rectangle_video_preview), null)
+        loadImage(thumb, ContextCompat.getDrawable(context, R.drawable.rectangle_video_preview), null)
         controller.addControlComponent(prepareView)
 
-        controller.addControlComponent(CompleteView(activity)) //自动完成播放界面
-        controller.addControlComponent(ErrorView(activity)) //错误界面
+        controller.addControlComponent(CompleteView(context)) //自动完成播放界面
+        controller.addControlComponent(ErrorView(context)) //错误界面
 
-        titleView = TitleView(activity) //标题栏
+        titleView = TitleView(context) //标题栏
         controller.addControlComponent(titleView)
 
         //根据是否为直播设置不同的底部控制条
         val isLive = false
         if (isLive) {
-            controller.addControlComponent(LiveControlView(activity)) //直播控制条
+            controller.addControlComponent(LiveControlView(context)) //直播控制条
         } else {
-            val vodControlView = VodControlView(activity) //点播控制条
+            val vodControlView = VodControlView(context) //点播控制条
             //是否显示底部进度条。默认显示
             //vodControlView.showBottomProgress(false);
             controller.addControlComponent(vodControlView)
         }
 
-        val gestureControlView = GestureView(activity) //滑动控制视图
+        val gestureControlView = GestureView(context) //滑动控制视图
         controller.addControlComponent(gestureControlView)
         //根据是否为直播决定是否需要滑动调节进度
         controller.setCanChangePosition(!isLive)
@@ -120,7 +121,9 @@ class VideoController {
     fun changeUrl(videoUrl: String?) {
         if (videoUrl?.isVideoUrl() == false) return
         videoPlayer.release()
-        videoPlayer.setUrl(videoUrl)
+        val cacheServer: HttpProxyCacheServer = ProxyVideoCacheManager.getProxy(context)
+        val proxyUrl = cacheServer.getProxyUrl(videoUrl)
+        videoPlayer.setUrl(proxyUrl)
         videoPlayer.start()
     }
 

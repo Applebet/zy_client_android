@@ -39,8 +39,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.2.1'
 
     api 'com.github.dueeeke.dkplayer:dkplayer-java:3.2.6'
-    api 'com.github.dueeeke.dkplayer:dkplayer-ui:3.2.6'
-    //api 'com.github.dueeeke.dkplayer:player-exo:3.2.6'
-    api 'com.github.dueeeke.dkplayer:player-ijk:3.2.6'
     api 'com.github.dueeeke.dkplayer:videocache:3.2.6'
+    api 'com.github.dueeeke.dkplayer:player-ijk:3.2.6'
+    //api 'com.github.dueeeke.dkplayer:player-exo:3.2.6'
 }

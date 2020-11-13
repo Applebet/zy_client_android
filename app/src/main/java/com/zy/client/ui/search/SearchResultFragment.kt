@@ -66,10 +66,7 @@ class SearchResultFragment : BaseListFragment<VideoSource, BaseViewHolder>() {
     }
 
     //搜索结果适配器
-    inner class SearchResultAdapter :
-        BaseLoadMoreAdapter<VideoSource, BaseViewHolder>(
-            R.layout.item_search_result
-        ) {
+    inner class SearchResultAdapter : BaseLoadMoreAdapter<VideoSource, BaseViewHolder>(R.layout.item_search_result) {
         override fun convert(holder: BaseViewHolder, item: VideoSource) {
             holder.setText(R.id.tvName, item.name.noNull("--"))
             holder.setText(R.id.tvType, item.type.noNull("--"))

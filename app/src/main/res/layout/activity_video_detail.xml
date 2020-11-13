@@ -17,12 +17,10 @@
             android:visibility="gone"
             tools:visibility="visible" />
 
-        <com.dueeeke.videoplayer.player.VideoView
+        <ando.player.IjkVideoView
             android:id="@id/videoPlayer"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_220"
-            android:visibility="visible"
-            tools:visibility="visible" />
+            android:layout_height="@dimen/dp_220" />
     </FrameLayout>
 
     <LinearLayout

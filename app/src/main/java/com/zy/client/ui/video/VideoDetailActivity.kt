@@ -1,8 +1,10 @@
 package com.zy.client.ui.video
 
+import ando.player.IjkVideoView
 import android.graphics.Color
 import com.dueeeke.videoplayer.ijk.IjkPlayer
 import com.dueeeke.videoplayer.player.VideoView
+import com.dueeeke.videoplayer.util.CutoutUtil
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BottomPopupView
 import com.wuhenzhizao.titlebar.statusbar.StatusBarUtils
@@ -34,7 +36,7 @@ class VideoDetailActivity : BaseActivity() {
 
     private lateinit var source: BaseSource
     private lateinit var id: String
-    private lateinit var videoPlayer: VideoView<IjkPlayer>
+    private lateinit var videoPlayer: IjkVideoView
 
     private var videoController: VideoController? = null
     private var webController: WebController? = null
@@ -81,8 +83,11 @@ class VideoDetailActivity : BaseActivity() {
         }
 
         //选集
+        val hasLiuHai = CutoutUtil.allowDisplayToCutout(this)
         val dialogHeight =
-            screenHeight - resources.getDimensionPixelSize(VIDEO_VIEW_HEIGHT) - DimensionUtils.getStatusBarHeight()
+            (screenHeight - resources.getDimensionPixelSize(VIDEO_VIEW_HEIGHT))
+                .minus(if (hasLiuHai) 0 else DimensionUtils.getStatusBarHeight())
+
         llAnthology.setOnClickListener {
             if (playVideoList?.size ?: 0 > 1) {
                 if (mSelectVideoDialog == null) {

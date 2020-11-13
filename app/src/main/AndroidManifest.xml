@@ -10,17 +10,10 @@
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
 
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
-
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.CAMERA" />
-    <!--  照片的位置信息  -->
-    <uses-permission android:name="android.permission.ACCESS_MEDIA_LOCATION" />
 
     <uses-permission
         android:name="android.permission.READ_LOGS"
@@ -77,12 +70,12 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Video" />
 
-        <!--        <activity-->
-        <!--            android:name=".activity.pip.AndroidOPiPActivity"-->
-        <!--            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"-->
-        <!--            android:excludeFromRecents="true"-->
-        <!--            android:supportsPictureInPicture="true"-->
-        <!--            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />-->
+        <!-- <activity-->
+        <!--     android:name=".activity.pip.AndroidOPiPActivity"-->
+        <!--     android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"-->
+        <!--     android:excludeFromRecents="true"-->
+        <!--     android:supportsPictureInPicture="true"-->
+        <!--     android:theme="@style/Theme.AppCompat.Light.NoActionBar" />-->
 
         <activity
             android:name=".ui.search.SearchActivity"

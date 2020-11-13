@@ -17,8 +17,8 @@
     activityCloseExitAnimation   // 关闭当前Activity时展示的动画
     -->
     <style name="videoActivityAnim">
-        <item name="android:activityOpenEnterAnimation">@anim/scale_fade_in</item>
-        <item name="android:activityOpenExitAnimation">@anim/scale_fade_out</item>
+        <item name="android:activityOpenEnterAnimation">@anim/fade_in</item>
+        <item name="android:activityOpenExitAnimation">@anim/fade_out</item>
 <!--        <item name="android:activityCloseEnterAnimation">@anim/scale_fade_in</item>-->
 <!--        <item name="android:activityCloseExitAnimation">@anim/fade_out</item>-->
     </style>
