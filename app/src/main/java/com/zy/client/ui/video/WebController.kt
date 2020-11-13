@@ -17,7 +17,7 @@ import com.just.agentweb.BaseIndicatorView
 import com.zy.client.R
 import com.zy.client.utils.ext.gone
 import com.zy.client.utils.ext.visible
-import kotlinx.android.synthetic.main.custom_web_indicator.view.*
+import kotlinx.android.synthetic.main.layout_web_indicator.view.*
 
 /**
  * 网页控制器
@@ -85,7 +85,7 @@ class WebController {
     ) : BaseIndicatorView(context, attrs, defStyleAttr) {
 
         init {
-            View.inflate(context, R.layout.custom_web_indicator, this)
+            View.inflate(context, R.layout.layout_web_indicator, this)
         }
 
         override fun offerLayoutParams(): LayoutParams {

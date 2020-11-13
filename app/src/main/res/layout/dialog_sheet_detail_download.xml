@@ -37,5 +37,6 @@
         android:id="@+id/rvDownload"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:overScrollMode="never"
         android:background="@color/white" />
 </LinearLayout>

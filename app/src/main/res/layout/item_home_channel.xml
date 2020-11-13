@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:background="@drawable/bg_home_channel_item"
     android:orientation="vertical"
-    app:cardCornerRadius="12dp">
+    app:cardCornerRadius="@dimen/dp_12">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

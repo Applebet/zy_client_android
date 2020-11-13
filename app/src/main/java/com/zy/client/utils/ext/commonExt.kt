@@ -23,6 +23,26 @@ import java.util.*
  * @date 2020/11/11  15:53
  */
 
+fun View?.visibleOrGone(visible:Boolean) {
+    this?.run {
+       if (visible){
+           if (!isVisible) visibility = View.VISIBLE
+       }else{
+           if (isVisible) visibility = View.GONE
+       }
+    }
+}
+
+fun View?.visibleOrInvisible(visible:Boolean) {
+    this?.run {
+        if (visible){
+            if (!isVisible) visibility = View.VISIBLE
+        }else{
+            if (isVisible) visibility = View.INVISIBLE
+        }
+    }
+}
+
 fun View?.visible() {
     this?.run {
         if (!isVisible) visibility = View.VISIBLE

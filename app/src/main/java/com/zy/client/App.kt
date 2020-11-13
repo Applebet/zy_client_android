@@ -1,6 +1,6 @@
 package com.zy.client
 
-import ando.player.ProgressManagerImpl
+import ando.player.utils.ProgressManagerImpl
 import android.app.Application
 import com.dueeeke.videoplayer.BuildConfig
 import com.dueeeke.videoplayer.ijk.IjkPlayerFactory

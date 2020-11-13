@@ -5,11 +5,6 @@ plugins {
     id 'kotlin-kapt'
 }
 
-//************打包格式：getProductName()_版本号_渠道名_时间戳releaseTime()_构建类型.apk **************//
-//获取产品的名字
-static def getProductName() {
-    return "zy_client_android"
-}
 //获取当前系统的时间
 static def releaseTime() {
     return new Date().format("yyyyMMddHHmmss", TimeZone.getTimeZone("GMT+08:00"))
@@ -84,7 +79,8 @@ android {
         variant.outputs.all {
             //应用名+版本号+渠道名+构建类型+时间戳${variant.flavorName}
             def buildType = variant.getBuildType().getName()
-            def fileName = "zy_android_v${defaultConfig.versionName}_${defaultConfig.versionCode}_${variant.flavorName}_${releaseTime()}_${buildType}.apk"
+            //def fileName = "zy_client_v${defaultConfig.versionName}_${defaultConfig.versionCode}_${variant.flavorName}_${releaseTime()}_${buildType}.apk"
+            def fileName = "zy_client_v${defaultConfig.versionName}_${releaseTime()}_${buildType}.apk"
             outputFileName = fileName
         }
     }

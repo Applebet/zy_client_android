@@ -13,6 +13,7 @@ import com.zy.client.bean.Video
 import com.zy.client.bean.event.CollectEvent
 import com.zy.client.common.ID
 import com.zy.client.common.SOURCE_KEY
+import com.zy.client.common.VIDEO_VIEW_HEIGHT
 import com.zy.client.database.CollectDBUtils
 import com.zy.client.database.CollectModel
 import com.zy.client.http.ConfigManager
@@ -40,9 +41,8 @@ class VideoDetailActivity : BaseActivity() {
     private var mVideoDetail: VideoDetail? = null
     private var mVideo: Video? = null
     private var playVideoList: ArrayList<Video>? = null
-    private var curPlayPos = 0
 
-    private var anthologyList: BottomPopupView? = null
+    private var mSelectVideoDialog: BottomPopupView? = null
 
     override fun getLayoutId() = R.layout.activity_video_detail
 
@@ -81,22 +81,23 @@ class VideoDetailActivity : BaseActivity() {
         }
 
         //选集
+        val dialogHeight=screenHeight - resources.getDimensionPixelSize(VIDEO_VIEW_HEIGHT)- DimensionUtils.getStatusBarHeight()
         llAnthology.setOnClickListener {
             if (playVideoList?.size ?: 0 > 1) {
-                if (anthologyList == null) {
-                    anthologyList = XPopup.Builder(this)
+                if (mSelectVideoDialog == null) {
+                    mSelectVideoDialog = XPopup.Builder(this)
+                        .maxHeight(dialogHeight)
                         .asBottomList(
                             "选集",
                             playVideoList?.map { it.name }?.toTypedArray(),
                             null,
                             0
                         ) { position, _ ->
-                            curPlayPos = position
                             playVideo(playVideoList?.get(position))
                         }
                         .bindLayout(R.layout.fragment_search_result)
                 }
-                anthologyList?.show()
+                mSelectVideoDialog?.show()
             }
         }
 
@@ -189,6 +190,7 @@ class VideoDetailActivity : BaseActivity() {
 
 
     override fun onDestroy() {
+        mSelectVideoDialog?.dismiss()
         webController?.onDestroy()
         videoController?.onDestroy()
         super.onDestroy()
@@ -211,8 +213,12 @@ class VideoDetailActivity : BaseActivity() {
             playVideo(detailData.videoList?.get(0))
             //名字
             tvName.text = name
-            //简介
-            tvDesc.text = des.noNull()
+            des.noNull().let {
+                //剧情简介
+                tvIntro.visibleOrGone(it.isNotBlank())
+                //简介内容
+                tvDesc.text = it
+            }
         }
     }
 
@@ -220,7 +226,10 @@ class VideoDetailActivity : BaseActivity() {
         if (playVideo == null) return
         this.mVideo = playVideo
         if (playVideo.playUrl.isVideoUrl()) {
-            videoController?.play(playVideo.playUrl, "${mVideoDetail?.name.noNull()}  ${playVideo.name.noNull()}")
+            videoController?.play(
+                playVideo.playUrl,
+                "${mVideoDetail?.name.noNull()}  ${playVideo.name.noNull()}"
+            )
             videoPlayer.visible()
             flWebView.gone()
         } else {

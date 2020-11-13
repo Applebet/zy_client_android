@@ -11,7 +11,7 @@ import com.zy.client.http.sources.BaseSource
 import com.zy.client.base.BaseFragment
 import com.wuhenzhizao.titlebar.widget.CommonTitleBar
 import com.zy.client.common.AppRouter
-import kotlinx.android.synthetic.main.fragment_home_new.*
+import kotlinx.android.synthetic.main.fragment_home.*
 
 /**
  * @author javakam
@@ -23,7 +23,7 @@ class HomeFragment : BaseFragment() {
     private var source: BaseSource? = null
     private var selectSourceDialog: BasePopupView? = null
 
-    override fun getLayoutId(): Int = R.layout.fragment_home_new
+    override fun getLayoutId(): Int = R.layout.fragment_home
 
     override fun initTitleBar(titleBar: CommonTitleBar?) {
         titleBar?.run {

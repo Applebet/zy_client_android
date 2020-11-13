@@ -16,12 +16,12 @@
         android:ellipsize="end"
         android:gravity="center"
         android:maxLines="1"
-        android:paddingLeft="18dp"
+        android:paddingStart="@dimen/dp_15"
         android:paddingTop="10dp"
-        android:paddingRight="18dp"
+        android:paddingEnd="@dimen/dp_15"
         android:paddingBottom="14dp"
         android:textColor="@color/_xpopup_title_color"
-        android:textSize="16sp" />
+        android:textSize="@dimen/font_16" />
 
     <include layout="@layout/_xpopup_divider" />
 

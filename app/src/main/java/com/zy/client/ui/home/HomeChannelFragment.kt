@@ -73,7 +73,7 @@ class HomeChannelFragment : BaseLazyListFragment<VideoSource, BaseViewHolder>() 
     }
 
     //首页频道的适配器
-    inner class HomeChannelAdapter : BaseLoadMoreAdapter<VideoSource, BaseViewHolder>(R.layout.home_channel_item_layout) {
+    inner class HomeChannelAdapter : BaseLoadMoreAdapter<VideoSource, BaseViewHolder>(R.layout.item_home_channel) {
         override fun convert(holder: BaseViewHolder, item: VideoSource) {
             holder.setText(R.id.tvTitle, item.name.noNull("--"))
             loadImage(holder.getView(R.id.ivPiv), item.pic)

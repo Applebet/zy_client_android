@@ -10,12 +10,10 @@ import com.wuhenzhizao.titlebar.widget.CommonTitleBar
 import kotlinx.android.synthetic.main.layout_com_title_list.*
 
 /**
- * @author javakam
+ * 列表类型的页面父类
  *
- * @date 2020/9/5 21:53
- * @desc 列表类型的页面父类
+ * @author javakam
  */
-
 abstract class BaseListFragment<T, H : BaseViewHolder> : BaseFragment() {
     private var curPage = 1
     private val listAdapter: BaseQuickAdapter<T, H> by lazy {

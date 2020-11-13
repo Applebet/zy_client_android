@@ -1,4 +1,4 @@
-package ando.player;
+package ando.player.utils;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -16,8 +16,6 @@ import androidx.core.content.ContextCompat;
 import com.dueeeke.videoplayer.controller.ControlWrapper;
 import com.dueeeke.videoplayer.controller.IControlComponent;
 import com.dueeeke.videoplayer.player.AndroidMediaPlayerFactory;
-
-import java.lang.reflect.Field;
 
 /**
  * 调试信息
