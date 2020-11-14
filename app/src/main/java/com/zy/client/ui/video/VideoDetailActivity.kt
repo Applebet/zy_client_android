@@ -2,11 +2,9 @@ package com.zy.client.ui.video
 
 import ando.player.IjkVideoView
 import android.graphics.Color
-import com.dueeeke.videoplayer.ijk.IjkPlayer
-import com.dueeeke.videoplayer.player.VideoView
 import com.dueeeke.videoplayer.util.CutoutUtil
 import com.lxj.xpopup.XPopup
-import com.lxj.xpopup.core.BottomPopupView
+import com.lxj.xpopup.impl.BottomListPopupView
 import com.wuhenzhizao.titlebar.statusbar.StatusBarUtils
 import com.zy.client.R
 import com.zy.client.base.BaseActivity
@@ -23,6 +21,8 @@ import com.zy.client.http.sources.BaseSource
 import com.zy.client.utils.ClipboardUtils
 import com.zy.client.utils.Utils
 import com.zy.client.utils.ext.*
+import com.zy.client.views.loader.LoadState
+import com.zy.client.views.loader.LoaderLayout
 import kotlinx.android.synthetic.main.activity_video_detail.*
 import org.greenrobot.eventbus.EventBus
 
@@ -37,14 +37,15 @@ class VideoDetailActivity : BaseActivity() {
     private lateinit var source: BaseSource
     private lateinit var id: String
     private lateinit var videoPlayer: IjkVideoView
+    private lateinit var statusView: LoaderLayout
 
     private var videoController: VideoController? = null
     private var webController: WebController? = null
     private var mVideoDetail: VideoDetail? = null
     private var mVideo: Video? = null
-    private var playVideoList: ArrayList<Video>? = null
+    private var mVideoList: List<Video>? = null
 
-    private var mSelectVideoDialog: BottomPopupView? = null
+    private var mSelectDialog: BottomListPopupView? = null
 
     override fun getLayoutId() = R.layout.activity_video_detail
 
@@ -57,6 +58,8 @@ class VideoDetailActivity : BaseActivity() {
         id = intent?.getStringExtra(ID).noNull()
 
         videoPlayer = findViewById(R.id.videoPlayer)
+        statusView = findViewById(R.id.statusView)
+        statusView.setLoadState(LoadState.LOADING)
         //初始化视频控制
         if (videoController == null) {
             videoController = VideoController()
@@ -89,21 +92,22 @@ class VideoDetailActivity : BaseActivity() {
                 .minus(if (hasLiuHai) 0 else DimensionUtils.getStatusBarHeight())
 
         llAnthology.setOnClickListener {
-            if (playVideoList?.size ?: 0 > 1) {
-                if (mSelectVideoDialog == null) {
-                    mSelectVideoDialog = XPopup.Builder(this)
+            if (!mVideoList.isNullOrEmpty()) {
+                if (mSelectDialog == null) {
+                    mSelectDialog = XPopup.Builder(this)
                         .maxHeight(dialogHeight)
                         .asBottomList(
                             "选集",
-                            playVideoList?.map { it.name }?.toTypedArray(),
+                            mVideoList?.map { it.name }?.toTypedArray(),
                             null,
-                            0
+                            0 //传0会显示选中的✔号
                         ) { position, _ ->
-                            playVideo(playVideoList?.get(position))
+                            playVideo(mVideoList?.get(position))
                         }
                         .bindLayout(R.layout.fragment_search_result)
+                    mSelectDialog?.popupInfo
                 }
-                mSelectVideoDialog?.show()
+                mSelectDialog?.show()
             }
         }
 
@@ -114,9 +118,7 @@ class VideoDetailActivity : BaseActivity() {
                 if (delete) {
                     ivCollect.isSelected = false
                     EventBus.getDefault().postSticky(CollectEvent())
-                } else {
-                    toastShort("取消收藏失败")
-                }
+                } else toastShort("取消收藏失败")
             } else {
                 val collectDBModel = CollectModel()
                 collectDBModel.uniqueKey = id + source.key
@@ -128,9 +130,7 @@ class VideoDetailActivity : BaseActivity() {
                     if (it) {
                         ivCollect.isSelected = true
                         EventBus.getDefault().postSticky(CollectEvent())
-                    } else {
-                        toastShort("收藏失败")
-                    }
+                    } else toastShort("收藏失败")
                 }
             }
         }
@@ -174,11 +174,7 @@ class VideoDetailActivity : BaseActivity() {
         }
 
         source.requestDetailData(id) {
-            it?.apply {
-                if (!videoList.isNullOrEmpty()) {
-                    setData(it)
-                }
-            }
+            if (it?.videoList == null) statusView.setLoadState(LoadState.ERROR) else refreshUI(it)
         }
     }
 
@@ -194,9 +190,8 @@ class VideoDetailActivity : BaseActivity() {
         super.onResume()
     }
 
-
     override fun onDestroy() {
-        mSelectVideoDialog?.dismiss()
+        mSelectDialog?.dismiss()
         webController?.onDestroy()
         videoController?.onDestroy()
         super.onDestroy()
@@ -208,15 +203,20 @@ class VideoDetailActivity : BaseActivity() {
         }
     }
 
-    private fun setData(detailData: VideoDetail) {
-        this.mVideoDetail = detailData
-        detailData.run {
-            playVideoList = videoList
-
+    private fun refreshUI(videoDetail: VideoDetail) {
+        this.mVideoDetail = videoDetail
+        videoDetail.run {
+            mVideoList = this.videoList?.reversed()
             //是否支持选集
-            if (playVideoList?.size ?: 0 > 1) ivPlayMore.visible() else ivPlayMore.gone()
+            if (mVideoList?.isEmpty() == false) {
+                ivPlayMore.visible()
+                statusView.setLoadState(LoadState.SUCCESS)
+            } else {
+                ivPlayMore.invisible()
+                statusView.setLoadState(LoadState.EMPTY)
+            }
+            playVideo(mVideoList?.get(0))
 
-            playVideo(detailData.videoList?.get(0))
             //名字
             tvName.text = name
             des.noNull().let {
@@ -228,14 +228,11 @@ class VideoDetailActivity : BaseActivity() {
         }
     }
 
-    private fun playVideo(playVideo: Video?) {
-        if (playVideo == null) return
-        this.mVideo = playVideo
-        if (playVideo.playUrl.isVideoUrl()) {
-            videoController?.play(
-                playVideo.playUrl,
-                "${mVideoDetail?.name.noNull()}  ${playVideo.name.noNull()}"
-            )
+    private fun playVideo(video: Video?) {
+        if (video == null) return
+        this.mVideo = video
+        if (video.playUrl.isVideoUrl()) {
+            videoController?.startPlay(video.playUrl, "${mVideoDetail?.name.noNull()}  ${video.name.noNull()}")
             videoPlayer.visible()
             flWebView.gone()
         } else {
@@ -243,11 +240,16 @@ class VideoDetailActivity : BaseActivity() {
             if (webController == null) {
                 webController = WebController()
             }
-            webController?.loadUrl(this, playVideo.playUrl, flWebView)
+            webController?.loadUrl(this, video.playUrl, flWebView)
             videoPlayer.gone()
             flWebView.visible()
         }
         //正在播放
-        tvCurPlayName.text = playVideo.name.noNull()
+        video.name.noNull().let {
+            tvCurPlayName.text = it
+            ivPlayMore.visibleOrGone(it.isNotBlank())
+        }
+
     }
+
 }

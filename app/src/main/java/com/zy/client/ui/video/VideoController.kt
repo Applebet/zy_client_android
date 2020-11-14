@@ -32,8 +32,8 @@ class VideoController {
     private lateinit var videoPlayer: IjkVideoView
     private lateinit var titleView: TitleView
 
-    fun init(context: Context, videoPlayer: IjkVideoView) {
-        this.videoPlayer = videoPlayer
+    fun init(context: Context, ijkVideoView: IjkVideoView) {
+        this.videoPlayer = ijkVideoView
         this.context = context
 
         val controller = StandardVideoController(context)
@@ -48,9 +48,9 @@ class VideoController {
 
         //准备播放界面
         val prepareView = PrepareView(context)
-        val thumb = prepareView.findViewById<ImageView>(R.id.thumb)
+        //val thumb = prepareView.findViewById<ImageView>(R.id.thumb)
         //loadImage(thumb, THUMB)
-        loadImage(thumb, ContextCompat.getDrawable(context, R.drawable.rectangle_video_preview), null)
+        //loadImage(thumb, ContextCompat.getDrawable(context, R.drawable.rectangle_video_preview), null)
         controller.addControlComponent(prepareView)
 
         controller.addControlComponent(CompleteView(context)) //自动完成播放界面
@@ -115,22 +115,6 @@ class VideoController {
         videoPlayer.setScreenScaleType(SCREEN_SCALE_16_9)
     }
 
-    /**
-     * 切换其他视频
-     */
-    fun changeUrl(videoUrl: String?) {
-        if (videoUrl?.isVideoUrl() == false) return
-        videoPlayer.release()
-        val cacheServer: HttpProxyCacheServer = ProxyVideoCacheManager.getProxy(context)
-        val proxyUrl = cacheServer.getProxyUrl(videoUrl)
-        videoPlayer.setUrl(proxyUrl)
-        videoPlayer.start()
-    }
-
-    fun changeScreenScaleType(screenScaleType: Int) {
-        videoPlayer.setScreenScaleType(screenScaleType)
-    }
-
     private val mOnStateChangeListener: OnStateChangeListener = object : SimpleOnStateChangeListener() {
         override fun onPlayerStateChanged(playerState: Int) {
             when (playerState) {
@@ -169,10 +153,18 @@ class VideoController {
         }
     }
 
-    fun play(playUrl: String?, title: String?) {
+    /**
+     * use cache :
+     *      PreloadManager.getInstance(this).getPlayUrl(item.videoDownloadUrl);
+     *      val cacheServer: HttpProxyCacheServer = ProxyVideoCacheManager.getProxy(context)
+     *      val proxyUrl = cacheServer.getProxyUrl(videoUrl)
+     *      videoPlayer.setUrl(proxyUrl)
+     */
+    fun startPlay(videoUrl: String?, title: String?) {
+        if (videoUrl?.isVideoUrl() == false) return
         titleView.setTitle(title.noNull())
         videoPlayer.release()
-        videoPlayer.setUrl(playUrl)
+        videoPlayer.setUrl(videoUrl)
         videoPlayer.start()
     }
 

@@ -68,7 +68,8 @@
             android:configChanges="keyboardHidden|orientation|screenSize|screenLayout"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Video" />
+            android:theme="@style/Theme.Video"
+            android:windowSoftInputMode="stateHidden" />
 
         <!-- <activity-->
         <!--     android:name=".activity.pip.AndroidOPiPActivity"-->
