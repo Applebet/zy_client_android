@@ -25,6 +25,8 @@ class VideoTvActivity : BaseActivity() {
         mIPTVModel = intent.getSerializableExtra(TV_BEAN) as? TvModel ?: return
 
         videoPlayer = findViewById(R.id.videoPlayer)
+        mTvName = findViewById(R.id.tv_name)
+        mTvGroup = findViewById(R.id.tv_group)
 
         //初始化视频控制
         videoController = VideoController()
