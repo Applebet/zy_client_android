@@ -1,12 +1,13 @@
 package com.zy.client.http
 
+import com.zy.client.bean.Classify
 import com.zy.client.http.repo.CommonRepository
 import com.zy.client.http.repo.CommonRequest
 import com.zy.client.database.TvModel
 import com.zy.client.utils.SPUtils
 import com.zy.client.utils.Utils
+import com.zy.client.utils.ext.noNull
 import org.json.JSONArray
-import java.util.*
 import kotlin.collections.LinkedHashMap
 
 /**
@@ -45,22 +46,30 @@ object ConfigManager {
         configMap
     }
 
-    val sourceTvConfigs: LinkedList<TvModel> by lazy {
+    val sourceTvConfigs: LinkedHashMap<String, TvModel> by lazy {
         val configJson = Utils.readAssetsData("iptv.json")
         val configArray = JSONArray(configJson)
-        val configList = LinkedList<TvModel>()
+        val configMap = LinkedHashMap<String, TvModel>()
         for (i in 0 until configArray.length()) {
-            val config = configArray.getJSONObject(i)
+            val config = configArray.optJSONObject(i)
             val id = config.getInt("id")
             val name = config.getString("name")
             val url = config.getString("url")
-            val group = config.getString("group")
+            val group = config.getString("group").noNull("其他")
             val isActive = config.getBoolean("isActive")
             if (config != null && !name.isNullOrBlank() && !url.isNullOrBlank()) {
-                configList.add(i, TvModel(id = id, name = name, url = url, group = group, isActive = isActive))
+                configMap[group] = TvModel(id = id, name = name, url = url, group = group, isActive = isActive)
             }
         }
-        configList
+        configMap
+    }
+
+    //IPTV 所有分类
+    fun getSourceTvGroups(): List<Classify>? {
+        var index = 0
+        return sourceTvConfigs.keys.map {
+            Classify((index++).toString(), it)
+        }
     }
 
     /**

@@ -83,7 +83,7 @@ class CollectFragment : BaseListFragment<CollectModel, BaseViewHolder>() {
         return LinearLayoutManager(requireActivity())
     }
 
-    override fun loadData(page: Int, callback: (list: ArrayList<CollectModel>?) -> Unit) {
+    override fun loadData(page: Int, callback: (list: List<CollectModel>?) -> Unit) {
         if (page == 1) {
             CollectDBUtils.searchAllAsync {
                 callback.invoke(it)

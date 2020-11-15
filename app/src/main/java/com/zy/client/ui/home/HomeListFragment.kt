@@ -20,17 +20,18 @@ import com.zy.client.utils.ext.loadImage
 import kotlinx.android.synthetic.main.layout_com_title_list.*
 
 /**
- * 频道页
+ * 频道列表
+ *
  * @author javakam
  */
-class HomeChannelFragment : BaseLazyListFragment<VideoSource, BaseViewHolder>() {
+class HomeListFragment : BaseLazyListFragment<VideoSource, BaseViewHolder>() {
 
     private lateinit var source: CommonRepository
     private lateinit var tid: String
 
     companion object {
-        fun instance(tid: String): HomeChannelFragment {
-            return HomeChannelFragment().apply {
+        fun instance(tid: String): HomeListFragment {
+            return HomeListFragment().apply {
                 arguments = bundleOf("tid" to tid)
             }
         }
@@ -65,7 +66,7 @@ class HomeChannelFragment : BaseLazyListFragment<VideoSource, BaseViewHolder>() 
         return GridLayoutManager(requireActivity(), HOME_SPAN_COUNT, RecyclerView.VERTICAL, false)
     }
 
-    override fun loadData(page: Int, callback: (list: ArrayList<VideoSource>?) -> Unit) {
+    override fun loadData(page: Int, callback: (list: List<VideoSource>?) -> Unit) {
         source.requestHomeChannelData(page, tid) {
             callback.invoke(it)
         }

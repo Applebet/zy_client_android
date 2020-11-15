@@ -75,8 +75,8 @@ class App : Application() {
         val tvModels = ConfigManager.sourceTvConfigs
         TvDBUtils.isExit().apply {
             if (!this) {
-                TvDBUtils.saveAllAsync(tvModels){
-                    Log.i("123",".............. $it ${LitePal.count(TvModel::class.java)}")
+                TvDBUtils.saveAllAsync(tvModels.values.toList()) {
+                    Log.i("123", ".............. $it ${LitePal.count(TvModel::class.java)}")
                 }
             }
         }

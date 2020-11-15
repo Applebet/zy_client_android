@@ -51,7 +51,7 @@ class OKZYWRepository(
     override fun requestHomeChannelData(
         page: Int,
         tid: String,
-        callback: (t: ArrayList<VideoSource>?) -> Unit
+        callback: (t: List<VideoSource>?) -> Unit
     ) {
         OkGo.get<String>(if (tid == "new") "$baseUrl?ac=videolist&pg=$page" else "$baseUrl?ac=videolist&t=$tid&pg=$page")
             .tag(key)
@@ -76,7 +76,7 @@ class OKZYWRepository(
     override fun requestSearchData(
         searchWord: String,
         page: Int,
-        callback: (t: ArrayList<VideoSource>?) -> Unit
+        callback: (t: List<VideoSource>?) -> Unit
     ) {
         OkGo.get<String>("$baseUrl?wd=$searchWord&pg=$page")
             .tag(key)

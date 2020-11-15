@@ -16,12 +16,18 @@
     activityCloseEnterAnimation  // 关闭当前Activity进入上一个Activity展示的动画
     activityCloseExitAnimation   // 关闭当前Activity时展示的动画
     -->
-    <style name="videoActivityAnim">
+    <style name="alphaActivityAnim">
         <item name="android:activityOpenEnterAnimation">@anim/fade_in</item>
         <item name="android:activityOpenExitAnimation">@anim/fade_out</item>
-<!--        <item name="android:activityCloseEnterAnimation">@anim/scale_fade_in</item>-->
-<!--        <item name="android:activityCloseExitAnimation">@anim/fade_out</item>-->
+        <!-- <item name="android:activityCloseEnterAnimation">@anim/scale_fade_in</item>-->
+        <!-- <item name="android:activityCloseExitAnimation">@anim/fade_out</item>-->
     </style>
+
+    <style name="scaleActivityAnim">
+        <item name="android:activityOpenEnterAnimation">@anim/scale_fade_in</item>
+        <item name="android:activityOpenExitAnimation">@anim/scale_fade_out</item>
+    </style>
+
 
     <style name="DivideLine">
         <item name="android:background">@color/dividerColor</item>

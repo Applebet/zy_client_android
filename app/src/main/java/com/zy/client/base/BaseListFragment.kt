@@ -107,5 +107,5 @@ abstract class BaseListFragment<T, H : BaseViewHolder> : BaseFragment() {
         }
     }
 
-    abstract fun loadData(page: Int, callback: (list: ArrayList<T>?) -> Unit)
+    abstract fun loadData(page: Int, callback: (list: List<T>?) -> Unit)
 }

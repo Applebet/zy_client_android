@@ -45,7 +45,7 @@ class CommonRepository(val req: CommonRequest) : IRepository {
     override fun requestHomeChannelData(
         page: Int,
         tid: String,
-        callback: (t: ArrayList<VideoSource>?) -> Unit
+        callback: (t: List<VideoSource>?) -> Unit
     ) {
         OkGo.get<String>(if (tid == "new") "${req.baseUrl}?ac=videolist&pg=$page" else "${req.baseUrl}?ac=videolist&t=$tid&pg=$page")
             .tag(req.key)
@@ -72,7 +72,7 @@ class CommonRepository(val req: CommonRequest) : IRepository {
     override fun requestSearchData(
         searchWord: String,
         page: Int,
-        callback: (t: ArrayList<VideoSource>?) -> Unit
+        callback: (t: List<VideoSource>?) -> Unit
     ) {
         OkGo.get<String>("${req.baseUrl}?wd=$searchWord&pg=$page")
             .tag(req.key)

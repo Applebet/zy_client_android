@@ -16,8 +16,12 @@
         <!-- Customize your theme here. -->
     </style>
 
-    <style name="Theme.Video" parent="Theme.Zy_client_android">
-        <item name="android:windowAnimationStyle">@style/videoActivityAnim</item>
+    <style name="Theme.AlphaActivity" parent="Theme.Zy_client_android">
+        <item name="android:windowAnimationStyle">@style/alphaActivityAnim</item>
+    </style>
+
+    <style name="Theme.ScaleActivity" parent="Theme.Zy_client_android">
+        <item name="android:windowAnimationStyle">@style/scaleActivityAnim</item>
     </style>
 
 </resources>

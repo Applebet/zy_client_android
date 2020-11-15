@@ -23,7 +23,7 @@ object CollectDBUtils {
         return collectModel.save()
     }
 
-    private fun searchAll(): ArrayList<CollectModel>? {
+    private fun searchAll(): List<CollectModel>? {
         return LitePal.findAll(CollectModel::class.java) as? ArrayList<CollectModel>
     }
 
@@ -40,7 +40,7 @@ object CollectDBUtils {
         }))
     }
 
-    fun searchAllAsync(callback: ((ArrayList<CollectModel>?) -> Unit)?) {
+    fun searchAllAsync(callback: ((List<CollectModel>?) -> Unit)?) {
         ThreadUtils.executeByCached(CustomTask({
             searchAll()
         }, {

@@ -1,6 +1,5 @@
 package com.zy.client.database
 
-import android.util.Log
 import com.zy.client.utils.thread.CustomTask
 import com.zy.client.utils.thread.ThreadUtils
 import org.litepal.LitePal
@@ -26,11 +25,11 @@ object SearchHistoryDBUtils {
         return searchHistoryDBModel.save()
     }
 
-    private fun searchAll(): ArrayList<SearchHistoryModel>? {
+    private fun searchAll(): List<SearchHistoryModel>? {
         val list = LitePal.where("searchWord not null").order("updateData")
             .find(SearchHistoryModel::class.java)
         list?.reverse()
-        return list as? ArrayList<SearchHistoryModel>?
+        return list
     }
 
     fun saveAsync(searchWord: String, callback: ((Boolean) -> Unit)? = null) {
@@ -41,7 +40,7 @@ object SearchHistoryDBUtils {
         }))
     }
 
-    fun searchAllAsync(callback: ((ArrayList<SearchHistoryModel>?) -> Unit)?) {
+    fun searchAllAsync(callback: ((List<SearchHistoryModel>?) -> Unit)?) {
         ThreadUtils.executeByCpu(CustomTask({
             searchAll()
         }, {

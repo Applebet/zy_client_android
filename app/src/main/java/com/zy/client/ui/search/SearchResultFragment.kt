@@ -55,7 +55,7 @@ class SearchResultFragment : BaseListFragment<VideoSource, BaseViewHolder>() {
         return LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
     }
 
-    override fun loadData(page: Int, callback: (list: ArrayList<VideoSource>?) -> Unit) {
+    override fun loadData(page: Int, callback: (list: List<VideoSource>?) -> Unit) {
         if (searchWord.isBlank()) {
             callback.invoke(arrayListOf())
         } else {

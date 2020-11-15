@@ -70,7 +70,7 @@ class HomeFragment : BaseFragment() {
         titleBar?.centerSearchEditText?.hint = source?.req?.name.noNull("搜索")
         childFragmentManager
             .beginTransaction()
-            .replace(R.id.flContainer, HomeSourceFragment())
+            .replace(R.id.flContainer, HomeTabPagerFragment())
             .commitNowAllowingStateLoss()
     }
 }

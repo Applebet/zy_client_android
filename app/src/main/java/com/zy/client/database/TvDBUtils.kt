@@ -23,8 +23,8 @@ object TvDBUtils {
         return tvModel.save()
     }
 
-    private fun searchAll(): ArrayList<TvModel>? {
-        return LitePal.findAll(TvModel::class.java) as? ArrayList<TvModel>
+    private fun searchAll(): List<TvModel>? {
+        return LitePal.findAll(TvModel::class.java)
     }
 
     fun isExit(): Boolean = LitePal.isExist(TvModel::class.java)
@@ -50,9 +50,21 @@ object TvDBUtils {
         }))
     }
 
-    fun searchAllAsync(callback: ((ArrayList<TvModel>?) -> Unit)?) {
+    fun searchAllAsync(callback: ((List<TvModel>?) -> Unit)?) {
         ThreadUtils.executeByCached(CustomTask({
             searchAll()
+        }, {
+            callback?.invoke(it)
+        }))
+    }
+
+    fun searchGroupAsync(group: String?, callback: ((List<TvModel>?) -> Unit)?) {
+        if (group.isNullOrBlank()) {
+            callback?.invoke(null)
+            return
+        }
+        ThreadUtils.executeByCached(CustomTask<List<TvModel>?>({
+            LitePal.where("group = ?", group).find(TvModel::class.java)
         }, {
             callback?.invoke(it)
         }))

@@ -25,12 +25,12 @@ interface IRepository {
     /**
      * 频道列表
      */
-    fun requestHomeChannelData(page: Int, tid: String, callback: (t: ArrayList<VideoSource>?) -> Unit)
+    fun requestHomeChannelData(page: Int, tid: String, callback: (t: List<VideoSource>?) -> Unit)
 
     /**
      * 搜索
      */
-    fun requestSearchData(searchWord: String, page: Int, callback: (t: ArrayList<VideoSource>?) -> Unit)
+    fun requestSearchData(searchWord: String, page: Int, callback: (t: List<VideoSource>?) -> Unit)
 
     /**
      * 视频详情
