@@ -11,7 +11,6 @@ import java.util.*
  * @date 2020/9/12 20:55
  * @desc 收藏的数据库操作工具类
  */
-
 object CollectDBUtils {
 
     private fun save(collectModel: CollectModel): Boolean {

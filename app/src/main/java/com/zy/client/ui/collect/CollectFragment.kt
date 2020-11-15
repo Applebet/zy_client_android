@@ -43,7 +43,7 @@ class CollectFragment : BaseListFragment<CollectModel, BaseViewHolder>() {
     override fun getListAdapter(): BaseLoadMoreAdapter<CollectModel, BaseViewHolder> {
         return CollectAdapter().apply {
             setOnItemClickListener { _, _, position ->
-                AppRouter.toDetailActivity(
+                AppRouter.toVideoDetailActivity(
                     baseActivity,
                     data[position].sourceKey.noNull(),
                     data[position].videoId.noNull()

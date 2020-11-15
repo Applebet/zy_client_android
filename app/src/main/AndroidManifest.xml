@@ -71,6 +71,14 @@
             android:theme="@style/Theme.Video"
             android:windowSoftInputMode="stateHidden" />
 
+        <activity
+            android:name=".ui.video.VideoTvActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize|screenLayout"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Video"
+            android:windowSoftInputMode="stateHidden" />
+
         <!-- <activity-->
         <!--     android:name=".activity.pip.AndroidOPiPActivity"-->
         <!--     android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"-->

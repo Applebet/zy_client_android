@@ -36,37 +36,37 @@
 
         <ImageView
             android:id="@+id/ivWebPlay"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="@dimen/dp_25"
+            android:layout_height="@dimen/dp_25"
             android:src="@drawable/ic_web_play" />
 
-        <View
+        <Space
             android:layout_width="0dp"
-            android:layout_height="1px"
+            android:layout_height="0dp"
             android:layout_weight="1" />
 
         <ImageView
             android:id="@+id/ivDownload"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="@dimen/dp_25"
+            android:layout_height="@dimen/dp_25"
             android:layout_marginLeft="15dp"
             android:src="@drawable/ic_film_download" />
 
-        <View
+        <Space
             android:layout_width="0dp"
-            android:layout_height="1px"
+            android:layout_height="0dp"
             android:layout_weight="1" />
 
         <ImageView
             android:id="@+id/ivCollect"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="@dimen/dp_25"
+            android:layout_height="@dimen/dp_25"
             android:layout_marginLeft="15dp"
             android:src="@drawable/sel_collect_bg" />
 
-        <View
+        <Space
             android:layout_width="0dp"
-            android:layout_height="1px"
+            android:layout_height="0dp"
             android:layout_weight="1" />
     </LinearLayout>
 

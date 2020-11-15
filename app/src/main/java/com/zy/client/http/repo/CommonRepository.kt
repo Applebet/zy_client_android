@@ -1,34 +1,33 @@
-package com.zy.client.http.sources
+package com.zy.client.http.repo
 
 import com.lzy.okgo.OkGo
 import com.lzy.okgo.callback.StringCallback
 import com.lzy.okgo.model.Response
-import com.zy.client.bean.DownloadData
-import com.zy.client.bean.HomeData
-import com.zy.client.bean.VideoDetail
-import com.zy.client.bean.VideoSource
+import com.zy.client.bean.*
+import com.zy.client.http.NetSourceParser.parseDetailData
+import com.zy.client.http.NetSourceParser.parseDownloadData
+import com.zy.client.http.NetSourceParser.parseHomeChannelData
+import com.zy.client.http.NetSourceParser.parseHomeData
+import com.zy.client.http.NetSourceParser.parseNewVideo
 
 /**
+ * 通用的解析视频源
+ *
  * @author javakam
  *
- * @date 2020/9/2 21:47
- * @desc OK 资源网
+ * @date 2020/9/2 21:17
  */
-
-class OKZYWSource(
-    override val baseUrl: String = "http://cj.okzy.tv/inc/api.php",
-    override val downloadBaseUrl: String = "http://cj.okzy.tv/inc/apidown.php",
-    override val name: String = "OK 资源网", override val key: String = "okzy"
-) : BaseSource() {
+class CommonRepository(val req: CommonRequest) : IRepository {
 
     override fun requestHomeData(callback: (t: HomeData?) -> Unit) {
-        OkGo.get<String>(baseUrl)
-            .tag(key)
+        OkGo.get<String>(req.baseUrl)
+            .tag(req.key)
             .execute(object : StringCallback() {
                 override fun onSuccess(response: Response<String>?) {
                     try {
                         callback.invoke(parseHomeData(response?.body()))
                     } catch (e: Exception) {
+                        e.printStackTrace()
                     }
                 }
 
@@ -37,6 +36,7 @@ class OKZYWSource(
                     try {
                         callback.invoke(null)
                     } catch (e: Exception) {
+                        e.printStackTrace()
                     }
                 }
             })
@@ -47,13 +47,14 @@ class OKZYWSource(
         tid: String,
         callback: (t: ArrayList<VideoSource>?) -> Unit
     ) {
-        OkGo.get<String>(if (tid == "new") "$baseUrl?ac=videolist&pg=$page" else "$baseUrl?ac=videolist&t=$tid&pg=$page")
-            .tag(key)
+        OkGo.get<String>(if (tid == "new") "${req.baseUrl}?ac=videolist&pg=$page" else "${req.baseUrl}?ac=videolist&t=$tid&pg=$page")
+            .tag(req.key)
             .execute(object : StringCallback() {
                 override fun onSuccess(response: Response<String>?) {
                     try {
                         callback.invoke(parseHomeChannelData(response?.body()))
                     } catch (e: Exception) {
+                        e.printStackTrace()
                     }
                 }
 
@@ -62,6 +63,7 @@ class OKZYWSource(
                     try {
                         callback.invoke(null)
                     } catch (e: Exception) {
+                        e.printStackTrace()
                     }
                 }
             })
@@ -72,13 +74,14 @@ class OKZYWSource(
         page: Int,
         callback: (t: ArrayList<VideoSource>?) -> Unit
     ) {
-        OkGo.get<String>("$baseUrl?wd=$searchWord&pg=$page")
-            .tag(key)
+        OkGo.get<String>("${req.baseUrl}?wd=$searchWord&pg=$page")
+            .tag(req.key)
             .execute(object : StringCallback() {
                 override fun onSuccess(response: Response<String>?) {
                     try {
                         callback.invoke(parseNewVideo(response?.body()))
                     } catch (e: Exception) {
+                        e.printStackTrace()
                     }
                 }
 
@@ -87,19 +90,21 @@ class OKZYWSource(
                     try {
                         callback.invoke(null)
                     } catch (e: Exception) {
+                        e.printStackTrace()
                     }
                 }
             })
     }
 
     override fun requestDetailData(id: String, callback: (t: VideoDetail?) -> Unit) {
-        OkGo.get<String>("$baseUrl?ac=videolist&ids=$id")
-            .tag(key)
+        OkGo.get<String>("${req.baseUrl}?ac=videolist&ids=$id")
+            .tag(req.key)
             .execute(object : StringCallback() {
                 override fun onSuccess(response: Response<String>?) {
                     try {
-                        callback.invoke(parseDetailData(key, response?.body()))
+                        callback.invoke(parseDetailData(req.key, response?.body()))
                     } catch (e: Exception) {
+                        e.printStackTrace()
                     }
                 }
 
@@ -108,19 +113,21 @@ class OKZYWSource(
                     try {
                         callback.invoke(null)
                     } catch (e: Exception) {
+                        e.printStackTrace()
                     }
                 }
             })
     }
 
     override fun requestDownloadData(id: String, callback: (t: ArrayList<DownloadData>?) -> Unit) {
-        OkGo.get<String>("$downloadBaseUrl?ac=videolist&ids=$id")
-            .tag(key)
+        OkGo.get<String>("${req.downloadBaseUrl}?ac=videolist&ids=$id")
+            .tag(req.key)
             .execute(object : StringCallback() {
                 override fun onSuccess(response: Response<String>?) {
                     try {
                         callback.invoke(parseDownloadData(response?.body()))
                     } catch (e: Exception) {
+                        e.printStackTrace()
                     }
                 }
 
@@ -129,6 +136,7 @@ class OKZYWSource(
                     try {
                         callback.invoke(null)
                     } catch (e: Exception) {
+                        e.printStackTrace()
                     }
                 }
             })

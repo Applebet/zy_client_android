@@ -9,6 +9,7 @@ import com.zy.client.R
 import com.zy.client.base.BaseActivity
 import com.zy.client.ui.collect.CollectFragment
 import com.zy.client.ui.home.HomeFragment
+import com.zy.client.ui.iptv.IPTVFragment
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : BaseActivity() {
@@ -22,6 +23,7 @@ class MainActivity : BaseActivity() {
     override fun initView() {
         super.initView()
         fragmentArray.put(R.id.navigation_home, HomeFragment())
+        fragmentArray.put(R.id.navigation_iptv, IPTVFragment())
         fragmentArray.put(R.id.navigation_collect, CollectFragment())
         supportFragmentManager
             .beginTransaction()

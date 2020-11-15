@@ -5,10 +5,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentPagerAdapter
 import com.zy.client.R
 import com.zy.client.http.ConfigManager
-import com.zy.client.http.sources.BaseSource
+import com.zy.client.http.repo.CommonRepository
 import com.zy.client.bean.Classify
 import com.zy.client.base.BaseFragment
 import com.wuhenzhizao.titlebar.widget.CommonTitleBar
+import com.zy.client.http.repo.IRepository
 import com.zy.client.views.loader.LoadState
 import com.zy.client.views.loader.Loader
 import kotlinx.android.synthetic.main.fragment_home_source.*
@@ -21,8 +22,7 @@ import kotlinx.android.synthetic.main.fragment_home_source.*
 class HomeSourceFragment : BaseFragment() {
     private var classifyList = ArrayList<Classify>()
 
-    private var source: BaseSource? = null
-
+    private var source: IRepository? = null
 
     override fun getLayoutId(): Int = R.layout.fragment_home_source
 

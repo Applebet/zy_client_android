@@ -1,10 +1,13 @@
 package com.zy.client.http
 
-import com.zy.client.http.sources.BaseSource
-import com.zy.client.http.sources.CommonSource
+import com.zy.client.http.repo.CommonRepository
+import com.zy.client.http.repo.CommonRequest
+import com.zy.client.database.TvModel
 import com.zy.client.utils.SPUtils
 import com.zy.client.utils.Utils
 import org.json.JSONArray
+import java.util.*
+import kotlin.collections.LinkedHashMap
 
 /**
  * Title: 网络资源
@@ -14,32 +17,9 @@ import org.json.JSONArray
  * @author javakam
  * @date 2020/11/11  15:50
  */
-class Config : ArrayList<ConfigItem>()
 
-data class ConfigItem(
-    val key: String,
-    val name: String,
-    val new: String,
-    val search: String,
-    val tags: List<Tag>,
-    val type: Int,
-    val url: String,
-    val view: String
-)
-
-data class Tag(
-    val children: List<Children>,
-    val id: Int,
-    val title: String
-)
-
-data class Children(
-    val id: Int,
-    val title: String
-)
-
-data class SourceConfig(val key: String, val name: String, val generate: () -> BaseSource) {
-    fun generateSource(): BaseSource {
+data class SourceConfig(val key: String, val name: String, val generate: () -> CommonRepository) {
+    fun generateSource(): CommonRepository {
         return generate.invoke()
     }
 }
@@ -58,18 +38,36 @@ object ConfigManager {
             val download = config.getString("download")
             if (config != null && !key.isNullOrBlank() && !name.isNullOrBlank() && !api.isNullOrBlank()) {
                 configMap[key] = SourceConfig(key, name) {
-                    CommonSource(key, name, api, download)
+                    CommonRepository(CommonRequest(key, name, api, download))
                 }
             }
         }
         configMap
     }
 
+    val sourceTvConfigs: LinkedList<TvModel> by lazy {
+        val configJson = Utils.readAssetsData("iptv.json")
+        val configArray = JSONArray(configJson)
+        val configList = LinkedList<TvModel>()
+        for (i in 0 until configArray.length()) {
+            val config = configArray.getJSONObject(i)
+            val id = config.getInt("id")
+            val name = config.getString("name")
+            val url = config.getString("url")
+            val group = config.getString("group")
+            val isActive = config.getBoolean("isActive")
+            if (config != null && !name.isNullOrBlank() && !url.isNullOrBlank()) {
+                configList.add(i, TvModel(id = id, name = name, url = url, group = group, isActive = isActive))
+            }
+        }
+        configList
+    }
+
     /**
      * 根据key获取相应的source
      */
-    fun generateSource(key: String?): BaseSource {
-        return sourceConfigs[key]?.generateSource() ?: CommonSource("", "", "", "")
+    fun generateSource(key: String?): CommonRepository {
+        return sourceConfigs[key]?.generateSource() ?: CommonRepository(CommonRequest())
     }
 
     private const val defaultSourceKey = "okzy"
@@ -77,7 +75,7 @@ object ConfigManager {
     /**
      * 获取当前选择的源
      */
-    fun curUseSourceConfig(): BaseSource {
+    fun curUseSourceConfig(): CommonRepository {
         return generateSource(SPUtils.get().getString("curSourceKey", defaultSourceKey))
     }
 
@@ -89,4 +87,5 @@ object ConfigManager {
             SPUtils.get().put("curSourceKey", sourceKey)
         }
     }
+
 }

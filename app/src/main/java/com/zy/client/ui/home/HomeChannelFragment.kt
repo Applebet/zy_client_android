@@ -10,23 +10,22 @@ import com.zy.client.common.BaseLoadMoreAdapter
 import com.zy.client.http.ConfigManager
 import com.zy.client.common.GridSpaceItemDecoration
 import com.zy.client.utils.ext.noNull
-import com.zy.client.http.sources.BaseSource
+import com.zy.client.http.repo.CommonRepository
 import com.zy.client.base.BaseLazyListFragment
 import com.zy.client.bean.VideoSource
 import com.zy.client.common.AppRouter
+import com.zy.client.common.HOME_SPAN_COUNT
 import com.zy.client.utils.Utils
 import com.zy.client.utils.ext.loadImage
 import kotlinx.android.synthetic.main.layout_com_title_list.*
 
 /**
+ * 频道页
  * @author javakam
- *
- * @date 2020/9/2 23:31
- * @desc 首页频道页
  */
 class HomeChannelFragment : BaseLazyListFragment<VideoSource, BaseViewHolder>() {
 
-    private lateinit var source: BaseSource
+    private lateinit var source: CommonRepository
     private lateinit var tid: String
 
     companion object {
@@ -53,9 +52,9 @@ class HomeChannelFragment : BaseLazyListFragment<VideoSource, BaseViewHolder>() 
     override fun getListAdapter(): BaseLoadMoreAdapter<VideoSource, BaseViewHolder> {
         return HomeChannelAdapter().apply {
             setOnItemClickListener { _, _, position ->
-                AppRouter.toDetailActivity(
+                AppRouter.toVideoDetailActivity(
                     baseActivity,
-                    source.key,
+                    source.req.key,
                     data[position].id.noNull()
                 )
             }
@@ -63,7 +62,7 @@ class HomeChannelFragment : BaseLazyListFragment<VideoSource, BaseViewHolder>() 
     }
 
     override fun getListLayoutManager(): RecyclerView.LayoutManager {
-        return GridLayoutManager(requireActivity(), 2, RecyclerView.VERTICAL, false)
+        return GridLayoutManager(requireActivity(), HOME_SPAN_COUNT, RecyclerView.VERTICAL, false)
     }
 
     override fun loadData(page: Int, callback: (list: ArrayList<VideoSource>?) -> Unit) {

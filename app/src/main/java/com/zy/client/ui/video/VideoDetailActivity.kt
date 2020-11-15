@@ -17,7 +17,7 @@ import com.zy.client.common.VIDEO_VIEW_HEIGHT
 import com.zy.client.database.CollectDBUtils
 import com.zy.client.database.CollectModel
 import com.zy.client.http.ConfigManager
-import com.zy.client.http.sources.BaseSource
+import com.zy.client.http.repo.CommonRepository
 import com.zy.client.utils.ClipboardUtils
 import com.zy.client.utils.Utils
 import com.zy.client.utils.ext.*
@@ -34,7 +34,7 @@ import org.greenrobot.eventbus.EventBus
  */
 class VideoDetailActivity : BaseActivity() {
 
-    private lateinit var source: BaseSource
+    private lateinit var source: CommonRepository
     private lateinit var id: String
     private lateinit var videoPlayer: IjkVideoView
     private lateinit var statusView: LoaderLayout
@@ -44,6 +44,7 @@ class VideoDetailActivity : BaseActivity() {
     private var mVideoDetail: VideoDetail? = null
     private var mVideo: Video? = null
     private var mVideoList: List<Video>? = null
+    private var mCurrVideoListPos = 0
 
     private var mSelectDialog: BottomListPopupView? = null
 
@@ -64,6 +65,7 @@ class VideoDetailActivity : BaseActivity() {
         if (videoController == null) {
             videoController = VideoController()
             videoController?.init(this, videoPlayer)
+            videoPlayer.isLive = false
         }
     }
 
@@ -92,16 +94,18 @@ class VideoDetailActivity : BaseActivity() {
                 .minus(if (hasLiuHai) 0 else DimensionUtils.getStatusBarHeight())
 
         llAnthology.setOnClickListener {
-            if (!mVideoList.isNullOrEmpty()) {
+            if (mVideoList?.size ?: 0 > 1) {
                 if (mSelectDialog == null) {
+                    mCurrVideoListPos = mVideoList?.lastIndex ?: 0
                     mSelectDialog = XPopup.Builder(this)
                         .maxHeight(dialogHeight)
                         .asBottomList(
                             "选集",
                             mVideoList?.map { it.name }?.toTypedArray(),
                             null,
-                            0 //传0会显示选中的✔号
+                            mCurrVideoListPos //传0会显示选中的✔号
                         ) { position, _ ->
+                            mCurrVideoListPos = position
                             playVideo(mVideoList?.get(position))
                         }
                         .bindLayout(R.layout.fragment_search_result)
@@ -114,18 +118,18 @@ class VideoDetailActivity : BaseActivity() {
         //收藏
         ivCollect.setOnClickListener {
             if (ivCollect.isSelected) {
-                val delete = CollectDBUtils.delete(id + source.key)
+                val delete = CollectDBUtils.delete(id + source.req.key)
                 if (delete) {
                     ivCollect.isSelected = false
                     EventBus.getDefault().postSticky(CollectEvent())
                 } else toastShort("取消收藏失败")
             } else {
                 val collectDBModel = CollectModel()
-                collectDBModel.uniqueKey = id + source.key
+                collectDBModel.uniqueKey = id + source.req.key
                 collectDBModel.videoId = id
                 collectDBModel.name = mVideoDetail?.name
-                collectDBModel.sourceKey = source.key
-                collectDBModel.sourceName = source.name
+                collectDBModel.sourceKey = source.req.key
+                collectDBModel.sourceName = source.req.name
                 CollectDBUtils.saveAsync(collectDBModel) {
                     if (it) {
                         ivCollect.isSelected = true
@@ -167,7 +171,7 @@ class VideoDetailActivity : BaseActivity() {
     override fun initData() {
         super.initData()
 
-        CollectDBUtils.searchAsync(id + source.key) {
+        CollectDBUtils.searchAsync(id + source.req.key) {
             if (it != null && it.isSaved) {
                 ivCollect.isSelected = true
             }
@@ -208,14 +212,17 @@ class VideoDetailActivity : BaseActivity() {
         videoDetail.run {
             mVideoList = this.videoList?.reversed()
             //是否支持选集
-            if (mVideoList?.isEmpty() == false) {
+            if (mVideoList?.size ?: 0 > 1) {
                 ivPlayMore.visible()
                 statusView.setLoadState(LoadState.SUCCESS)
             } else {
                 ivPlayMore.invisible()
                 statusView.setLoadState(LoadState.EMPTY)
             }
-            playVideo(mVideoList?.get(0))
+
+            mCurrVideoListPos = mVideoList?.lastIndex ?: 0
+            playVideo(mVideoList?.get(mCurrVideoListPos))
+            //playVideo(mVideoList?.get(0))
 
             //名字
             tvName.text = name

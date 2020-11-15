@@ -1,4 +1,4 @@
-package com.zy.client.http.sources
+package com.zy.client.http.repo
 
 import com.lzy.okgo.OkGo
 import com.lzy.okgo.callback.StringCallback
@@ -7,19 +7,25 @@ import com.zy.client.bean.DownloadData
 import com.zy.client.bean.HomeData
 import com.zy.client.bean.VideoDetail
 import com.zy.client.bean.VideoSource
+import com.zy.client.http.NetSourceParser.parseDetailData
+import com.zy.client.http.NetSourceParser.parseDownloadData
+import com.zy.client.http.NetSourceParser.parseHomeChannelData
+import com.zy.client.http.NetSourceParser.parseHomeData
+import com.zy.client.http.NetSourceParser.parseNewVideo
 
 /**
  * @author javakam
  *
- * @date 2020/9/13 9:51
- * @desc 通用的解析视频源
+ * @date 2020/9/2 21:47
+ * @desc OK 资源网
  */
-class CommonSource(
-    override val key: String,
-    override val name: String,
-    override val baseUrl: String,
-    override val downloadBaseUrl: String
-) : BaseSource() {
+
+class OKZYWRepository(
+    val baseUrl: String = "http://cj.okzy.tv/inc/api.php",
+    val downloadBaseUrl: String = "http://cj.okzy.tv/inc/apidown.php",
+    val name: String = "OK 资源网",
+    val key: String = "okzy"
+) : IRepository {
 
     override fun requestHomeData(callback: (t: HomeData?) -> Unit) {
         OkGo.get<String>(baseUrl)
@@ -29,7 +35,6 @@ class CommonSource(
                     try {
                         callback.invoke(parseHomeData(response?.body()))
                     } catch (e: Exception) {
-                        e.printStackTrace()
                     }
                 }
 
@@ -38,7 +43,6 @@ class CommonSource(
                     try {
                         callback.invoke(null)
                     } catch (e: Exception) {
-                        e.printStackTrace()
                     }
                 }
             })
@@ -56,7 +60,6 @@ class CommonSource(
                     try {
                         callback.invoke(parseHomeChannelData(response?.body()))
                     } catch (e: Exception) {
-                        e.printStackTrace()
                     }
                 }
 
@@ -65,7 +68,6 @@ class CommonSource(
                     try {
                         callback.invoke(null)
                     } catch (e: Exception) {
-                        e.printStackTrace()
                     }
                 }
             })
@@ -83,7 +85,6 @@ class CommonSource(
                     try {
                         callback.invoke(parseNewVideo(response?.body()))
                     } catch (e: Exception) {
-                        e.printStackTrace()
                     }
                 }
 
@@ -92,7 +93,6 @@ class CommonSource(
                     try {
                         callback.invoke(null)
                     } catch (e: Exception) {
-                        e.printStackTrace()
                     }
                 }
             })
@@ -106,7 +106,6 @@ class CommonSource(
                     try {
                         callback.invoke(parseDetailData(key, response?.body()))
                     } catch (e: Exception) {
-                        e.printStackTrace()
                     }
                 }
 
@@ -115,7 +114,6 @@ class CommonSource(
                     try {
                         callback.invoke(null)
                     } catch (e: Exception) {
-                        e.printStackTrace()
                     }
                 }
             })
@@ -129,7 +127,6 @@ class CommonSource(
                     try {
                         callback.invoke(parseDownloadData(response?.body()))
                     } catch (e: Exception) {
-                        e.printStackTrace()
                     }
                 }
 
@@ -138,9 +135,9 @@ class CommonSource(
                     try {
                         callback.invoke(null)
                     } catch (e: Exception) {
-                        e.printStackTrace()
                     }
                 }
             })
     }
+
 }

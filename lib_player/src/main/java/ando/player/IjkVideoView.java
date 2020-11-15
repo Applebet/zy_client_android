@@ -65,11 +65,9 @@ public class IjkVideoView extends BaseIjkVideoView<AndoIjkPlayer> {
         //https://zhuanlan.zhihu.com/p/47060105
         //https://www.cnblogs.com/renhui/p/6420140.html
         if (isLive()) {//如果是直播设置 秒开配置，其余正常配置
-            mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "start-on-prepared", 0);
             mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "http-detect-range-support", 0);
             mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "analyzeduration", 1);
-            //rtsp 问题 >>>>>>>>>>>
-            //rtsp 设置 https://ffmpeg.org/ffmpeg-protocols.html#rtsp
+            //rtsp 问题 https://ffmpeg.org/ffmpeg-protocols.html#rtsp >>>>>>>>>>>
             mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "rtsp_transport", "tcp");//tcp传输数据
             mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "rtsp_flags", "prefer_tcp");
             mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "allowed_media_types", "video");//根据媒体类型来配置
@@ -78,13 +76,13 @@ public class IjkVideoView extends BaseIjkVideoView<AndoIjkPlayer> {
             //input buffer:don't limit the input buffer size (useful with realtime streams)
             mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "infbuf", 1);//无限读, 是否限制输入缓存数 30
             mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "analyzemaxduration", 100L);
-            mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "probesize", 200);//10240
+            mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "probesize", 10240);//10240 200
             mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "flush_packets", 1L);
             //关闭播放器缓冲，这个必须关闭，否则会出现播放一段时间后，一直卡主，控制台打印 FFP_MSG_BUFFERING_START
             //pause output until enough packets have been read after stalling
             mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "packet-buffering", 0L);
             //设置丢帧 音视同步,太卡可以尝试丢帧  drop frames when cpu is too slow：0-120
-            mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "framedrop", 1L);
+            mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "framedrop", 5L);
 
             mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "fast", 1L);//不额外优化
             //automatically start playing on prepared
@@ -99,13 +97,13 @@ public class IjkVideoView extends BaseIjkVideoView<AndoIjkPlayer> {
             ///rtsp 问题 <<<<<<<<<<
         } else {
             mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "framedrop", 50);
-            mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "max_cached_duration", 0);
+            mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "max_cached_duration", 10);
             mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "infbuf", 0);
             mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "packet-buffering", 1);
-            // 设置缓冲区为 300 KB
-            mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "max-buffer-size", 300 * 1024);
-            // 视频的话，设置 30 帧即开始播放
-            mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "min-frames", 30);
+            // 设置缓冲区为 500 KB
+            mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "max-buffer-size", 500 * 1024);
+            // 视频的话，设置 60 帧即开始播放
+            mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "min-frames", 60);
             mMediaPlayer.setSpeed(1F);
         }
 
@@ -178,7 +176,6 @@ public class IjkVideoView extends BaseIjkVideoView<AndoIjkPlayer> {
         //super.onPrepared();
         setPlayState(STATE_PREPARED);
     }
-
 
     @Override
     public void skipPositionWhenPlay(int position) {

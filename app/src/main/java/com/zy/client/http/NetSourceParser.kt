@@ -1,47 +1,14 @@
-package com.zy.client.http.sources
+package com.zy.client.http
 
 import android.util.Log
 import com.lzy.okgo.OkGo
 import com.zy.client.bean.*
-import com.zy.client.utils.GsonUtils
 import com.zy.client.utils.Utils
 import com.zy.client.utils.ext.isVideoUrl
 import org.json.JSONArray
 import org.json.JSONObject
 
-/**
- * @author javakam
- *
- * @date 2020/9/2 21:17
- */
-abstract class BaseSource {
-    abstract val key: String
-    abstract val name: String
-    abstract val baseUrl: String
-    abstract val downloadBaseUrl: String
-
-    //请求首页数据
-    abstract fun requestHomeData(callback: (t: HomeData?) -> Unit)
-
-    //请求频道列表数据
-    abstract fun requestHomeChannelData(
-        page: Int,
-        tid: String,
-        callback: (t: ArrayList<VideoSource>?) -> Unit
-    )
-
-    //请求搜索数据
-    abstract fun requestSearchData(
-        searchWord: String,
-        page: Int,
-        callback: (t: ArrayList<VideoSource>?) -> Unit
-    )
-
-    //请求详情数据
-    abstract fun requestDetailData(id: String, callback: (t: VideoDetail?) -> Unit)
-
-    //请求下载列表
-    abstract fun requestDownloadData(id: String, callback: (t: ArrayList<DownloadData>?) -> Unit)
+object NetSourceParser {
 
     //以下为解析数据
     fun parseHomeData(data: String?): HomeData? {
@@ -245,7 +212,8 @@ abstract class BaseSource {
         return arrayListOf()
     }
 
-    fun cancelAll() {
+    fun cancelAll(key: Any) {
         OkGo.cancelTag(OkGo.getInstance().okHttpClient, key)
     }
+
 }

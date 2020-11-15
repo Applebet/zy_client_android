@@ -8,7 +8,7 @@ package com.zy.client.bean
 data class HomeData(val videoList: ArrayList<VideoSource>, val classifyList: ArrayList<Classify>)
 data class DownloadData(val name: String, val downloadUrl: String)
 
-//新更新的资源
+//Channel Item
 data class VideoSource(
     //视频id
     val id: String? = "",

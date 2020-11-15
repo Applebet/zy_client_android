@@ -9,7 +9,7 @@ import com.zy.client.R
 import com.zy.client.common.BaseLoadMoreAdapter
 import com.zy.client.http.ConfigManager
 import com.zy.client.utils.ext.noNull
-import com.zy.client.http.sources.BaseSource
+import com.zy.client.http.repo.CommonRepository
 import com.zy.client.bean.VideoSource
 import com.zy.client.base.BaseListFragment
 import com.zy.client.common.AppRouter
@@ -22,7 +22,7 @@ import com.zy.client.common.AppRouter
  */
 class SearchResultFragment : BaseListFragment<VideoSource, BaseViewHolder>() {
 
-    private lateinit var source: BaseSource
+    private lateinit var source: CommonRepository
     private lateinit var searchWord: String
 
     companion object {
@@ -42,9 +42,9 @@ class SearchResultFragment : BaseListFragment<VideoSource, BaseViewHolder>() {
     override fun getListAdapter(): BaseLoadMoreAdapter<VideoSource, BaseViewHolder> {
         return SearchResultAdapter().apply {
             setOnItemClickListener { _, _, position ->
-                AppRouter.toDetailActivity(
+                AppRouter.toVideoDetailActivity(
                     baseActivity,
-                    source.key,
+                    source.req.key,
                     data[position].id.noNull()
                 )
             }

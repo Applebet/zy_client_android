@@ -7,6 +7,10 @@
         android:title="@string/title_home" />
 
     <item
+        android:id="@+id/navigation_iptv"
+        android:icon="@drawable/ic_nav_iptv"
+        android:title="@string/title_iptv" />
+    <item
         android:id="@+id/navigation_collect"
         android:icon="@drawable/ic_nav_collect"
         android:title="@string/title_collect" />

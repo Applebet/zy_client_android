@@ -2,6 +2,7 @@
 <resources>
     <string name="app_name">酷优</string>
     <string name="title_home">首页</string>
+    <string name="title_iptv">电视</string>
     <string name="title_collect">收藏</string>
     <string name="title_mine">我的</string>
     <string name="data_loading">数据加载中...</string>

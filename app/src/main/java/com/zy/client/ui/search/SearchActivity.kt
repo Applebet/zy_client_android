@@ -32,7 +32,7 @@ class SearchActivity : BaseActivity() {
 
     override fun initView() {
         initTitleBar()
-        sourceKey = ConfigManager.curUseSourceConfig().key
+        sourceKey = ConfigManager.curUseSourceConfig().req.key
         changeEditHint()
         viewHistory.visible()
         viewHistory.updateHistory()

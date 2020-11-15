@@ -2,6 +2,7 @@ package com.zy.client
 
 import ando.player.utils.ProgressManagerImpl
 import android.app.Application
+import android.util.Log
 import com.dueeeke.videoplayer.BuildConfig
 import com.dueeeke.videoplayer.ijk.IjkPlayerFactory
 import com.dueeeke.videoplayer.player.VideoViewConfig
@@ -9,6 +10,8 @@ import com.dueeeke.videoplayer.player.VideoViewManager
 import com.lzy.okgo.OkGo
 import com.lzy.okgo.cache.CacheEntity
 import com.lzy.okgo.cache.CacheMode
+import com.zy.client.database.TvDBUtils
+import com.zy.client.database.TvModel
 import com.zy.client.http.ConfigManager
 import org.litepal.LitePal
 
@@ -28,7 +31,7 @@ class App : Application() {
 
         LitePal.initialize(this)
 
-        ConfigManager.sourceConfigs      //读取下视频源的配置
+        initDataConfig()
 
         OkGo.getInstance().init(this)
             //建议设置OkHttpClient，不设置将使用默认的
@@ -64,4 +67,20 @@ class App : Application() {
                 .build()
         )
     }
+
+    private fun initDataConfig() {
+        //读取视频源配置
+        ConfigManager.sourceConfigs
+        //读取TV源配置
+        val tvModels = ConfigManager.sourceTvConfigs
+        TvDBUtils.isExit().apply {
+            if (!this) {
+                TvDBUtils.saveAllAsync(tvModels){
+                    Log.i("123",".............. $it ${LitePal.count(TvModel::class.java)}")
+                }
+            }
+        }
+    }
+
+
 }
