@@ -46,10 +46,10 @@ object ConfigManager {
         configMap
     }
 
-    val sourceTvConfigs: LinkedHashMap<String, TvModel> by lazy {
+    val sourceTvConfigs: LinkedHashMap<String, MutableList<TvModel>> by lazy {
         val configJson = Utils.readAssetsData("iptv.json")
         val configArray = JSONArray(configJson)
-        val configMap = LinkedHashMap<String, TvModel>()
+        val configMap = LinkedHashMap<String, MutableList<TvModel>>()
         for (i in 0 until configArray.length()) {
             val config = configArray.optJSONObject(i)
             val id = config.getInt("id")
@@ -58,7 +58,10 @@ object ConfigManager {
             val group = config.getString("group").noNull("其他")
             val isActive = config.getBoolean("isActive")
             if (config != null && !name.isNullOrBlank() && !url.isNullOrBlank()) {
-                configMap[group] = TvModel(id = id, name = name, url = url, group = group, isActive = isActive)
+                if (configMap[group] == null) {
+                    configMap[group] = mutableListOf()
+                }
+                configMap[group]?.add(TvModel(id = id, name = name, url = url, group = group, isActive = isActive))
             }
         }
         configMap

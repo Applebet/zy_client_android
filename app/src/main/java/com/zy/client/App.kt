@@ -73,10 +73,13 @@ class App : Application() {
         ConfigManager.sourceConfigs
         //读取TV源配置
         val tvModels = ConfigManager.sourceTvConfigs
+        Log.i("123", ".............. ${tvModels.size}")
+        val list = mutableListOf<TvModel>()
+        tvModels.values.forEach { list.addAll(it) }
         TvDBUtils.isExit().apply {
             if (!this) {
-                TvDBUtils.saveAllAsync(tvModels.values.toList()) {
-                    Log.i("123", ".............. $it ${LitePal.count(TvModel::class.java)}")
+                TvDBUtils.saveAllAsync(list) {
+                    //Log.i("123", ".............. $it ${LitePal.count(TvModel::class.java)}")
                 }
             }
         }
