@@ -1,5 +1,6 @@
 package com.zy.client
 
+import ando.player.pip.PIPManager
 import ando.player.utils.ProgressManagerImpl
 import android.app.Application
 import android.util.Log
@@ -51,7 +52,6 @@ class App : Application() {
 //        CacheFactory.setCacheManager(ExoPlayerCacheManager::class.java)
 
         //播放器配置，注意：此为全局配置，按需开启
-        //播放器配置，注意：此为全局配置，按需开启
         VideoViewManager.setConfig(
             VideoViewConfig.newBuilder()
                 .setLogEnabled(BuildConfig.DEBUG)
@@ -66,6 +66,7 @@ class App : Application() {
                 .setProgressManager(ProgressManagerImpl())
                 .build()
         )
+        PIPManager.init(this)
     }
 
     private fun initDataConfig() {

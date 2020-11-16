@@ -71,13 +71,13 @@ public class DebugInfoView extends AppCompatTextView implements IControlComponen
      * Returns the debugging information string to be shown by the target {@link TextView}.
      */
     protected String getDebugString(int playState) {
-        return getCurrentPlayer() + Utils.playState2str(playState) + "\n"
+        return getCurrentPlayer() + PlayerUtils.playState2str(playState) + "\n"
                 + "video width: " + mControlWrapper.getVideoSize()[0] + " , height: " + mControlWrapper.getVideoSize()[1];
     }
 
     protected String getCurrentPlayer() {
         String player;
-        Object playerFactory = Utils.getCurrentPlayerFactory();
+        Object playerFactory = PlayerUtils.getCurrentPlayerFactory();
 //        if (playerFactory instanceof ExoMediaPlayerFactory) {
 //            player = "ExoPlayer";
 //        }

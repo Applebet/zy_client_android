@@ -10,9 +10,16 @@ import com.dueeeke.videoplayer.player.VideoViewManager;
 
 import java.lang.reflect.Field;
 
-public final class Utils {
+public final class PlayerUtils {
 
-    private Utils() {
+    //列表播放
+    public static final String LIST = "list";
+    //无缝播放
+    public static final String SEAMLESS = "seamless";
+    //画中画
+    public static final String PIP = "pip";
+
+    private PlayerUtils() {
     }
 
     /**
@@ -35,7 +42,9 @@ public final class Utils {
      * 将View从父控件中移除
      */
     public static void removeViewFormParent(View v) {
-        if (v == null) return;
+        if (v == null) {
+            return;
+        }
         ViewParent parent = v.getParent();
         if (parent instanceof FrameLayout) {
             ((FrameLayout) parent).removeView(v);

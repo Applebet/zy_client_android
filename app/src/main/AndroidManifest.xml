@@ -88,9 +88,9 @@
         <activity
             android:name=".ui.search.SearchActivity"
             android:launchMode="singleTop"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.ScaleActivity"
-            android:windowSoftInputMode="stateVisible"
-            android:screenOrientation="portrait" />
+            android:windowSoftInputMode="stateVisible" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

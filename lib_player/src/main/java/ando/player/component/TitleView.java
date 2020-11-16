@@ -37,6 +37,8 @@ public class TitleView extends FrameLayout implements IControlComponent {
     private final TextView mTitle;
     private final TextView mSysTime;//系统当前时间
 
+    private boolean isShowPortraitTitle = false;//竖屏是否显示TitleView, 默认不显示
+
     private final BatteryReceiver mBatteryReceiver;
     private boolean mIsRegister;//是否注册BatteryReceiver
 
@@ -69,12 +71,24 @@ public class TitleView extends FrameLayout implements IControlComponent {
         });
         mTitle = findViewById(R.id.title);
         mSysTime = findViewById(R.id.sys_time);
+        //悬浮窗
+//        ImageView pip = findViewById(R.id.iv_pip);
+//        pip.setOnClickListener(new OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//            }
+//        });
+
         //电量
         ImageView batteryLevel = findViewById(R.id.iv_battery);
         mBatteryReceiver = new BatteryReceiver(batteryLevel);
     }
 
     public void setTitle(String title) {
+        if (isShowPortraitTitle) {
+            return;//竖屏不设置标题
+        }
         mTitle.setText(title);
     }
 
@@ -109,7 +123,7 @@ public class TitleView extends FrameLayout implements IControlComponent {
     @Override
     public void onVisibilityChanged(boolean isVisible, Animation anim) {
         //只在全屏时才有效
-        if (!mControlWrapper.isFullScreen()) {
+        if (!mControlWrapper.isFullScreen() && !isShowPortraitTitle) {
             return;
         }
         if (isVisible) {
@@ -154,7 +168,9 @@ public class TitleView extends FrameLayout implements IControlComponent {
             }
             mTitle.setSelected(true);
         } else {
-            setVisibility(GONE);
+            if (!isShowPortraitTitle) {
+                setVisibility(GONE);
+            }
             mTitle.setSelected(false);
         }
 
@@ -186,6 +202,10 @@ public class TitleView extends FrameLayout implements IControlComponent {
         }
     }
 
+    public void setPortraitVisibility(boolean visible) {
+        this.isShowPortraitTitle = visible;
+    }
+
     private static class BatteryReceiver extends BroadcastReceiver {
         private final ImageView pow;
 
@@ -196,7 +216,9 @@ public class TitleView extends FrameLayout implements IControlComponent {
         @Override
         public void onReceive(Context context, Intent intent) {
             Bundle extras = intent.getExtras();
-            if (extras == null) return;
+            if (extras == null) {
+                return;
+            }
             int current = extras.getInt("level");// 获得当前电量
             int total = extras.getInt("scale");// 获得总电量
             int percent = current * 100 / total;

@@ -4,13 +4,10 @@ import android.content.Context;
 
 import com.dueeeke.videoplayer.ijk.IjkPlayer;
 
-public class AndoIjkPlayer extends IjkPlayer {
+public class BaseIjkPlayer extends IjkPlayer {
 
-    private Context mContext;
-
-    public AndoIjkPlayer(Context context) {
+    public BaseIjkPlayer(Context context) {
         super(context);
-        this.mContext = context;
     }
 
     public void setOption(int category, String name, String value) {

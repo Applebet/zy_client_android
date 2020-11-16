@@ -1,15 +1,20 @@
 package com.zy.client.ui.video
 
 import ando.player.IjkVideoView
+import ando.player.pip.PIPManager
+import ando.player.utils.PlayerUtils
 import android.graphics.Color
+import android.view.MenuItem
+import android.widget.FrameLayout
+import com.dueeeke.videoplayer.player.VideoViewManager
 import com.dueeeke.videoplayer.util.CutoutUtil
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.impl.BottomListPopupView
 import com.wuhenzhizao.titlebar.statusbar.StatusBarUtils
 import com.zy.client.R
 import com.zy.client.base.BaseActivity
-import com.zy.client.bean.VideoDetail
 import com.zy.client.bean.Video
+import com.zy.client.bean.VideoDetail
 import com.zy.client.bean.event.CollectEvent
 import com.zy.client.common.ID
 import com.zy.client.common.SOURCE_KEY
@@ -39,6 +44,7 @@ class VideoDetailActivity : BaseActivity() {
     private lateinit var videoPlayer: IjkVideoView
     private lateinit var statusView: LoaderLayout
 
+    private lateinit var mPIPManager: PIPManager
     private var videoController: VideoController? = null
     private var webController: WebController? = null
     private var mVideoDetail: VideoDetail? = null
@@ -58,15 +64,21 @@ class VideoDetailActivity : BaseActivity() {
         source = ConfigManager.generateSource(sourceKey.noNull())
         id = intent?.getStringExtra(ID).noNull()
 
-        videoPlayer = findViewById(R.id.videoPlayer)
         statusView = findViewById(R.id.statusView)
         statusView.setLoadState(LoadState.LOADING)
+
+        videoPlayer = VideoViewManager.instance().get(PlayerUtils.PIP) as IjkVideoView
+        mPIPManager = PIPManager.get()
+
         //初始化视频控制
-        if (videoController == null) {
-            videoController = VideoController()
-            videoController?.init(this, videoPlayer)
-            videoPlayer.isLive = false
-        }
+        videoController = VideoController()
+        videoController?.init(this, videoPlayer)
+        videoController?.setPIPManager(mPIPManager)
+        videoPlayer.isLive = false
+
+        val playerContainer = findViewById<FrameLayout>(R.id.playerContainer)
+
+        playerContainer.addView(videoPlayer)
     }
 
     override fun initListener() {
@@ -182,15 +194,24 @@ class VideoDetailActivity : BaseActivity() {
         }
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
+            finish()
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
     override fun onPause() {
         webController?.onPause()
         videoController?.onPause()
+        mPIPManager.pause()
         super.onPause()
     }
 
     override fun onResume() {
         webController?.onResume()
         videoController?.onResume()
+        mPIPManager.resume()
         super.onResume()
     }
 
@@ -198,10 +219,14 @@ class VideoDetailActivity : BaseActivity() {
         mSelectDialog?.dismiss()
         webController?.onDestroy()
         videoController?.onDestroy()
+        mPIPManager.reset()
         super.onDestroy()
     }
 
     override fun onBackPressed() {
+        if (mPIPManager.onBackPress()) {
+            return
+        }
         if (videoController?.onBackPressed() == true || webController?.onBackPressed() == true) {
             super.onBackPressed()
         }
@@ -239,14 +264,24 @@ class VideoDetailActivity : BaseActivity() {
         if (video == null) return
         this.mVideo = video
         if (video.playUrl.isVideoUrl()) {
-            videoController?.startPlay(video.playUrl, "${mVideoDetail?.name.noNull()}  ${video.name.noNull()}")
+            //小窗
+            if (mPIPManager.isStartFloatWindow) {
+                mPIPManager.stopFloatWindow()
+                videoController?.setPlayerState(videoPlayer.currentPlayerState)
+                videoController?.setPlayerState(videoPlayer.currentPlayState)
+                //videoController?.mPIPManager?.resume()
+            } else {
+                mPIPManager.actClass = VideoDetailActivity::class.java
+                videoController?.startPlay(
+                    video.playUrl,
+                    "${mVideoDetail?.name.noNull()}  ${video.name.noNull()}"
+                )
+            }
+
             videoPlayer.visible()
             flWebView.gone()
         } else {
             //网页播放
-            if (webController == null) {
-                webController = WebController()
-            }
             webController?.loadUrl(this, video.playUrl, flWebView)
             videoPlayer.gone()
             flWebView.visible()

@@ -12,6 +12,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.zy.client.utils.overlay.SettingsCompat
 
 /**
  * <pre>
@@ -34,8 +35,9 @@ import androidx.core.content.ContextCompat
  */
 object PermissionManager {
 
-    const val REQUEST_EXTERNAL_STORAGE = 21
-    const val REQUEST_EXTERNAL_CAMERA = 22
+    const val REQUEST_EXTERNAL_STORAGE: Int = 21
+    const val REQUEST_EXTERNAL_CAMERA: Int = 22
+    const val REQUEST_OVERLAY: Int = 23
 
     var PERMISSIONS_STORAGE = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) arrayOf(
         Manifest.permission.READ_EXTERNAL_STORAGE
@@ -86,7 +88,7 @@ object PermissionManager {
         activity: Activity,
         vararg permissions: String
     ): Boolean {
-        var showRationale: Boolean = true
+        var showRationale = true
         if (permissions.isNotEmpty()) {
             for (permission in permissions) {
                 if (!ActivityCompat.shouldShowRequestPermissionRationale(
@@ -159,7 +161,7 @@ object PermissionManager {
             permissions.forEach {
                 //FileLogger.i( "权限 : $it")
             }
-            Log.i("123","handleRequestPermissionsResult showRationale=$showRationale ")
+            Log.i("123", "handleRequestPermissionsResult showRationale=$showRationale ")
             block.invoke(false, showRationale)
         }
     }
@@ -187,6 +189,28 @@ object PermissionManager {
             }
         }
         return true
+    }
+
+    /**
+     * 悬浮窗权限  AndroidManifest.xml
+     *
+     * <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+     */
+    fun overlay(activity: Activity, onGranted: () -> Unit = {}, onDenied: () -> Unit = {}) {
+        if (!SettingsCompat.canDrawOverlays(activity)) {
+            SettingsCompat.manageDrawOverlays(activity)
+            onDenied.invoke()
+        } else onGranted.invoke()
+
+        //simple
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            //检查是否已经授予权限
+//            if (!Settings.canDrawOverlays(activity)) {
+//                val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION)
+//                intent.data = Uri.parse("package:${activity.packageName}")
+//                activity.startActivityForResult(intent, REQUEST_OVERLAY)
+//            }
+//        }
     }
 
     /**

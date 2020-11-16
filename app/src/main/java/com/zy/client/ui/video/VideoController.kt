@@ -2,17 +2,17 @@ package com.zy.client.ui.video
 
 import ando.player.IjkVideoView
 import ando.player.StandardVideoController
-import ando.player.cache.ProxyVideoCacheManager
 import ando.player.component.*
+import ando.player.pip.PIPManager
+import android.app.Activity
 import android.content.Context
+import android.view.MenuItem
 import android.widget.ImageView
-import androidx.core.content.ContextCompat
-import com.danikula.videocache.HttpProxyCacheServer
+import com.dueeeke.videoplayer.controller.GestureVideoController
 import com.dueeeke.videoplayer.player.VideoView.*
 import com.dueeeke.videoplayer.util.L
-import com.zy.client.R
+import com.zy.client.utils.PermissionManager.overlay
 import com.zy.client.utils.ext.isVideoUrl
-import com.zy.client.utils.ext.loadImage
 import com.zy.client.utils.ext.noNull
 
 /**
@@ -23,20 +23,25 @@ class VideoController {
 
     companion object {
         //private const val THUMB = "https://cdn.pixabay.com/photo/2017/07/10/23/35/globe-2491989_960_720.jpg"
-        private const val THUMB = "https://cdn.pixabay.com/photo/2020/03/21/03/04/future-4952543_960_720.jpg"
-        private const val VOD_URL = "http://vfx.mtime.cn/Video/2019/03/14/mp4/190314223540373995.mp4"
+        private const val THUMB =
+            "https://cdn.pixabay.com/photo/2020/03/21/03/04/future-4952543_960_720.jpg"
+        private const val VOD_URL =
+            "http://vfx.mtime.cn/Video/2019/03/14/mp4/190314223540373995.mp4"
         private const val LIVE_URL = "http://220.161.87.62:8800/hls/0/index.m3u8"
     }
 
     private lateinit var context: Context
     private lateinit var videoPlayer: IjkVideoView
+    private lateinit var controller: GestureVideoController
     private lateinit var titleView: TitleView
+    var mPIPManager: PIPManager? = null
+    var currUrl: String? = null
 
     fun init(context: Context, ijkVideoView: IjkVideoView) {
         this.videoPlayer = ijkVideoView
         this.context = context
 
-        val controller = StandardVideoController(context)
+        controller = StandardVideoController(context)
 
         //在控制器上显示调试信息
         //controller.addControlComponent(DebugInfoView(context))
@@ -57,6 +62,7 @@ class VideoController {
         controller.addControlComponent(ErrorView(context)) //错误界面
 
         titleView = TitleView(context) //标题栏
+        titleView.setPortraitVisibility(true)
         controller.addControlComponent(titleView)
 
         //根据是否为直播设置不同的底部控制条
@@ -113,45 +119,49 @@ class VideoController {
         //videoPlayer.setPlayerFactory(AndroidMediaPlayerFactory.create())
 
         videoPlayer.setScreenScaleType(SCREEN_SCALE_16_9)
+
+        initPipClick()
+
     }
 
-    private val mOnStateChangeListener: OnStateChangeListener = object : SimpleOnStateChangeListener() {
-        override fun onPlayerStateChanged(playerState: Int) {
-            when (playerState) {
-                PLAYER_NORMAL -> {
+    private val mOnStateChangeListener: OnStateChangeListener =
+        object : SimpleOnStateChangeListener() {
+            override fun onPlayerStateChanged(playerState: Int) {
+                when (playerState) {
+                    PLAYER_NORMAL -> {
+                    }
+                    PLAYER_FULL_SCREEN -> {
+                    }
                 }
-                PLAYER_FULL_SCREEN -> {
+            }
+
+            override fun onPlayStateChanged(playState: Int) {
+                when (playState) {
+                    STATE_IDLE -> {
+                    }
+                    STATE_PREPARING -> {
+                    }
+                    STATE_PREPARED -> {
+                    }
+                    STATE_PLAYING -> {
+                        //需在此时获取视频宽高
+                        val videoSize: IntArray = videoPlayer.videoSize
+                        L.d("视频宽：" + videoSize[0])
+                        L.d("视频高：" + videoSize[1])
+                    }
+                    STATE_PAUSED -> {
+                    }
+                    STATE_BUFFERING -> {
+                    }
+                    STATE_BUFFERED -> {
+                    }
+                    STATE_PLAYBACK_COMPLETED -> {
+                    }
+                    STATE_ERROR -> {
+                    }
                 }
             }
         }
-
-        override fun onPlayStateChanged(playState: Int) {
-            when (playState) {
-                STATE_IDLE -> {
-                }
-                STATE_PREPARING -> {
-                }
-                STATE_PREPARED -> {
-                }
-                STATE_PLAYING -> {
-                    //需在此时获取视频宽高
-                    val videoSize: IntArray = videoPlayer.videoSize
-                    L.d("视频宽：" + videoSize[0])
-                    L.d("视频高：" + videoSize[1])
-                }
-                STATE_PAUSED -> {
-                }
-                STATE_BUFFERING -> {
-                }
-                STATE_BUFFERED -> {
-                }
-                STATE_PLAYBACK_COMPLETED -> {
-                }
-                STATE_ERROR -> {
-                }
-            }
-        }
-    }
 
     /**
      * use cache :
@@ -162,18 +172,48 @@ class VideoController {
      */
     fun startPlay(videoUrl: String?, title: String?) {
         if (videoUrl?.isVideoUrl() == false) return
+        currUrl = videoUrl
         titleView.setTitle(title.noNull())
         videoPlayer.release()
         videoPlayer.setUrl(videoUrl)
         videoPlayer.start()
     }
 
-    fun onPause() {
-        videoPlayer.pause()
+    /**
+     * 悬浮窗按钮
+     */
+    fun initPipClick() {
+        val ivPip: ImageView = titleView.findViewById(ando.player.R.id.iv_pip)
+        ivPip.setOnClickListener {
+            overlay(context as Activity, onGranted = {
+                mPIPManager?.startFloatWindow()
+                mPIPManager?.resume()
+                (context as Activity).finish()
+            })
+        }
     }
+
+    fun setPIPManager(pipManager: PIPManager) {
+        this.mPIPManager = pipManager
+    }
+
+    fun setPlayerState(playState: Int) {
+        controller.setPlayState(playState)
+    }
+
+//    fun onOptionsItemSelected(item: MenuItem): Boolean {
+//        if (item.itemId == android.R.id.home) {
+//            (context as Activity).finish()
+//        }
+//        return (context as Activity).onOptionsItemSelected(item)
+//    }
 
     fun onResume() {
         videoPlayer.resume()
+    }
+
+    fun onPause() {
+        videoPlayer.pause()
     }
 
     fun onDestroy() {

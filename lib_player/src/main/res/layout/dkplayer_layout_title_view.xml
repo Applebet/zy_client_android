@@ -36,9 +36,20 @@
             tools:text="这是一个标题" />
 
         <ImageView
+            android:id="@+id/iv_pip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:layout_marginEnd="6dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/bz6" />
+
+        <ImageView
             android:id="@+id/iv_battery"
-            android:layout_width="26dp"
+            android:layout_width="24dp"
             android:layout_height="20dp"
+            android:layout_marginEnd="6dp"
+            android:scaleType="centerCrop"
             android:src="@drawable/dkplayer_battery_level" />
 
         <TextView
