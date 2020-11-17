@@ -166,6 +166,7 @@ public class VodControlView extends FrameLayout implements IControlComponent, Vi
             case VideoView.STATE_BUFFERED:
                 mPlayButton.setSelected(mControlWrapper.isPlaying());
                 break;
+            default:
         }
     }
 
@@ -178,6 +179,7 @@ public class VodControlView extends FrameLayout implements IControlComponent, Vi
             case VideoView.PLAYER_FULL_SCREEN:
                 mFullScreen.setSelected(true);
                 break;
+            default:
         }
 
         Activity activity = PlayerUtils.scanForActivity(getContext());

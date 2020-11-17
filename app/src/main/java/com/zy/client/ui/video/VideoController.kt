@@ -161,9 +161,9 @@ class VideoController {
 
         //设置
         ivSetting.setOnClickListener {
-            XPopup.Builder(context).asConfirm(
-                "是否开启后台播放", ""
-            ) {
+            val s=XPopup.Builder(context).asConfirm(
+                "是否开启后台播放?", ""
+            ){
                 UserSetting.setBackgroundPlay(context, true)
             }.show()
         }
