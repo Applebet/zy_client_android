@@ -4,12 +4,14 @@ import ando.player.IjkVideoView
 import ando.player.StandardVideoController
 import ando.player.component.*
 import ando.player.pip.PIPManager
+import ando.player.utils.VideoUtils
 import android.app.Activity
 import android.content.Context
 import android.view.MenuItem
 import android.widget.ImageView
 import com.dueeeke.videoplayer.controller.GestureVideoController
 import com.dueeeke.videoplayer.player.VideoView.*
+import com.dueeeke.videoplayer.player.VideoViewManager
 import com.dueeeke.videoplayer.util.L
 import com.zy.client.utils.PermissionManager.overlay
 import com.zy.client.utils.ext.isVideoUrl
@@ -31,13 +33,32 @@ class VideoController {
     }
 
     private lateinit var context: Context
-    private lateinit var videoPlayer: IjkVideoView
     private lateinit var controller: GestureVideoController
     private lateinit var titleView: TitleView
-    var mPIPManager: PIPManager? = null
+    lateinit var videoPlayer: IjkVideoView
+    var pipManager: PIPManager? = null
     var currUrl: String? = null
+    var enableBackgroundPlay = false
 
-    fun init(context: Context, ijkVideoView: IjkVideoView) {
+    fun init(context: Context, isLive: Boolean) {
+        this.pipManager = PIPManager.get()
+        val videoPlayer = VideoViewManager.instance().get(VideoUtils.PIP) as IjkVideoView
+        init(context = context, ijkVideoView = videoPlayer, isLive = isLive){
+            //从 FloatView 上移除 VideoView
+            if (pipManager?.isStartFloatWindow == true) {
+                pipManager?.stopFloatWindow()
+                controller.setPlayerState(videoPlayer.currentPlayerState)
+                controller.setPlayState(videoPlayer.currentPlayState)
+            }
+        }
+    }
+
+    fun init(
+        context: Context,
+        ijkVideoView: IjkVideoView,
+        isLive: Boolean,
+        block: () -> Unit = {}
+    ) {
         this.videoPlayer = ijkVideoView
         this.context = context
 
@@ -66,7 +87,6 @@ class VideoController {
         controller.addControlComponent(titleView)
 
         //根据是否为直播设置不同的底部控制条
-        val isLive = false
         if (isLive) {
             controller.addControlComponent(LiveControlView(context)) //直播控制条
         } else {
@@ -120,8 +140,9 @@ class VideoController {
 
         videoPlayer.setScreenScaleType(SCREEN_SCALE_16_9)
 
-        initPipClick()
+        initPipEvent()
 
+        block.invoke()
     }
 
     private val mOnStateChangeListener: OnStateChangeListener =
@@ -171,56 +192,74 @@ class VideoController {
      *      videoPlayer.setUrl(proxyUrl)
      */
     fun startPlay(videoUrl: String?, title: String?) {
-        if (videoUrl?.isVideoUrl() == false) return
+        if (videoUrl?.isVideoUrl() == false || videoPlayer.isPlaying) return
         currUrl = videoUrl
         titleView.setTitle(title.noNull())
         videoPlayer.release()
-        videoPlayer.setUrl(videoUrl)
+        videoPlayer.setUrl(VOD_URL)//videoUrl
         videoPlayer.start()
     }
 
     /**
+     * 小窗返回的页面
+     */
+    fun setRecoverActivity(clz: Class<*>) {
+        pipManager?.actClass = clz
+    }
+
+    fun setVideoTag(any: Any?) {
+        any?.apply {
+            pipManager?.videoTag = any
+        }
+    }
+
+    fun getVideoTag(): Any? = pipManager?.videoTag
+
+    /**
      * 悬浮窗按钮
      */
-    fun initPipClick() {
+    fun initPipEvent() {
         val ivPip: ImageView = titleView.findViewById(ando.player.R.id.iv_pip)
         ivPip.setOnClickListener {
             overlay(context as Activity, onGranted = {
-                mPIPManager?.startFloatWindow()
-                mPIPManager?.resume()
+                pipManager?.startFloatWindow()
+                pipManager?.resume()
                 (context as Activity).finish()
             })
         }
     }
 
-    fun setPIPManager(pipManager: PIPManager) {
-        this.mPIPManager = pipManager
+    fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
+            (context as Activity).finish()
+        }
+        return (context as Activity).onOptionsItemSelected(item)
     }
-
-    fun setPlayerState(playState: Int) {
-        controller.setPlayState(playState)
-    }
-
-//    fun onOptionsItemSelected(item: MenuItem): Boolean {
-//        if (item.itemId == android.R.id.home) {
-//            (context as Activity).finish()
-//        }
-//        return (context as Activity).onOptionsItemSelected(item)
-//    }
 
     fun onResume() {
-        videoPlayer.resume()
+        if (enableBackgroundPlay) return
+        if (pipManager != null) {
+            pipManager?.resume()
+        } else videoPlayer.resume()
     }
 
     fun onPause() {
-        videoPlayer.pause()
+        if (enableBackgroundPlay) return
+        if (pipManager != null) {
+            pipManager?.pause()
+        } else videoPlayer.pause()
     }
 
     fun onDestroy() {
-        videoPlayer.release()
+        if (pipManager != null) {
+            pipManager?.release()
+        } else videoPlayer.release()
     }
 
     fun onBackPressed(): Boolean {
+        if (pipManager != null && pipManager?.onBackPressed() == true) {
+            return false
+        }
         if (videoPlayer.isFullScreen) {
             videoPlayer.stopFullScreen()
             return false

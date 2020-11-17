@@ -1,8 +1,9 @@
 package ando.player.utils;
 
+import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewParent;
-import android.widget.FrameLayout;
 
 import com.dueeeke.videoplayer.player.VideoView;
 import com.dueeeke.videoplayer.player.VideoViewConfig;
@@ -10,7 +11,7 @@ import com.dueeeke.videoplayer.player.VideoViewManager;
 
 import java.lang.reflect.Field;
 
-public final class PlayerUtils {
+public final class VideoUtils {
 
     //列表播放
     public static final String LIST = "list";
@@ -19,7 +20,7 @@ public final class PlayerUtils {
     //画中画
     public static final String PIP = "pip";
 
-    private PlayerUtils() {
+    private VideoUtils() {
     }
 
     /**
@@ -46,8 +47,8 @@ public final class PlayerUtils {
             return;
         }
         ViewParent parent = v.getParent();
-        if (parent instanceof FrameLayout) {
-            ((FrameLayout) parent).removeView(v);
+        if (parent instanceof ViewGroup) {
+            ((ViewGroup) parent).removeView(v);
         }
     }
 

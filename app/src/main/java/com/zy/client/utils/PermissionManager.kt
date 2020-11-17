@@ -12,7 +12,6 @@ import android.util.Log
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.zy.client.utils.overlay.SettingsCompat
 
 /**
  * <pre>
@@ -196,21 +195,15 @@ object PermissionManager {
      *
      * <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
      */
-    fun overlay(activity: Activity, onGranted: () -> Unit = {}, onDenied: () -> Unit = {}) {
-        if (!SettingsCompat.canDrawOverlays(activity)) {
-            SettingsCompat.manageDrawOverlays(activity)
-            onDenied.invoke()
+    fun overlay(activity: Activity, onGranted: () -> Unit = {}) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            //检查是否已经授予权限
+            if (!Settings.canDrawOverlays(activity)) {
+                val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION)
+                intent.data = Uri.parse("package:${activity.packageName}")
+                activity.startActivityForResult(intent, REQUEST_OVERLAY)
+            } else onGranted.invoke()
         } else onGranted.invoke()
-
-        //simple
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//            //检查是否已经授予权限
-//            if (!Settings.canDrawOverlays(activity)) {
-//                val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION)
-//                intent.data = Uri.parse("package:${activity.packageName}")
-//                activity.startActivityForResult(intent, REQUEST_OVERLAY)
-//            }
-//        }
     }
 
     /**

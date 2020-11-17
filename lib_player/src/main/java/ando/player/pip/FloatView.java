@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.PixelFormat;
 import android.os.Build;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
@@ -148,6 +149,8 @@ public class FloatView extends FrameLayout {
             mParams.x = x - mDownX;
             mParams.y = y - mDownY;
             mWindowManager.updateViewLayout(this, mParams);
+        } else if (event.getAction() == MotionEvent.ACTION_UP) {
+            Log.i("123", "mDownX =" + mDownX + "  mDownY =" + mDownY);
         }
         return super.onTouchEvent(event);
     }

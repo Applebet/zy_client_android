@@ -15,6 +15,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -33,10 +34,14 @@ public class TitleView extends FrameLayout implements IControlComponent {
 
     private ControlWrapper mControlWrapper;
 
-    private final LinearLayout mTitleContainer;
-    private final TextView mTitle;
-    private final TextView mSysTime;//系统当前时间
+    private final LinearLayout mLlTitleContainer;
+    private final TextView mTvTitle;
+    private final TextView mTvTime; //系统当前时间
+    private final ImageView mIvPip; //悬浮窗
+    private final ImageView mIvBattery;
+    private final ImageView mIvSetting;
 
+    private String mTitle;
     private boolean isShowPortraitTitle = false;//竖屏是否显示TitleView, 默认不显示
 
     private final BatteryReceiver mBatteryReceiver;
@@ -57,39 +62,40 @@ public class TitleView extends FrameLayout implements IControlComponent {
     {
         setVisibility(GONE);
         LayoutInflater.from(getContext()).inflate(R.layout.dkplayer_layout_title_view, this, true);
-        mTitleContainer = findViewById(R.id.title_container);
-        ImageView back = findViewById(R.id.back);
+        mLlTitleContainer = findViewById(R.id.ll_title_container);
+        ImageView back = findViewById(R.id.iv_back);
         back.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 Activity activity = PlayerUtils.scanForActivity(getContext());
-                if (activity != null && mControlWrapper.isFullScreen()) {
-                    activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-                    mControlWrapper.stopFullScreen();
+                if (activity != null) {
+                    if (mControlWrapper.isFullScreen()) {
+                        activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                        mControlWrapper.stopFullScreen();
+                    } else {
+                        activity.onBackPressed();
+                    }
                 }
             }
         });
-        mTitle = findViewById(R.id.title);
-        mSysTime = findViewById(R.id.sys_time);
-        //悬浮窗
-//        ImageView pip = findViewById(R.id.iv_pip);
-//        pip.setOnClickListener(new OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//            }
-//        });
+        mTvTitle = findViewById(R.id.tv_title);
+        mTvTime = findViewById(R.id.tv_sys_time);
+        mIvPip = findViewById(R.id.iv_pip);
+        mIvSetting = findViewById(R.id.iv_setting);
+        mIvSetting.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getContext(), "todo", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         //电量
-        ImageView batteryLevel = findViewById(R.id.iv_battery);
-        mBatteryReceiver = new BatteryReceiver(batteryLevel);
+        mIvBattery = findViewById(R.id.iv_battery);
+        mBatteryReceiver = new BatteryReceiver(mIvBattery);
     }
 
     public void setTitle(String title) {
-        if (isShowPortraitTitle) {
-            return;//竖屏不设置标题
-        }
-        mTitle.setText(title);
+        this.mTitle = title;
     }
 
     @Override
@@ -128,7 +134,7 @@ public class TitleView extends FrameLayout implements IControlComponent {
         }
         if (isVisible) {
             if (getVisibility() == GONE) {
-                mSysTime.setText(PlayerUtils.getCurrentSystemTime());
+                mTvTime.setText(PlayerUtils.getCurrentSystemTime());
                 setVisibility(VISIBLE);
                 if (anim != null) {
                     startAnimation(anim);
@@ -164,14 +170,24 @@ public class TitleView extends FrameLayout implements IControlComponent {
         if (playerState == VideoView.PLAYER_FULL_SCREEN) {
             if (mControlWrapper.isShowing() && !mControlWrapper.isLocked()) {
                 setVisibility(VISIBLE);
-                mSysTime.setText(PlayerUtils.getCurrentSystemTime());
+
+                mTvTitle.setText(mTitle);
+                mIvPip.setVisibility(GONE);
+                mIvBattery.setVisibility(VISIBLE);
+                mTvTime.setVisibility(VISIBLE);
+                mTvTime.setText(PlayerUtils.getCurrentSystemTime());
             }
-            mTitle.setSelected(true);
+            mTvTitle.setSelected(true);
         } else {
             if (!isShowPortraitTitle) {
                 setVisibility(GONE);
+            } else {
+                mTvTitle.setText("");
+                mIvPip.setVisibility(VISIBLE);
+                mIvBattery.setVisibility(GONE);
+                mTvTime.setVisibility(GONE);
             }
-            mTitle.setSelected(false);
+            mTvTitle.setSelected(false);
         }
 
         Activity activity = PlayerUtils.scanForActivity(getContext());
@@ -179,11 +195,11 @@ public class TitleView extends FrameLayout implements IControlComponent {
             int orientation = activity.getRequestedOrientation();
             int cutoutHeight = mControlWrapper.getCutoutHeight();
             if (orientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
-                mTitleContainer.setPadding(0, 0, 0, 0);
+                mLlTitleContainer.setPadding(0, 0, 0, 0);
             } else if (orientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
-                mTitleContainer.setPadding(cutoutHeight, 0, 0, 0);
+                mLlTitleContainer.setPadding(cutoutHeight, 0, 0, 0);
             } else if (orientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE) {
-                mTitleContainer.setPadding(0, 0, cutoutHeight, 0);
+                mLlTitleContainer.setPadding(0, 0, cutoutHeight, 0);
             }
         }
     }
@@ -198,7 +214,7 @@ public class TitleView extends FrameLayout implements IControlComponent {
             setVisibility(GONE);
         } else {
             setVisibility(VISIBLE);
-            mSysTime.setText(PlayerUtils.getCurrentSystemTime());
+            mTvTime.setText(PlayerUtils.getCurrentSystemTime());
         }
     }
 

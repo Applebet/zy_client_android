@@ -1,4 +1,4 @@
-package com.zy.client.bean.event
+package com.zy.client.bean
 
 /**
  * @author javakam
@@ -7,4 +7,4 @@ package com.zy.client.bean.event
  * @desc 收藏事件
  */
 
-class CollectEvent()
+class CollectEvent

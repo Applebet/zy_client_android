@@ -30,12 +30,12 @@ public class PlayerMonitor implements IControlComponent {
 
     @Override
     public void onPlayStateChanged(int playState) {
-        L.d("onPlayStateChanged: " + PlayerUtils.playState2str(playState));
+        L.d("onPlayStateChanged: " + VideoUtils.playState2str(playState));
     }
 
     @Override
     public void onPlayerStateChanged(int playerState) {
-        L.d("onPlayerStateChanged: " + PlayerUtils.playerState2str(playerState));
+        L.d("onPlayerStateChanged: " + VideoUtils.playerState2str(playerState));
     }
 
     @Override

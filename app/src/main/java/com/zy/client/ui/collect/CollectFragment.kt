@@ -9,7 +9,7 @@ import com.zy.client.R
 import com.zy.client.common.BaseLoadMoreAdapter
 import com.zy.client.utils.ext.noNull
 import com.zy.client.utils.ext.visible
-import com.zy.client.bean.event.CollectEvent
+import com.zy.client.bean.CollectEvent
 import com.zy.client.base.BaseListFragment
 import com.zy.client.database.CollectModel
 import com.zy.client.database.CollectDBUtils

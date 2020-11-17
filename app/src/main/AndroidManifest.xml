@@ -46,7 +46,6 @@
 
         <activity
             android:name=".ui.SplashActivity"
-            android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/GuideTheme">
             <intent-filter>
@@ -87,7 +86,6 @@
 
         <activity
             android:name=".ui.search.SearchActivity"
-            android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.ScaleActivity"
             android:windowSoftInputMode="stateVisible" />

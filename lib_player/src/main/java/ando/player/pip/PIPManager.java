@@ -7,7 +7,7 @@ import android.view.View;
 import com.dueeeke.videoplayer.player.VideoViewManager;
 
 import ando.player.IjkVideoView;
-import ando.player.utils.PlayerUtils;
+import ando.player.utils.VideoUtils;
 
 /**
  * 悬浮播放
@@ -27,8 +27,8 @@ public class PIPManager {
     private Class mActClass;
 
     private PIPManager() {
-        mVideoView = new IjkVideoView(context);
-        VideoViewManager.instance().add(mVideoView, PlayerUtils.PIP);
+        mVideoView = new IjkVideoView(context.getApplicationContext());
+        VideoViewManager.instance().add(mVideoView, VideoUtils.PIP);
         mFloatController = new FloatController(context);
         mFloatView = new FloatView(context, 0, 0);
     }
@@ -60,7 +60,7 @@ public class PIPManager {
         if (mIsShowing) {
             return;
         }
-        PlayerUtils.removeViewFormParent(mVideoView);
+        VideoUtils.removeViewFormParent(mVideoView);
         mVideoView.setVideoController(mFloatController);
         mFloatController.setPlayState(mVideoView.getCurrentPlayState());
         mFloatController.setPlayerState(mVideoView.getCurrentPlayerState());
@@ -73,8 +73,9 @@ public class PIPManager {
         if (!mIsShowing) {
             return;
         }
+        mFloatView.removeAllViews();
         mFloatView.removeFromWindow();
-        PlayerUtils.removeViewFormParent(mVideoView);
+        VideoUtils.removeViewFormParent(mVideoView);
         mIsShowing = false;
     }
 
@@ -100,18 +101,18 @@ public class PIPManager {
         mVideoView.resume();
     }
 
-    public void reset() {
+    public void release() {
         if (mIsShowing) {
             return;
         }
-        PlayerUtils.removeViewFormParent(mVideoView);
+        VideoUtils.removeViewFormParent(mVideoView);
         mVideoView.release();
         mVideoView.setVideoController(null);
         mPlayingPosition = -1;
         mActClass = null;
     }
 
-    public boolean onBackPress() {
+    public boolean onBackPressed() {
         return !mIsShowing && mVideoView.onBackPressed();
     }
 
@@ -137,4 +138,12 @@ public class PIPManager {
         return mActClass;
     }
 
+
+    public void setVideoTag(Object videoInfo) {
+        mVideoView.setTag(videoInfo);
+    }
+
+    public Object getVideoTag() {
+        return mVideoView.getTag();
+    }
 }

@@ -21,7 +21,10 @@ data class VideoSource(
     //更新时间
     val updateTime: String? = "",
     //图片
-    val pic: String? = ""
+    val pic: String? = "",
+
+    //渠道id  eg: zdzyw , okzyw
+    val sourceKey: String?= ""
 )
 
 //分类

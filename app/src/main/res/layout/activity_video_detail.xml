@@ -9,10 +9,11 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_220">
+        android:layout_height="@dimen/dp_220"
+        android:background="@color/black">
 
         <FrameLayout
-            android:id="@+id/flWebView"
+            android:id="@id/playerWebContainer"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_220"
             android:visibility="gone"

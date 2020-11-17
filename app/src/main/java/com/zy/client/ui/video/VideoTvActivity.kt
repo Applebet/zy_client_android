@@ -30,7 +30,7 @@ class VideoTvActivity : BaseActivity() {
 
         //初始化视频控制
         videoController = VideoController()
-        videoController.init(this, videoPlayer)
+        videoController.init(this, videoPlayer, true)
         videoPlayer.isLive = true
     }
 

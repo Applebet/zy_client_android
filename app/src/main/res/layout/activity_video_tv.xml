@@ -11,7 +11,7 @@
         android:layout_height="wrap_content">
 
         <FrameLayout
-            android:id="@+id/flWebView"
+            android:id="@id/playerWebContainer"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_220"
             android:visibility="gone"

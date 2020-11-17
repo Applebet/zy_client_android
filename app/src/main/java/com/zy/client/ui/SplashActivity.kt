@@ -23,4 +23,9 @@ class SplashActivity : BaseActivity() {
             finish()
         }, 200)
     }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        finish()
+    }
 }

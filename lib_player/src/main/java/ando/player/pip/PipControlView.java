@@ -54,13 +54,13 @@ public class PipControlView extends FrameLayout implements IControlComponent, Vi
         int id = v.getId();
         if (id == R.id.btn_close) {
             PIPManager.get().stopFloatWindow();
-            PIPManager.get().reset();
+            PIPManager.get().release();
         } else if (id == R.id.start_play) {
             mControlWrapper.togglePlay();
         } else if (id == R.id.btn_skip) {
             if (PIPManager.get().getActClass() != null) {
                 Intent intent = new Intent(getContext(), PIPManager.get().getActClass());
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);//| Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT
                 getContext().startActivity(intent);
             }
         }
@@ -83,14 +83,13 @@ public class PipControlView extends FrameLayout implements IControlComponent, Vi
                 return;
             }
             mPlay.setVisibility(VISIBLE);
-            mPlay.startAnimation(anim);
         } else {
             if (mPlay.getVisibility() == GONE) {
                 return;
             }
             mPlay.setVisibility(GONE);
-            mPlay.startAnimation(anim);
         }
+        mPlay.startAnimation(anim);
     }
 
     @Override
