@@ -26,6 +26,7 @@ import com.dueeeke.videoplayer.player.VideoView;
 import com.dueeeke.videoplayer.util.PlayerUtils;
 
 import ando.player.R;
+import ando.player.utils.VideoUtils;
 
 import static com.dueeeke.videoplayer.util.PlayerUtils.stringForTime;
 
@@ -182,7 +183,8 @@ public class VodControlView extends FrameLayout implements IControlComponent, Vi
             default:
         }
 
-        Activity activity = PlayerUtils.scanForActivity(getContext());
+        final int fullTopPadding = VideoUtils.dp2px(15F);
+        final Activity activity = PlayerUtils.scanForActivity(getContext());
         if (activity != null && mControlWrapper.hasCutout()) {
             int orientation = activity.getRequestedOrientation();
             int cutoutHeight = mControlWrapper.getCutoutHeight();
@@ -190,10 +192,10 @@ public class VodControlView extends FrameLayout implements IControlComponent, Vi
                 mBottomContainer.setPadding(0, 0, 0, 0);
                 mBottomProgress.setPadding(0, 0, 0, 0);
             } else if (orientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
-                mBottomContainer.setPadding(cutoutHeight, 0, 0, 0);
+                mBottomContainer.setPadding(cutoutHeight, 0, 0, fullTopPadding);
                 mBottomProgress.setPadding(cutoutHeight, 0, 0, 0);
             } else if (orientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE) {
-                mBottomContainer.setPadding(0, 0, cutoutHeight, 0);
+                mBottomContainer.setPadding(0, 0, cutoutHeight, fullTopPadding);
                 mBottomProgress.setPadding(0, 0, cutoutHeight, 0);
             }
         }

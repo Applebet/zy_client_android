@@ -1,6 +1,6 @@
 package ando.player.utils;
 
-import android.util.Log;
+import android.content.res.Resources;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
@@ -21,6 +21,11 @@ public final class VideoUtils {
     public static final String PIP = "pip";
 
     private VideoUtils() {
+    }
+
+    public static int dp2px(Float dpValue) {
+        float scale = Resources.getSystem().getDisplayMetrics().density;
+        return (int) (dpValue * scale + 0.5f);
     }
 
     /**

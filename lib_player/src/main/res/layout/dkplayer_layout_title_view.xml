@@ -3,20 +3,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/ll_title_container"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/dkplayer_controller_title_height"
+    android:layout_height="@dimen/dkplayer_controller_height"
     android:background="@drawable/dkplayer_shape_standard_controller_top_bg"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:paddingTop="15dp"
-    android:paddingStart="15dp"
+    android:paddingStart="0dp"
     android:paddingEnd="15dp">
 
     <ImageView
         android:id="@+id/iv_back"
-        android:layout_width="@dimen/dkplayer_controller_arrow"
-        android:layout_height="@dimen/dkplayer_controller_arrow"
+        android:layout_width="@dimen/dkplayer_controller_height"
+        android:layout_height="@dimen/dkplayer_controller_height"
         android:layout_gravity="center"
-        android:padding="@dimen/dkplayer_controller_icon_padding"
+        android:paddingStart="15dp"
+        android:paddingTop="@dimen/dkplayer_controller_icon_padding"
+        android:paddingEnd="@dimen/dkplayer_controller_icon_padding"
+        android:paddingBottom="@dimen/dkplayer_controller_icon_padding"
+        android:scaleType="centerInside"
         android:src="@drawable/dkplayer_ic_action_arrow_back" />
 
     <TextView

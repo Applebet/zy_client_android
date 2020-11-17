@@ -88,7 +88,7 @@ object Utils {
     fun getStatusBarHeight(): Int {
         val resources = Resources.getSystem()
         val resourceId = resources.getIdentifier("status_bar_height", "dimen", "android")
-        return resources.getDimensionPixelSize(resourceId)
+        return if (resourceId > 0) resources.getDimensionPixelSize(resourceId) else 0
     }
 
     /**

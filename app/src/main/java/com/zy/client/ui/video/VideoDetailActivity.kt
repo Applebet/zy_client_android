@@ -106,7 +106,7 @@ class VideoDetailActivity : BaseActivity() {
         val hasLiuHai = NotchDisplayUtils.hasNotchInScreen(this)
         val dialogHeight =
             (screenHeight - resources.getDimensionPixelSize(VIDEO_VIEW_HEIGHT))
-                .minus(if (hasLiuHai) 0 else DimensionUtils.getStatusBarHeight())
+                .minus(if (hasLiuHai) 0 else Utils.getStatusBarHeight())
 
         llAnthology.setOnClickListener {
             if (mVideoList?.size ?: 0 > 1) {

@@ -25,6 +25,7 @@ import com.dueeeke.videoplayer.player.VideoView;
 import com.dueeeke.videoplayer.util.PlayerUtils;
 
 import ando.player.R;
+import ando.player.utils.VideoUtils;
 
 /**
  * 播放器顶部标题栏
@@ -181,16 +182,17 @@ public class TitleView extends FrameLayout implements IControlComponent {
             mTvTitle.setSelected(false);
         }
 
-        Activity activity = PlayerUtils.scanForActivity(getContext());
+        final int fullTopPadding = VideoUtils.dp2px(15F);
+        final Activity activity = PlayerUtils.scanForActivity(getContext());
         if (activity != null && mControlWrapper.hasCutout()) {
             int orientation = activity.getRequestedOrientation();
             int cutoutHeight = mControlWrapper.getCutoutHeight();
             if (orientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
                 mLlTitleContainer.setPadding(0, 0, 0, 0);
             } else if (orientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
-                mLlTitleContainer.setPadding(cutoutHeight, 0, 0, 0);
+                mLlTitleContainer.setPadding(cutoutHeight, fullTopPadding, 0, 0);
             } else if (orientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE) {
-                mLlTitleContainer.setPadding(0, 0, cutoutHeight, 0);
+                mLlTitleContainer.setPadding(0, fullTopPadding, cutoutHeight, 0);
             }
         }
     }

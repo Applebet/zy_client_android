@@ -9,6 +9,9 @@ plugins {
 static def releaseTime() {
     return new Date().format("yyyyMMddHHmmss", TimeZone.getTimeZone("GMT+08:00"))
 }
+def keystoreFile = rootProject.file('key.properties')
+def keystoreProperties = new Properties()
+keystoreProperties.load(new FileInputStream(keystoreFile))
 
 android {
     compileSdkVersion 30
@@ -32,39 +35,36 @@ android {
         }
     }
 
-//    signingConfigs {
-//        debug {
-//            storeFile file(keystoreProperties['storeFileDebug'])
-//            storePassword keystoreProperties['storePasswordDebug']
-//            keyAlias keystoreProperties['keyAliasDebug']
-//            keyPassword keystoreProperties['keyPasswordDebug']
-//            keyAlias ''
-//            keyPassword ''                    //密码
-//            storeFile file('../keystore/stockdaily.jks')   //别名
-//            storePassword ''                  //别名密码
-//        }
-//        release {
-//            keyAlias ''
-//            keyPassword ''                    //密码
-//            storeFile file('../keystore/stockdaily.jks')   //别名
-//            storePassword ''                  //别名密码
-//            v1SigningEnabled true
-//            v2SigningEnabled true
-//        }
-//    }
+    signingConfigs {
+        debug {
+            storeFile file(keystoreProperties['storeFileDebug'])
+            storePassword keystoreProperties['storePasswordDebug']
+            keyAlias keystoreProperties['keyAliasDebug']
+            keyPassword keystoreProperties['keyPasswordDebug']
+        }
+        release {
+            storeFile file(keystoreProperties['storeFileDebug'])
+            storePassword keystoreProperties['storePasswordDebug']
+            keyAlias keystoreProperties['keyAliasDebug']
+            keyPassword keystoreProperties['keyPasswordDebug']
+            v1SigningEnabled true
+            v2SigningEnabled true
+        }
+    }
 
     buildTypes {
         debug {
 //            minifyEnabled true
 //            zipAlignEnabled true
 //            shrinkResources true
+            signingConfig signingConfigs.debug
         }
         release {
             minifyEnabled true
             zipAlignEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            //signingConfig signingConfigs.release
+            signingConfig signingConfigs.release
         }
     }
     compileOptions {

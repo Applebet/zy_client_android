@@ -74,7 +74,6 @@ class App : Application() {
         ConfigManager.sourceConfigs
         //读取TV源配置
         val tvModels = ConfigManager.sourceTvConfigs
-        Log.i("123", ".............. ${tvModels.size}")
         val list = mutableListOf<TvModel>()
         tvModels.values.forEach { list.addAll(it) }
         TvDBUtils.isExit().apply {

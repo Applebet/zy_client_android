@@ -102,6 +102,19 @@ fun String.copyToClipBoard() {
     }
 }
 
+/**
+ * 屏幕的宽度 screen width in pixels
+ */
+val Context.screenWidth: Int
+    get() = resources.displayMetrics.widthPixels
+
+/**
+ * 屏幕的高度 screen height in pixels
+ */
+val Context.screenHeight: Int
+    get() = resources.displayMetrics.heightPixels
+
+
 ///////////////////////////////////////////Glide
 /**
  * Glide+RecyclerView卡在placeHolder视图 , 不显示加载成功图片的问题
