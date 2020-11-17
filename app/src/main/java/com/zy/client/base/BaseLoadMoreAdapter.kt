@@ -1,4 +1,4 @@
-package com.zy.client.common
+package com.zy.client.base
 
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.module.LoadMoreModule

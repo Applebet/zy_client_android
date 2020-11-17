@@ -1,9 +1,11 @@
 package com.zy.client.ui.video
 
 import ando.player.IjkVideoView
+import ando.player.R
 import ando.player.StandardVideoController
 import ando.player.component.*
 import ando.player.pip.PIPManager
+import ando.player.setting.UserSetting
 import ando.player.utils.VideoUtils
 import android.app.Activity
 import android.content.Context
@@ -13,9 +15,11 @@ import com.dueeeke.videoplayer.controller.GestureVideoController
 import com.dueeeke.videoplayer.player.VideoView.*
 import com.dueeeke.videoplayer.player.VideoViewManager
 import com.dueeeke.videoplayer.util.L
+import com.lxj.xpopup.XPopup
 import com.zy.client.utils.PermissionManager.overlay
 import com.zy.client.utils.ext.isVideoUrl
 import com.zy.client.utils.ext.noNull
+
 
 /**
  * @author javakam
@@ -35,15 +39,14 @@ class VideoController {
     private lateinit var context: Context
     private lateinit var controller: GestureVideoController
     private lateinit var titleView: TitleView
+
+    private var pipManager: PIPManager? = null
     lateinit var videoPlayer: IjkVideoView
-    var pipManager: PIPManager? = null
-    var currUrl: String? = null
-    var enableBackgroundPlay = false
 
     fun init(context: Context, isLive: Boolean) {
         this.pipManager = PIPManager.get()
         val videoPlayer = VideoViewManager.instance().get(VideoUtils.PIP) as IjkVideoView
-        init(context = context, ijkVideoView = videoPlayer, isLive = isLive){
+        init(context = context, ijkVideoView = videoPlayer, isLive = isLive) {
             //从 FloatView 上移除 VideoView
             if (pipManager?.isStartFloatWindow == true) {
                 pipManager?.stopFloatWindow()
@@ -140,9 +143,68 @@ class VideoController {
 
         videoPlayer.setScreenScaleType(SCREEN_SCALE_16_9)
 
-        initPipEvent()
+        initListeners()
 
         block.invoke()
+    }
+
+    private fun initListeners() {
+        val ivSetting = titleView.findViewById<ImageView>(R.id.iv_setting)
+        //悬浮窗按钮
+        titleView.findViewById<ImageView>(R.id.iv_pip).setOnClickListener {
+            overlay(context as Activity, onGranted = {
+                pipManager?.startFloatWindow()
+                pipManager?.resume()
+                (context as Activity).finish()
+            })
+        }
+
+        //设置
+        ivSetting.setOnClickListener {
+            XPopup.Builder(context).asConfirm(
+                "是否开启后台播放", ""
+            ) {
+                UserSetting.setBackgroundPlay(context, true)
+            }.show()
+        }
+    }
+
+    fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
+            (context as Activity).finish()
+        }
+        return (context as Activity).onOptionsItemSelected(item)
+    }
+
+    fun onResume() {
+        if (isEnableBackPlay()) return
+        if (pipManager != null) {
+            pipManager?.resume()
+        } else videoPlayer.resume()
+    }
+
+    fun onPause() {
+        if (isEnableBackPlay()) return
+        if (pipManager != null) {
+            pipManager?.pause()
+        } else videoPlayer.pause()
+    }
+
+    fun onDestroy() {
+        if (pipManager != null) {
+            pipManager?.release()
+        } else videoPlayer.release()
+    }
+
+    fun onBackPressed(): Boolean {
+        if (pipManager != null && pipManager?.onBackPressed() == true) {
+            return false
+        }
+        if (videoPlayer.isFullScreen) {
+            videoPlayer.stopFullScreen()
+            return false
+        }
+        return true
     }
 
     private val mOnStateChangeListener: OnStateChangeListener =
@@ -193,12 +255,14 @@ class VideoController {
      */
     fun startPlay(videoUrl: String?, title: String?) {
         if (videoUrl?.isVideoUrl() == false || videoPlayer.isPlaying) return
-        currUrl = videoUrl
+        //currUrl = videoUrl
         titleView.setTitle(title.noNull())
         videoPlayer.release()
         videoPlayer.setUrl(VOD_URL)//videoUrl
         videoPlayer.start()
     }
+
+    fun isEnableBackPlay(): Boolean = UserSetting.getBackgroundPlay(context)
 
     /**
      * 小窗返回的页面
@@ -214,57 +278,5 @@ class VideoController {
     }
 
     fun getVideoTag(): Any? = pipManager?.videoTag
-
-    /**
-     * 悬浮窗按钮
-     */
-    fun initPipEvent() {
-        val ivPip: ImageView = titleView.findViewById(ando.player.R.id.iv_pip)
-        ivPip.setOnClickListener {
-            overlay(context as Activity, onGranted = {
-                pipManager?.startFloatWindow()
-                pipManager?.resume()
-                (context as Activity).finish()
-            })
-        }
-    }
-
-    fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == android.R.id.home) {
-            (context as Activity).finish()
-        }
-        return (context as Activity).onOptionsItemSelected(item)
-    }
-
-    fun onResume() {
-        if (enableBackgroundPlay) return
-        if (pipManager != null) {
-            pipManager?.resume()
-        } else videoPlayer.resume()
-    }
-
-    fun onPause() {
-        if (enableBackgroundPlay) return
-        if (pipManager != null) {
-            pipManager?.pause()
-        } else videoPlayer.pause()
-    }
-
-    fun onDestroy() {
-        if (pipManager != null) {
-            pipManager?.release()
-        } else videoPlayer.release()
-    }
-
-    fun onBackPressed(): Boolean {
-        if (pipManager != null && pipManager?.onBackPressed() == true) {
-            return false
-        }
-        if (videoPlayer.isFullScreen) {
-            videoPlayer.stopFullScreen()
-            return false
-        }
-        return true
-    }
 
 }

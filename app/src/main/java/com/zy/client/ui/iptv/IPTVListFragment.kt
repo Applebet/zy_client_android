@@ -8,7 +8,7 @@ import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.zy.client.R
 import com.zy.client.base.BaseListFragment
 import com.zy.client.common.AppRouter
-import com.zy.client.common.BaseLoadMoreAdapter
+import com.zy.client.base.BaseLoadMoreAdapter
 import com.zy.client.database.TvDBUtils
 import com.zy.client.database.TvModel
 import com.zy.client.utils.ext.noNull

@@ -1,4 +1,4 @@
-package com.zy.client.common;
+package com.zy.client.views;
 
 import android.graphics.Rect;
 import android.view.View;
@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
  * @date 2020/9/6 12:24
  * @desc 分割线
  */
-public class GridSpaceItemDecoration extends RecyclerView.ItemDecoration {
+public class GridDividerItemDecoration extends RecyclerView.ItemDecoration {
 
     /**
      * 每行个数
@@ -41,7 +41,7 @@ public class GridSpaceItemDecoration extends RecyclerView.ItemDecoration {
      */
     private int fullPosition = -1;
 
-    public GridSpaceItemDecoration(int spacing) {
+    public GridDividerItemDecoration(int spacing) {
         this(spacing, true);
     }
 
@@ -49,7 +49,7 @@ public class GridSpaceItemDecoration extends RecyclerView.ItemDecoration {
      * @param spacing     item 间距
      * @param includeEdge item 距屏幕周围是否也有间距
      */
-    public GridSpaceItemDecoration(int spacing, boolean includeEdge) {
+    public GridDividerItemDecoration(int spacing, boolean includeEdge) {
         this.mSpacing = spacing;
         this.mIncludeEdge = includeEdge;
     }
@@ -58,7 +58,7 @@ public class GridSpaceItemDecoration extends RecyclerView.ItemDecoration {
      * 已不需要手动设置spanCount
      */
     @Deprecated
-    public GridSpaceItemDecoration(int spanCount, int spacing) {
+    public GridDividerItemDecoration(int spanCount, int spacing) {
         this(spanCount, spacing, true);
     }
 
@@ -66,7 +66,7 @@ public class GridSpaceItemDecoration extends RecyclerView.ItemDecoration {
      * 已不需要手动设置spanCount
      */
     @Deprecated
-    public GridSpaceItemDecoration(int spanCount, int spacing, boolean includeEdge) {
+    public GridDividerItemDecoration(int spanCount, int spacing, boolean includeEdge) {
         this.mSpanCount = spanCount;
         this.mSpacing = spacing;
         this.mIncludeEdge = includeEdge;
@@ -197,7 +197,7 @@ public class GridSpaceItemDecoration extends RecyclerView.ItemDecoration {
      *
      * @param startFromSize 一般为HeaderView的个数 + 刷新布局(不一定设置)
      */
-    public GridSpaceItemDecoration setStartFrom(int startFromSize) {
+    public GridDividerItemDecoration setStartFrom(int startFromSize) {
         this.mStartFromSize = startFromSize;
         return this;
     }
@@ -207,7 +207,7 @@ public class GridSpaceItemDecoration extends RecyclerView.ItemDecoration {
      *
      * @param endFromSize 一般为FooterView的个数 + 加载更多布局(不一定设置)
      */
-    public GridSpaceItemDecoration setEndFromSize(int endFromSize) {
+    public GridDividerItemDecoration setEndFromSize(int endFromSize) {
         this.mEndFromSize = endFromSize;
         return this;
     }
@@ -218,7 +218,7 @@ public class GridSpaceItemDecoration extends RecyclerView.ItemDecoration {
      * @param startFromSize 一般为HeaderView的个数 + 刷新布局(不一定设置)
      * @param endFromSize   默认为1，一般为FooterView的个数 + 加载更多布局(不一定设置)
      */
-    public GridSpaceItemDecoration setNoShowSpace(int startFromSize, int endFromSize) {
+    public GridDividerItemDecoration setNoShowSpace(int startFromSize, int endFromSize) {
         this.mStartFromSize = startFromSize;
         this.mEndFromSize = endFromSize;
         return this;

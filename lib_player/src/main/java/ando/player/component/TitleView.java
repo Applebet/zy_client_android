@@ -15,7 +15,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -39,7 +38,6 @@ public class TitleView extends FrameLayout implements IControlComponent {
     private final TextView mTvTime; //系统当前时间
     private final ImageView mIvPip; //悬浮窗
     private final ImageView mIvBattery;
-    private final ImageView mIvSetting;
 
     private String mTitle;
     private boolean isShowPortraitTitle = false;//竖屏是否显示TitleView, 默认不显示
@@ -81,13 +79,6 @@ public class TitleView extends FrameLayout implements IControlComponent {
         mTvTitle = findViewById(R.id.tv_title);
         mTvTime = findViewById(R.id.tv_sys_time);
         mIvPip = findViewById(R.id.iv_pip);
-        mIvSetting = findViewById(R.id.iv_setting);
-        mIvSetting.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getContext(), "todo", Toast.LENGTH_SHORT).show();
-            }
-        });
 
         //电量
         mIvBattery = findViewById(R.id.iv_battery);

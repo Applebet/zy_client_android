@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.lxj.xpopup.XPopup
 import com.zy.client.R
-import com.zy.client.common.BaseLoadMoreAdapter
+import com.zy.client.base.BaseLoadMoreAdapter
 import com.zy.client.utils.ext.noNull
 import com.zy.client.utils.ext.visible
 import com.zy.client.bean.CollectEvent

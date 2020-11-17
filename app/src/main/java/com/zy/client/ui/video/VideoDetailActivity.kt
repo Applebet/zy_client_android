@@ -72,7 +72,6 @@ class VideoDetailActivity : BaseActivity() {
         //Ijkplayer
         videoController = VideoController()
         videoController?.init(this, false)
-        videoController?.enableBackgroundPlay = true
 
         //缓存请求数据 View.getTag
         if (id.isBlank() || sourceKey.isNullOrBlank()) {

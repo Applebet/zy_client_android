@@ -5,7 +5,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.zy.client.R
-import com.zy.client.common.BaseLoadMoreAdapter
 import com.wuhenzhizao.titlebar.widget.CommonTitleBar
 import com.zy.client.views.loader.LoadState
 import com.zy.client.views.loader.Loader

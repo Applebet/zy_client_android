@@ -3,6 +3,7 @@ plugins {
     id 'kotlin-android'
     id 'kotlin-android-extensions'
     id 'kotlin-kapt'
+    id 'realm-android'
 }
 
 //获取当前系统的时间
@@ -54,7 +55,7 @@ android {
 //    }
 
     buildTypes {
-        debug{
+        debug {
 //            minifyEnabled true
 //            zipAlignEnabled true
 //            shrinkResources true
@@ -131,9 +132,9 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'com.github.smart-fun:XmlToJson:1.4.5'
 
-    implementation  'com.scwang.smart:refresh-layout-kernel:2.0.1'
-    implementation  'com.scwang.smart:refresh-header-classics:2.0.1'
-    implementation  'com.scwang.smart:refresh-footer-classics:2.0.1'
+    implementation 'com.scwang.smart:refresh-layout-kernel:2.0.1'
+    implementation 'com.scwang.smart:refresh-header-classics:2.0.1'
+    implementation 'com.scwang.smart:refresh-footer-classics:2.0.1'
 
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.4'
     implementation 'com.wuhenzhizao:titlebar:1.2.0'
