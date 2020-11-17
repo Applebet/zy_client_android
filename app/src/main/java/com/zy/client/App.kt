@@ -14,8 +14,6 @@ import com.lzy.okgo.cache.CacheMode
 import com.zy.client.database.TvDBUtils
 import com.zy.client.database.TvModel
 import com.zy.client.http.ConfigManager
-import io.realm.Realm
-import io.realm.RealmConfiguration
 import org.litepal.LitePal
 
 /**
@@ -35,7 +33,6 @@ class App : Application() {
         LitePal.initialize(this)
 
         initDataConfig()
-        initRealm()
 
         OkGo.getInstance().init(this)
             //建议设置OkHttpClient，不设置将使用默认的
@@ -70,24 +67,6 @@ class App : Application() {
                 .build()
         )
         PIPManager.init(this)
-    }
-
-    private fun initRealm() {
-
-        Realm.init(instance)
-        // The RealmConfiguration is created using the builder pattern.
-        // The Realm file will be located in Context.getFilesDir() with name "myrealm.realm"
-        // Get the absolute path of a Realm by using Realm.getPath.
-        val config = RealmConfiguration.Builder()
-            .name("kuyou.realm")
-            //.readOnly()
-            .schemaVersion(1)
-//          .encryptionKey(getMyKey())
-//          .modules(MySchemaModule())
-//          .migration(MyMigration())
-            .build()
-
-        Realm.setDefaultConfiguration(config)
     }
 
     private fun initDataConfig() {

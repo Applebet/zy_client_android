@@ -3,7 +3,6 @@ plugins {
     id 'kotlin-android'
     id 'kotlin-android-extensions'
     id 'kotlin-kapt'
-    id 'realm-android'
 }
 
 //获取当前系统的时间
@@ -125,6 +124,7 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'com.google.android.material:material:1.2.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
 
     implementation 'org.litepal.guolindev:core:3.2.2'
 

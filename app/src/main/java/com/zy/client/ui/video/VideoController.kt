@@ -258,7 +258,7 @@ class VideoController {
         //currUrl = videoUrl
         titleView.setTitle(title.noNull())
         videoPlayer.release()
-        videoPlayer.setUrl(VOD_URL)//videoUrl
+        videoPlayer.setUrl(videoUrl)//videoUrl  VOD_URL
         videoPlayer.start()
     }
 
