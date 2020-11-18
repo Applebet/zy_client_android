@@ -35,6 +35,7 @@ import ando.player.component.VodControlView;
 public class StandardVideoController extends GestureVideoController implements View.OnClickListener {
 
     protected ImageView mLockButton;
+    protected ImageView mScreenShot;
     protected ProgressBar mLoadingProgress;
 
     public StandardVideoController(@NonNull Context context) {
@@ -57,9 +58,10 @@ public class StandardVideoController extends GestureVideoController implements V
     @Override
     protected void initView() {
         super.initView();
-        mLockButton = findViewById(R.id.lock);
+        mLockButton = findViewById(R.id.player_lock);
+        mScreenShot = findViewById(R.id.player_screenshot);
+        mLoadingProgress = findViewById(R.id.player_loading);
         mLockButton.setOnClickListener(this);
-        mLoadingProgress = findViewById(R.id.loading);
     }
 
     /**
@@ -70,12 +72,12 @@ public class StandardVideoController extends GestureVideoController implements V
      */
     public void addDefaultControlComponent(String title, boolean isLive) {
         CompleteView completeView = new CompleteView(getContext());
-        ErrorView andoErrorView = new ErrorView(getContext());
-        PrepareView andoPrepareView = new PrepareView(getContext());
-        andoPrepareView.setClickStart();
-        TitleView andoTitleView = new TitleView(getContext());
-        andoTitleView.setTitle(title);
-        addControlComponent(completeView, andoErrorView, andoPrepareView, andoTitleView);
+        ErrorView errorView = new ErrorView(getContext());
+        PrepareView prepareView = new PrepareView(getContext());
+        prepareView.setClickStart();
+        TitleView titleView = new TitleView(getContext());
+        titleView.setTitle(title);
+        addControlComponent(completeView, errorView, prepareView, titleView);
         if (isLive) {
             addControlComponent(new LiveControlView(getContext()));
         } else {
@@ -88,7 +90,7 @@ public class StandardVideoController extends GestureVideoController implements V
     @Override
     public void onClick(View v) {
         int i = v.getId();
-        if (i == R.id.lock) {
+        if (i == R.id.player_lock) {
             mControlWrapper.toggleLockState();
         }
     }
@@ -136,13 +138,16 @@ public class StandardVideoController extends GestureVideoController implements V
                         ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.MATCH_PARENT));
                 mLockButton.setVisibility(GONE);
+                mScreenShot.setVisibility(GONE);
                 break;
             case VideoView.PLAYER_FULL_SCREEN:
                 L.e("PLAYER_FULL_SCREEN");
                 if (isShowing()) {
                     mLockButton.setVisibility(VISIBLE);
+                    mScreenShot.setVisibility(VISIBLE);
                 } else {
                     mLockButton.setVisibility(GONE);
+                    mScreenShot.setVisibility(GONE);
                 }
                 break;
             default:
@@ -153,14 +158,13 @@ public class StandardVideoController extends GestureVideoController implements V
             int dp24 = PlayerUtils.dp2px(getContext(), 24);
             int cutoutHeight = getCutoutHeight();
             if (orientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
-                LayoutParams lblp = (LayoutParams) mLockButton.getLayoutParams();
-                lblp.setMargins(dp24, 0, dp24, 0);
+                ((LayoutParams) mLockButton.getLayoutParams()).setMargins(dp24, 0, dp24, 0);
             } else if (orientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
-                LayoutParams layoutParams = (LayoutParams) mLockButton.getLayoutParams();
-                layoutParams.setMargins(dp24 + cutoutHeight, 0, dp24 + cutoutHeight, 0);
+                LayoutParams params = (LayoutParams) mLockButton.getLayoutParams();
+                params.setMargins(dp24 + cutoutHeight, 0, dp24 + cutoutHeight, 0);
             } else if (orientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE) {
-                LayoutParams layoutParams = (LayoutParams) mLockButton.getLayoutParams();
-                layoutParams.setMargins(dp24, 0, dp24, 0);
+                LayoutParams params = (LayoutParams) mLockButton.getLayoutParams();
+                params.setMargins(dp24, 0, dp24, 0);
             }
         }
 
@@ -225,6 +229,15 @@ public class StandardVideoController extends GestureVideoController implements V
             return stopFullScreen();
         }
         return super.onBackPressed();
+    }
+
+    ///////////
+
+    /**
+     * 截屏
+     */
+    public void setScreenShotListener(View.OnClickListener listener) {
+        mScreenShot.setOnClickListener(listener);
     }
 
 }

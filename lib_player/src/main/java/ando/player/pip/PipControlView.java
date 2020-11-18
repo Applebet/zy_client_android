@@ -23,9 +23,9 @@ public class PipControlView extends FrameLayout implements IControlComponent, Vi
 
     private ControlWrapper mControlWrapper;
 
-    private ImageView mPlay;
-    private ImageView mClose;
-    private ProgressBar mLoading;
+    private final ImageView mPlay;
+    private final ImageView mClose;
+    private final ProgressBar mLoading;
 
     public PipControlView(@NonNull Context context) {
         super(context);

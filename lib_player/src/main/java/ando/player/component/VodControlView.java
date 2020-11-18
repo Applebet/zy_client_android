@@ -26,7 +26,6 @@ import com.dueeeke.videoplayer.player.VideoView;
 import com.dueeeke.videoplayer.util.PlayerUtils;
 
 import ando.player.R;
-import ando.player.utils.VideoUtils;
 
 import static com.dueeeke.videoplayer.util.PlayerUtils.stringForTime;
 
@@ -104,6 +103,8 @@ public class VodControlView extends FrameLayout implements IControlComponent, Vi
 
     @Override
     public void onVisibilityChanged(boolean isVisible, Animation anim) {
+        //Log.e("123", "onVisibilityChanged Vod = " + isVisible + "  isFull = " + mControlWrapper.isFullScreen());
+
         if (isVisible) {
             mBottomContainer.setVisibility(VISIBLE);
             if (anim != null) {
@@ -173,17 +174,21 @@ public class VodControlView extends FrameLayout implements IControlComponent, Vi
 
     @Override
     public void onPlayerStateChanged(int playerState) {
+        //Log.e("123", "onPlayerStateChanged vod = " + playerState);
+
         switch (playerState) {
             case VideoView.PLAYER_NORMAL:
                 mFullScreen.setSelected(false);
+                mFullScreen.setVisibility(VISIBLE);
                 break;
             case VideoView.PLAYER_FULL_SCREEN:
                 mFullScreen.setSelected(true);
+                mFullScreen.setVisibility(GONE);
                 break;
             default:
         }
 
-        final int fullTopPadding = VideoUtils.dp2px(15F);
+        final int fullTopPadding = PlayerUtils.dp2px(getContext(),15.0F);
         final Activity activity = PlayerUtils.scanForActivity(getContext());
         if (activity != null && mControlWrapper.hasCutout()) {
             int orientation = activity.getRequestedOrientation();

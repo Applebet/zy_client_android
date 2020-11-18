@@ -1,6 +1,5 @@
 package ando.player.utils;
 
-import android.content.res.Resources;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
@@ -13,19 +12,7 @@ import java.lang.reflect.Field;
 
 public final class VideoUtils {
 
-    //列表播放
-    public static final String LIST = "list";
-    //无缝播放
-    public static final String SEAMLESS = "seamless";
-    //画中画
-    public static final String PIP = "pip";
-
     private VideoUtils() {
-    }
-
-    public static int dp2px(Float dpValue) {
-        float scale = Resources.getSystem().getDisplayMetrics().density;
-        return (int) (dpValue * scale + 0.5f);
     }
 
     /**
@@ -60,7 +47,7 @@ public final class VideoUtils {
     /**
      * Returns a string containing player state debugging information.
      */
-    public static String playState2str(int state) {
+    public static String dumpPlayState(int state) {
         String playStateString;
         switch (state) {
             default:
@@ -98,7 +85,7 @@ public final class VideoUtils {
     /**
      * Returns a string containing player state debugging information.
      */
-    public static String playerState2str(int state) {
+    public static String dumpPlayerState(int state) {
         String playerStateString;
         switch (state) {
             default:
@@ -114,6 +101,5 @@ public final class VideoUtils {
         }
         return String.format("playerState: %s", playerStateString);
     }
-
 
 }

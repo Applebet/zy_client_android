@@ -6,6 +6,7 @@ import com.zy.client.utils.thread.ThreadUtils
 import com.zy.client.R
 import com.zy.client.base.BaseActivity
 import com.wuhenzhizao.titlebar.statusbar.StatusBarUtils
+import com.zy.client.App
 
 /**
  * @author javakam
@@ -19,13 +20,12 @@ class SplashActivity : BaseActivity() {
         StatusBarUtils.transparentStatusBar(window)
 
         ThreadUtils.mainHandler.postDelayed({
-            startActivity(Intent(this, MainActivity::class.java))
+            if (!App.hasInApp) {
+                App.hasInApp = true
+                startActivity(Intent(this, MainActivity::class.java))
+            }
             finish()
-        }, 200)
+        }, 300)
     }
 
-    override fun onNewIntent(intent: Intent?) {
-        super.onNewIntent(intent)
-        finish()
-    }
 }

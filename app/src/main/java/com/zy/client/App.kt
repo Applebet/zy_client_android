@@ -24,6 +24,7 @@ class App : Application() {
 
     companion object {
         lateinit var instance: Application
+        var hasInApp: Boolean = false
     }
 
     override fun onCreate() {
@@ -43,8 +44,6 @@ class App : Application() {
             .setCacheTime(CacheEntity.CACHE_NEVER_EXPIRE)
             //全局统一超时重连次数，默认为三次，那么最差的情况会请求4次(一次原始请求，三次重连请求)，不需要可以设置为0
             .retryCount = 2
-        //.addCommonHeaders(headers)     //全局公共头
-        //.addCommonParams(params)       //全局公共参数
 
         //播放器使用 Exo
 //        PlayerFactory.setPlayManager(Exo2PlayerManager::class.java)
@@ -84,6 +83,5 @@ class App : Application() {
             }
         }
     }
-
 
 }

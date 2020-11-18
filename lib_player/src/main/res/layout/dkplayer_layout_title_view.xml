@@ -4,7 +4,7 @@
     android:id="@+id/ll_title_container"
     android:layout_width="match_parent"
     android:layout_height="@dimen/dkplayer_controller_height"
-    android:background="@drawable/dkplayer_shape_standard_controller_top_bg"
+    android:background="@drawable/player_shape_standard_controller_top_bg"
     android:gravity="center_vertical"
     android:orientation="horizontal"
     android:paddingStart="0dp"
@@ -20,7 +20,7 @@
         android:paddingEnd="@dimen/dkplayer_controller_icon_padding"
         android:paddingBottom="@dimen/dkplayer_controller_icon_padding"
         android:scaleType="centerInside"
-        android:src="@drawable/dkplayer_ic_action_arrow_back" />
+        android:src="@drawable/ic_player_arrow_back" />
 
     <TextView
         android:id="@+id/tv_title"
@@ -42,8 +42,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="6dp"
         android:layout_marginEnd="6dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/bz6" />
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_player_float" />
 
     <TextView
         android:id="@+id/tv_sys_time"
@@ -60,7 +60,7 @@
         android:layout_width="26dp"
         android:layout_height="20dp"
         android:scaleType="centerInside"
-        android:src="@drawable/dkplayer_battery_level"
+        android:src="@drawable/player_battery_level"
         android:visibility="gone"
         tools:visibility="visible" />
 
@@ -69,6 +69,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:scaleType="centerCrop"
-        android:src="@drawable/bzi" />
+        android:src="@drawable/ic_player_setting" />
 
 </LinearLayout>

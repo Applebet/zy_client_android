@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -28,7 +27,6 @@ public class PrepareView extends FrameLayout implements IControlComponent {
 
     private final ImageView mThumb;
     private final ImageView mStartPlay;
-    private final ProgressBar mLoading;
     private final FrameLayout mNetWarning;
 
     public PrepareView(@NonNull Context context) {
@@ -47,7 +45,6 @@ public class PrepareView extends FrameLayout implements IControlComponent {
         LayoutInflater.from(getContext()).inflate(R.layout.dkplayer_layout_prepare_view, this, true);
         mThumb = findViewById(R.id.thumb);
         mStartPlay = findViewById(R.id.start_play);
-        mLoading = findViewById(R.id.loading);
         mNetWarning = findViewById(R.id.net_warning_layout);
         findViewById(R.id.status_btn).setOnClickListener(new OnClickListener() {
             @Override
@@ -93,7 +90,6 @@ public class PrepareView extends FrameLayout implements IControlComponent {
                 setVisibility(VISIBLE);
                 mStartPlay.setVisibility(View.GONE);
                 mNetWarning.setVisibility(GONE);
-                mLoading.setVisibility(View.VISIBLE);
                 break;
             case VideoView.STATE_PLAYING:
             case VideoView.STATE_PAUSED:
@@ -106,7 +102,6 @@ public class PrepareView extends FrameLayout implements IControlComponent {
             case VideoView.STATE_IDLE:
                 setVisibility(VISIBLE);
                 bringToFront();
-                mLoading.setVisibility(View.GONE);
                 mNetWarning.setVisibility(GONE);
                 mStartPlay.setVisibility(View.VISIBLE);
                 mThumb.setVisibility(View.VISIBLE);

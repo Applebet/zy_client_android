@@ -1,7 +1,6 @@
 package com.zy.client.ui.video
 
 import android.graphics.Color
-import android.util.Log
 import android.view.MenuItem
 import android.widget.FrameLayout
 import com.lxj.xpopup.XPopup
@@ -21,9 +20,9 @@ import com.zy.client.database.CollectModel
 import com.zy.client.http.ConfigManager
 import com.zy.client.http.repo.CommonRepository
 import com.zy.client.utils.ClipboardUtils
-import com.zy.client.utils.notch.NotchDisplayUtils
 import com.zy.client.utils.Utils
 import com.zy.client.utils.ext.*
+import com.zy.client.utils.notch.NotchUtils
 import com.zy.client.views.loader.LoadState
 import com.zy.client.views.loader.LoaderLayout
 import kotlinx.android.synthetic.main.activity_video_detail.*
@@ -103,10 +102,10 @@ class VideoDetailActivity : BaseActivity() {
 
         //选集
         //val hasLiuHai = CutoutUtil.allowDisplayToCutout(this)
-        val hasLiuHai = NotchDisplayUtils.hasNotchInScreen(this)
+        val isNotchScreen = NotchUtils.hasNotchScreen(this)
         val dialogHeight =
             (screenHeight - resources.getDimensionPixelSize(VIDEO_VIEW_HEIGHT))
-                .minus(if (hasLiuHai) 0 else Utils.getStatusBarHeight())
+                .minus(if (isNotchScreen) 0 else Utils.getStatusBarHeight())
 
         llAnthology.setOnClickListener {
             if (mVideoList?.size ?: 0 > 1) {

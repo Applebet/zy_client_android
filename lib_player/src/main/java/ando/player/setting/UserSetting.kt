@@ -15,6 +15,10 @@ data class FloatPosition(var mDownX: Int = 0, var mDownY: Int = 0)
 
 object UserSetting {
 
+    const val LIST = "list"         //列表播放
+    const val SEAMLESS = "seamless" //无缝播放
+    const val PIP = "pip"           //画中画
+
     private const val PLAYER_SETTING = "player_setting"
     private const val BACKGROUND_PLAY = "background_play"
     private const val FLOAT_X = "float_x"

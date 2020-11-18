@@ -34,7 +34,7 @@
         <!--允许绘制到oppo、vivo刘海屏机型的刘海区域 -->
         <meta-data
             android:name="android.max_aspect"
-            android:value="2.8" />
+            android:value="2.4" />
         <!-- 允许绘制到华为刘海屏机型的刘海区域 -->
         <meta-data
             android:name="android.notch_support"
@@ -42,7 +42,7 @@
         <!-- 允许绘制到小米刘海屏机型的刘海区域 -->
         <meta-data
             android:name="notch.config"
-            android:value="landscape" />
+            android:value="portrait|landscape" />
 
         <activity
             android:name=".ui.SplashActivity"

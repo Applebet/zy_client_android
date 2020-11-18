@@ -9,18 +9,19 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dkplayer_controller_height"
         android:layout_gravity="bottom"
-        android:background="@drawable/dkplayer_shape_stardard_controller_bottom_bg"
+        android:background="@drawable/player_shape_stardard_controller_bottom_bg"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingStart="5dp"
-        android:paddingEnd="5dp">
+        android:paddingEnd="15dp">
 
         <ImageView
             android:id="@+id/iv_play"
             android:layout_width="@dimen/dkplayer_controller_height"
             android:layout_height="@dimen/dkplayer_controller_height"
             android:padding="@dimen/dkplayer_controller_icon_padding"
-            android:src="@drawable/dkplayer_selector_play_button" />
+            android:scaleType="centerInside"
+            android:src="@drawable/player_selector_play_button" />
 
         <SeekBar
             android:id="@+id/seekBar"
@@ -28,7 +29,7 @@
             android:layout_height="40dp"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="0dp"
-            android:layout_marginEnd="10dp"
+            android:layout_marginEnd="15dp"
             android:layout_weight="1"
             android:background="@null"
             android:max="1000"
@@ -36,8 +37,8 @@
             android:minHeight="2dp"
             android:paddingStart="0dp"
             android:paddingEnd="0dp"
-            android:progressDrawable="@drawable/dkplayer_layer_progress_bar"
-            android:thumb="@drawable/dkplayer_seekbar_thumb"
+            android:progressDrawable="@drawable/player_layer_progress_bar"
+            android:thumb="@drawable/player_seekbar_thumb"
             android:thumbOffset="0dp" />
 
         <TextView
@@ -67,8 +68,12 @@
             android:id="@+id/fullscreen"
             android:layout_width="@dimen/dkplayer_controller_height"
             android:layout_height="@dimen/dkplayer_controller_height"
-            android:padding="@dimen/dkplayer_controller_icon_padding"
-            android:src="@drawable/dkplayer_selector_full_screen_button" />
+            android:paddingLeft="5dp"
+            android:paddingTop="@dimen/dkplayer_controller_icon_padding"
+            android:paddingBottom="@dimen/dkplayer_controller_icon_padding"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_player_fullscreen"
+            android:visibility="visible" />
     </LinearLayout>
 
     <ProgressBar
@@ -78,7 +83,7 @@
         android:layout_height="1dp"
         android:layout_gravity="bottom"
         android:max="1000"
-        android:progressDrawable="@drawable/dkplayer_layer_progress_bar"
+        android:progressDrawable="@drawable/player_layer_progress_bar"
         android:visibility="gone" />
 
 </FrameLayout>

@@ -41,7 +41,7 @@ public class TitleView extends FrameLayout implements IControlComponent {
     private final ImageView mIvBattery;
 
     private String mTitle;
-    private boolean isShowPortraitTitle = false;//竖屏是否显示TitleView, 默认不显示
+    private boolean isShowWhenPortrait = false;//竖屏是否显示TitleView, 默认不显示
 
     private final BatteryReceiver mBatteryReceiver;
     private boolean mIsRegister;//是否注册BatteryReceiver
@@ -120,8 +120,12 @@ public class TitleView extends FrameLayout implements IControlComponent {
 
     @Override
     public void onVisibilityChanged(boolean isVisible, Animation anim) {
+        //竖屏播放暂停时,Title不隐藏
+        if (!isVisible && isShowWhenPortrait && !mControlWrapper.isPlaying() && !mControlWrapper.isFullScreen()) {
+            return;
+        }
         //只在全屏时才有效
-        if (!mControlWrapper.isFullScreen() && !isShowPortraitTitle) {
+        if (!mControlWrapper.isFullScreen() && !isShowWhenPortrait) {
             return;
         }
         if (isVisible) {
@@ -159,30 +163,34 @@ public class TitleView extends FrameLayout implements IControlComponent {
 
     @Override
     public void onPlayerStateChanged(int playerState) {
-        if (playerState == VideoView.PLAYER_FULL_SCREEN) {
-            if (mControlWrapper.isShowing() && !mControlWrapper.isLocked()) {
-                setVisibility(VISIBLE);
+        switch (playerState) {
+            case VideoView.PLAYER_NORMAL:
+                if (!isShowWhenPortrait) {
+                    setVisibility(GONE);
+                } else {
+                    mTvTitle.setText("");
+                    mIvPip.setVisibility(VISIBLE);
+                    mIvBattery.setVisibility(GONE);
+                    mTvTime.setVisibility(GONE);
+                }
+                mTvTitle.setSelected(false);
+                break;
+            case VideoView.PLAYER_FULL_SCREEN:
+                if (mControlWrapper.isShowing() && !mControlWrapper.isLocked()) {
+                    setVisibility(VISIBLE);
 
-                mTvTitle.setText(mTitle);
-                mIvPip.setVisibility(GONE);
-                mIvBattery.setVisibility(VISIBLE);
-                mTvTime.setVisibility(VISIBLE);
-                mTvTime.setText(PlayerUtils.getCurrentSystemTime());
-            }
-            mTvTitle.setSelected(true);
-        } else {
-            if (!isShowPortraitTitle) {
-                setVisibility(GONE);
-            } else {
-                mTvTitle.setText("");
-                mIvPip.setVisibility(VISIBLE);
-                mIvBattery.setVisibility(GONE);
-                mTvTime.setVisibility(GONE);
-            }
-            mTvTitle.setSelected(false);
+                    mTvTitle.setText(mTitle);
+                    mIvPip.setVisibility(GONE);
+                    mIvBattery.setVisibility(VISIBLE);
+                    mTvTime.setVisibility(VISIBLE);
+                    mTvTime.setText(PlayerUtils.getCurrentSystemTime());
+                }
+                mTvTitle.setSelected(true);
+                break;
+            default:
         }
 
-        final int fullTopPadding = VideoUtils.dp2px(15F);
+        final int fullTopPadding = PlayerUtils.dp2px(getContext(),15.0F);
         final Activity activity = PlayerUtils.scanForActivity(getContext());
         if (activity != null && mControlWrapper.hasCutout()) {
             int orientation = activity.getRequestedOrientation();
@@ -190,6 +198,9 @@ public class TitleView extends FrameLayout implements IControlComponent {
             if (orientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
                 mLlTitleContainer.setPadding(0, 0, 0, 0);
             } else if (orientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
+//                LayoutParams params= (LayoutParams) getLayoutParams();
+//                params.setMargins(0,20,0,0);
+//                setLayoutParams(params);
                 mLlTitleContainer.setPadding(cutoutHeight, fullTopPadding, 0, 0);
             } else if (orientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE) {
                 mLlTitleContainer.setPadding(0, fullTopPadding, cutoutHeight, 0);
@@ -211,8 +222,8 @@ public class TitleView extends FrameLayout implements IControlComponent {
         }
     }
 
-    public void setPortraitVisibility(boolean visible) {
-        this.isShowPortraitTitle = visible;
+    public void showWhenPortrait(boolean visible) {
+        this.isShowWhenPortrait = visible;
     }
 
     private static class BatteryReceiver extends BroadcastReceiver {

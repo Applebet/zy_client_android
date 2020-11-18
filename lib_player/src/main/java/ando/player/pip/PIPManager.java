@@ -9,6 +9,8 @@ import com.dueeeke.videoplayer.player.VideoViewManager;
 import ando.player.IjkVideoView;
 import ando.player.utils.VideoUtils;
 
+import static ando.player.setting.UserSetting.PIP;
+
 /**
  * 悬浮播放
  */
@@ -28,7 +30,7 @@ public class PIPManager {
 
     private PIPManager() {
         mVideoView = new IjkVideoView(context.getApplicationContext());
-        VideoViewManager.instance().add(mVideoView, VideoUtils.PIP);
+        VideoViewManager.instance().add(mVideoView, PIP);
         mFloatController = new FloatController(context);
         mFloatView = new FloatView(context, 0, 0);
     }

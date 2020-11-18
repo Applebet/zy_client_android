@@ -6,9 +6,11 @@ import ando.player.StandardVideoController
 import ando.player.component.*
 import ando.player.pip.PIPManager
 import ando.player.setting.UserSetting
-import ando.player.utils.VideoUtils
+import ando.player.setting.UserSetting.PIP
 import android.app.Activity
 import android.content.Context
+import android.os.Environment
+import android.util.Log
 import android.view.MenuItem
 import android.widget.ImageView
 import com.dueeeke.videoplayer.controller.GestureVideoController
@@ -17,8 +19,10 @@ import com.dueeeke.videoplayer.player.VideoViewManager
 import com.dueeeke.videoplayer.util.L
 import com.lxj.xpopup.XPopup
 import com.zy.client.utils.PermissionManager.overlay
-import com.zy.client.utils.ext.isVideoUrl
-import com.zy.client.utils.ext.noNull
+import com.zy.client.utils.ext.*
+import java.text.SimpleDateFormat
+import java.time.format.DateTimeFormatter
+import java.util.*
 
 
 /**
@@ -37,7 +41,8 @@ class VideoController {
     }
 
     private lateinit var context: Context
-    private lateinit var controller: GestureVideoController
+    private lateinit var controller: StandardVideoController
+    private lateinit var prepareView: PrepareView
     private lateinit var titleView: TitleView
 
     private var pipManager: PIPManager? = null
@@ -45,7 +50,7 @@ class VideoController {
 
     fun init(context: Context, isLive: Boolean) {
         this.pipManager = PIPManager.get()
-        val videoPlayer = VideoViewManager.instance().get(VideoUtils.PIP) as IjkVideoView
+        val videoPlayer = VideoViewManager.instance().get(PIP) as IjkVideoView
         init(context = context, ijkVideoView = videoPlayer, isLive = isLive) {
             //从 FloatView 上移除 VideoView
             if (pipManager?.isStartFloatWindow == true) {
@@ -76,17 +81,18 @@ class VideoController {
         controller.setEnableOrientation(false)
 
         //准备播放界面
-        val prepareView = PrepareView(context)
+        prepareView = PrepareView(context)
         //val thumb = prepareView.findViewById<ImageView>(R.id.thumb)
         //loadImage(thumb, THUMB)
         //loadImage(thumb, ContextCompat.getDrawable(context, R.drawable.rectangle_video_preview), null)
         controller.addControlComponent(prepareView)
 
+
         controller.addControlComponent(CompleteView(context)) //自动完成播放界面
         controller.addControlComponent(ErrorView(context)) //错误界面
 
         titleView = TitleView(context) //标题栏
-        titleView.setPortraitVisibility(true)
+        titleView.showWhenPortrait(true)
         controller.addControlComponent(titleView)
 
         //根据是否为直播设置不同的底部控制条
@@ -95,7 +101,7 @@ class VideoController {
         } else {
             val vodControlView = VodControlView(context) //点播控制条
             //是否显示底部进度条。默认显示
-            //vodControlView.showBottomProgress(false);
+            vodControlView.showBottomProgress(true)
             controller.addControlComponent(vodControlView)
         }
 
@@ -143,6 +149,22 @@ class VideoController {
 
         videoPlayer.setScreenScaleType(SCREEN_SCALE_16_9)
 
+        controller.setCanChangePosition(!isLive)
+        //截屏
+        controller.setScreenShotListener {
+            val bitmap = videoPlayer.doScreenShot()
+            val timestamp = SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault()).format(Date())
+            insertBitmap(
+                context, bitmap,
+                createContentValues(
+                    "screenshot_$timestamp",
+                    relativePath = "${Environment.DIRECTORY_PICTURES}/kuyou"
+                )
+            ) {
+                context.toastShort("已保存截图")
+            }
+        }
+
         initListeners()
 
         block.invoke()
@@ -161,9 +183,9 @@ class VideoController {
 
         //设置
         ivSetting.setOnClickListener {
-            val s=XPopup.Builder(context).asConfirm(
+            val s = XPopup.Builder(context).asConfirm(
                 "是否开启后台播放?", ""
-            ){
+            ) {
                 UserSetting.setBackgroundPlay(context, true)
             }.show()
         }
@@ -207,9 +229,12 @@ class VideoController {
         return true
     }
 
+
     private val mOnStateChangeListener: OnStateChangeListener =
         object : SimpleOnStateChangeListener() {
             override fun onPlayerStateChanged(playerState: Int) {
+
+                Log.e("123", "onPlayerStateChanged My Controller = $playerState")
                 when (playerState) {
                     PLAYER_NORMAL -> {
                     }
@@ -255,7 +280,6 @@ class VideoController {
      */
     fun startPlay(videoUrl: String?, title: String?) {
         if (videoUrl?.isVideoUrl() == false || videoPlayer.isPlaying) return
-        //currUrl = videoUrl
         titleView.setTitle(title.noNull())
         videoPlayer.release()
         videoPlayer.setUrl(videoUrl)//videoUrl  VOD_URL

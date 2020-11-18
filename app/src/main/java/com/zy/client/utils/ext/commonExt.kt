@@ -2,8 +2,14 @@ package com.zy.client.utils.ext
 
 import android.content.ClipData
 import android.content.ClipboardManager
+import android.content.ContentValues
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import android.net.Uri
+import android.os.Build
+import android.provider.MediaStore
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import androidx.core.view.isVisible
@@ -13,6 +19,7 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
 import com.zy.client.App
 import com.zy.client.utils.NoShakeClickListener
+import java.io.OutputStream
 import java.util.*
 
 /**
@@ -114,6 +121,75 @@ val Context.screenWidth: Int
 val Context.screenHeight: Int
     get() = resources.displayMetrics.heightPixels
 
+//MediaStore
+//------------------------------------------------------------------------------------------------
+
+/**
+ * ContentValues
+ * <pre>
+ * values.put(MediaStore.Images.Media.IS_PENDING, isPending)
+ * Android Q , MediaStore中添加 MediaStore.Images.Media.IS_PENDING flag，用来表示文件的 isPending 状态，0是可见，其他不可见
+ * </pre>
+ * @param displayName 文件名
+ * @param description 描述
+ * @param mimeType 媒体类型
+ * @param title 标题
+ * @param relativePath 相对路径 eg: ${Environment.DIRECTORY_PICTURES}/xxx
+ * @param isPending 默认0 , 0是可见，其他不可见
+ */
+fun createContentValues(
+    displayName: String? = null, description: String? = null, mimeType: String? = null, title: String? = null,
+    relativePath: String? = null, isPending: Int? = 1,
+): ContentValues {
+    return ContentValues().apply {
+        put(MediaStore.Images.Media.DISPLAY_NAME, displayName)
+        put(MediaStore.Images.Media.DESCRIPTION, description)
+        put(MediaStore.Images.Media.MIME_TYPE, mimeType)
+        put(MediaStore.Images.Media.TITLE, title)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            put(MediaStore.Images.Media.RELATIVE_PATH, relativePath)
+            put(MediaStore.Images.Media.IS_PENDING, isPending)
+        }
+    }
+}
+
+fun insertBitmap(context: Context,bitmap: Bitmap?, values: ContentValues,block: (v: Uri?) -> Unit={}): Uri? {
+    val externalUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+
+    val resolver = context.contentResolver
+    val insertUri = resolver.insert(externalUri, values)
+    //标记当前文件是 Pending 状态
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        values.put(MediaStore.Images.Media.IS_PENDING, 1)
+        //MediaStore.setIncludePending(insertUri)
+    }
+    var os: OutputStream? = null
+    try {
+        if (insertUri != null && bitmap != null) {
+            os = resolver.openOutputStream(insertUri)
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, os)
+            os?.flush()
+
+            Log.i("123","创建Bitmap成功 insertBitmap $insertUri")
+
+            //https://developer.android.google.cn/training/data-storage/files/media#native-code
+            // Now that we're finished, release the "pending" status, and allow other apps
+            // to view the image.
+            values.clear()
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                values.put(MediaStore.Images.Media.IS_PENDING, 0)
+                resolver.update(insertUri, values, null, null)
+            }
+        }
+        block.invoke(insertUri)
+    } catch (e: Exception) {
+        Log.e("123","创建失败：${e.message}")
+    } finally {
+        if (bitmap?.isRecycled == false) bitmap.recycle()
+        os?.close()
+        return insertUri
+    }
+}
 
 ///////////////////////////////////////////Glide
 /**
