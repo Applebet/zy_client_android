@@ -18,6 +18,13 @@ public final class VideoUtils {
     private VideoUtils() {
     }
 
+    public static void showNavKey(Context context, int systemUiVisibility) {
+        ((Activity) context).getWindow().getDecorView().setSystemUiVisibility(systemUiVisibility);
+    }
+
+    /**
+     * Fixed: VIVO 无法关闭导航栏的问题
+     */
     public static void hideNavigation(Context context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             //  设置屏幕始终在前面，不然点击鼠标，重新出现虚拟按键

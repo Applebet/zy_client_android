@@ -2,9 +2,10 @@ package ando.player.setting;
 
 public class MediaConstants {
 
+    public static final int PLAYSPEED_05 = 0x00030003;
     public static final int PLAYSPEED_075 = 0x00030004;
     public static final int PLAYSPEED_10 = 0x00010001;
-    public static final int PLAYSPEED_12 = 0x00060005;
+    public static final int PLAYSPEED_125 = 0x00060005;
     public static final int PLAYSPEED_15 = 0x00030002;
     public static final int PLAYSPEED_20 = 0x00020001;
 

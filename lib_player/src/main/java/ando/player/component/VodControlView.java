@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +29,13 @@ import com.dueeeke.videoplayer.util.PlayerUtils;
 import java.util.Locale;
 
 import ando.player.R;
+import ando.player.dialog.BaseDialog;
+import ando.player.dialog.PlaySpeedDialog;
+import ando.player.dialog.PlayerDialogFactory;
+import ando.player.dialog.SimpleItemClickListener;
+import ando.player.setting.ITheme;
+import ando.player.setting.MediaConstants;
+import ando.player.setting.Theme;
 
 import static com.dueeeke.videoplayer.util.PlayerUtils.stringForTime;
 
@@ -36,14 +44,26 @@ import static com.dueeeke.videoplayer.util.PlayerUtils.stringForTime;
  */
 public class VodControlView extends FrameLayout implements IControlComponent, View.OnClickListener, SeekBar.OnSeekBarChangeListener {
 
+    protected Theme mTheme;
+    protected BaseDialog baseDialog;
+
     protected ControlWrapper mControlWrapper;
 
+    private final LinearLayout mBottomContainer;
+    private final ImageView mPlayButton;
+    private final SeekBar mVideoProgress;
     private final TextView mTimePercent;
     private final ImageView mFullScreen;
-    private final LinearLayout mBottomContainer;
-    private final SeekBar mVideoProgress;
+
+    private final SeekBar mFullVideoProgress;
+    private final LinearLayout mFullBottomContainer;
+    private final ImageView mFullPlayButton;
+    private final TextView mFullTimePercent;
+    private final TextView mFullTvSelectList;
+    private final TextView mFullTvSpeed;
+    private final TextView mFullTvDefinition;
+
     private final ProgressBar mBottomProgress;
-    private final ImageView mPlayButton;
 
     private boolean mIsDragging;
 
@@ -64,6 +84,7 @@ public class VodControlView extends FrameLayout implements IControlComponent, Vi
     {
         setVisibility(GONE);
         LayoutInflater.from(getContext()).inflate(getLayoutId(), this, true);
+        setTheme(Theme.DEFAULT);
         mFullScreen = findViewById(R.id.fullscreen);
         mFullScreen.setOnClickListener(this);
         mBottomContainer = findViewById(R.id.bottom_container);
@@ -74,9 +95,23 @@ public class VodControlView extends FrameLayout implements IControlComponent, Vi
         mPlayButton.setOnClickListener(this);
         mBottomProgress = findViewById(R.id.bottom_progress);
 
+        mFullBottomContainer = findViewById(R.id.bottom_container_vod_full);
+        mFullPlayButton = findViewById(R.id.iv_vod_full_play);
+        mFullVideoProgress = findViewById(R.id.seekBar_vod_full);
+        mFullTimePercent = findViewById(R.id.tv_vod_full_time_percent);
+        mFullTvSelectList = findViewById(R.id.tv_vod_full_select_list);
+        mFullTvSpeed = findViewById(R.id.tv_vod_full_speed);
+        mFullTvDefinition = findViewById(R.id.tv_vod_full_definition);
+        mFullTvSelectList.setOnClickListener(this);
+        mFullTvSpeed.setOnClickListener(this);
+        mFullTvDefinition.setOnClickListener(this);
+        mFullPlayButton.setOnClickListener(this);
+        mFullVideoProgress.setOnSeekBarChangeListener(this);
+
         //5.1以下系统SeekBar高度需要设置成WRAP_CONTENT
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP_MR1) {
             mVideoProgress.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
+            mFullVideoProgress.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
         }
     }
 
@@ -104,28 +139,17 @@ public class VodControlView extends FrameLayout implements IControlComponent, Vi
     @Override
     public void onVisibilityChanged(boolean isVisible, Animation anim) {
         //Log.e("123", "onVisibilityChanged Vod = " + isVisible + "  isFull = " + mControlWrapper.isFullScreen());
-        if (checkIsFullScreen()) {
-            mBottomProgress.setProgress(0);
-            mBottomProgress.setSecondaryProgress(0);
-            mVideoProgress.setProgress(0);
-            mVideoProgress.setSecondaryProgress(0);
-
-            mBottomContainer.setVisibility(GONE);
-            if (mIsShowBottomProgress) {
-                mBottomProgress.setVisibility(GONE);
-            }
-            setVisibility(GONE);
-            return;
-        }
 
         if (isVisible) {
             if (getVisibility() == GONE) {
                 setVisibility(VISIBLE);
             }
-            mBottomContainer.setVisibility(VISIBLE);
+
+            getRealBottomContainer().setVisibility(VISIBLE);
             if (anim != null) {
-                mBottomContainer.startAnimation(anim);
+                getRealBottomContainer().startAnimation(anim);
             }
+
             if (mIsShowBottomProgress) {
                 mBottomProgress.setVisibility(GONE);
             }
@@ -133,29 +157,35 @@ public class VodControlView extends FrameLayout implements IControlComponent, Vi
             if (getVisibility() == VISIBLE) {
                 setVisibility(GONE);
             }
-            mBottomContainer.setVisibility(GONE);
+
+            getRealBottomContainer().setVisibility(GONE);
             if (anim != null) {
-                mBottomContainer.startAnimation(anim);
+                getRealBottomContainer().startAnimation(anim);
             }
-            if (mIsShowBottomProgress) {
-                mBottomProgress.setVisibility(VISIBLE);
+
+            if (mIsShowBottomProgress && !checkFullScreen()) {
                 AlphaAnimation animation = new AlphaAnimation(0f, 1f);
                 animation.setDuration(300);
+
+                mBottomProgress.setVisibility(VISIBLE);
                 mBottomProgress.startAnimation(animation);
             }
         }
     }
 
+
     @Override
     public void onPlayStateChanged(int playState) {
+        //Log.e("123", "onPlayStateChanged vod = " + playState);
+
         switch (playState) {
             case VideoView.STATE_IDLE:
             case VideoView.STATE_PLAYBACK_COMPLETED:
                 setVisibility(GONE);
                 mBottomProgress.setProgress(0);
                 mBottomProgress.setSecondaryProgress(0);
-                mVideoProgress.setProgress(0);
-                mVideoProgress.setSecondaryProgress(0);
+                getRealVideoProgress().setProgress(0);
+                getRealVideoProgress().setSecondaryProgress(0);
                 break;
             case VideoView.STATE_START_ABORT:
             case VideoView.STATE_PREPARING:
@@ -164,28 +194,31 @@ public class VodControlView extends FrameLayout implements IControlComponent, Vi
                 setVisibility(GONE);
                 break;
             case VideoView.STATE_PLAYING:
-                mPlayButton.setSelected(true);
+                getRealPlayButton().setSelected(true);
                 if (mIsShowBottomProgress) {
                     if (mControlWrapper.isShowing()) {
                         mBottomProgress.setVisibility(GONE);
-                        mBottomContainer.setVisibility(VISIBLE);
+                        getRealBottomContainer().setVisibility(VISIBLE);
                     } else {
-                        mBottomContainer.setVisibility(GONE);
-                        mBottomProgress.setVisibility(VISIBLE);
+                        getRealBottomContainer().setVisibility(GONE);
+                        //Fixed: 屏幕中间横线的问题
+                        if (!checkFullScreen()) {
+                            mBottomProgress.setVisibility(VISIBLE);
+                        }
                     }
                 } else {
-                    mBottomContainer.setVisibility(GONE);
+                    getRealBottomContainer().setVisibility(GONE);
                 }
                 setVisibility(VISIBLE);
                 //开始刷新进度
                 mControlWrapper.startProgress();
                 break;
             case VideoView.STATE_PAUSED:
-                mPlayButton.setSelected(false);
+                getRealPlayButton().setSelected(false);
                 break;
             case VideoView.STATE_BUFFERING:
             case VideoView.STATE_BUFFERED:
-                mPlayButton.setSelected(mControlWrapper.isPlaying());
+                getRealPlayButton().setSelected(mControlWrapper.isPlaying());
                 break;
             default:
         }
@@ -197,12 +230,21 @@ public class VodControlView extends FrameLayout implements IControlComponent, Vi
 
         switch (playerState) {
             case VideoView.PLAYER_NORMAL:
-                setVisibility(VISIBLE);
+                mFullBottomContainer.setVisibility(GONE);
+                mBottomContainer.setVisibility(VISIBLE);
+                mPlayButton.setSelected(mControlWrapper.isPlaying());
+
                 mFullScreen.setSelected(false);
                 mFullScreen.setVisibility(VISIBLE);
                 break;
             case VideoView.PLAYER_FULL_SCREEN:
-                setVisibility(GONE);
+                mBottomContainer.setVisibility(GONE);
+                mBottomProgress.setVisibility(GONE);
+                mFullBottomContainer.setVisibility(VISIBLE);
+//                mFullTimePercent.setVisibility(VISIBLE);
+//                mFullVideoProgress.setVisibility(VISIBLE);
+                mFullPlayButton.setSelected(mControlWrapper.isPlaying());
+
                 mFullScreen.setSelected(true);
                 mFullScreen.setVisibility(GONE);
                 return;
@@ -215,14 +257,14 @@ public class VodControlView extends FrameLayout implements IControlComponent, Vi
             int orientation = activity.getRequestedOrientation();
             int cutoutHeight = mControlWrapper.getCutoutHeight();
             if (orientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
-                mBottomContainer.setPadding(0, 0, 0, 0);
+                getRealBottomContainer().setPadding(0, 0, 0, 0);
                 mBottomProgress.setPadding(0, 0, 0, 0);
             } else if (orientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
                 //Log.e("123", "onPlayerStateChanged vod fullTopPadding = " + fullTopPadding);
-                mBottomContainer.setPadding(cutoutHeight, 0, 0, fullTopPadding);
+                getRealBottomContainer().setPadding(cutoutHeight, 0, 0, fullTopPadding);
                 mBottomProgress.setPadding(cutoutHeight, 0, 0, 0);
             } else if (orientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE) {
-                mBottomContainer.setPadding(0, 0, cutoutHeight, fullTopPadding);
+                getRealBottomContainer().setPadding(0, 0, cutoutHeight, fullTopPadding);
                 mBottomProgress.setPadding(0, 0, cutoutHeight, 0);
             }
         }
@@ -234,31 +276,36 @@ public class VodControlView extends FrameLayout implements IControlComponent, Vi
             return;
         }
 
-        if (mVideoProgress != null) {
+        final SeekBar videoProgress = getRealVideoProgress();
+        if (videoProgress != null) {
             if (duration > 0) {
-                mVideoProgress.setEnabled(true);
-                int pos = (int) (position * 1.0 / duration * mVideoProgress.getMax());
-                mVideoProgress.setProgress(pos);
+                videoProgress.setEnabled(true);
+                int pos = (int) (position * 1.0 / duration * videoProgress.getMax());
+                videoProgress.setProgress(pos);
                 mBottomProgress.setProgress(pos);
             } else {
-                mVideoProgress.setEnabled(false);
+                videoProgress.setEnabled(false);
             }
             int percent = mControlWrapper.getBufferedPercentage();
             if (percent >= 96) { //解决缓冲进度不能100%问题
-                mVideoProgress.setSecondaryProgress(mVideoProgress.getMax());
+                videoProgress.setSecondaryProgress(getRealVideoProgress().getMax());
                 mBottomProgress.setSecondaryProgress(mBottomProgress.getMax());
             } else {
-                mVideoProgress.setSecondaryProgress(percent * 10);
+                videoProgress.setSecondaryProgress(percent * 10);
                 mBottomProgress.setSecondaryProgress(percent * 10);
             }
         }
 
+        final String t = String.format(Locale.getDefault(), getContext().getString(R.string.str_player_time_percent),
+                stringForTime(position), stringForTime(duration));
         if (mTimePercent != null) {
-            String t = String.format(Locale.getDefault(), getContext().getString(R.string.str_player_time_percent),
-                    stringForTime(position), stringForTime(duration));
             mTimePercent.setText(t);
         }
+        if (mFullTimePercent != null) {
+            mFullTimePercent.setText(t);
+        }
     }
+
 
     @Override
     public void onLockStateChanged(boolean isLocked) {
@@ -272,12 +319,29 @@ public class VodControlView extends FrameLayout implements IControlComponent, Vi
             toggleFullScreen();
         } else if (id == R.id.iv_play) {
             mControlWrapper.togglePlay();
+        } else if (id == R.id.iv_vod_full_play) {
+            mControlWrapper.togglePlay();
+        } else if (id == R.id.tv_vod_full_select_list) {
+
+        } else if (id == R.id.tv_vod_full_speed) {
+            //隐藏掉其他所有遮盖物
+            mControlWrapper.hide();
+
+            PlaySpeedDialog dialog = PlayerDialogFactory.getFullSpeedDialog(getContext(), true,
+                    MediaConstants.PLAYSPEED_10, getLayoutParams(), mTheme, new SimpleItemClickListener() {
+                        @Override
+                        public void onSpeedItemClick(int speedType, float speed, String name) {
+                            super.onSpeedItemClick(speedType, speed, name);
+                            mControlWrapper.setSpeed(speed);
+                            mFullTvSpeed.setText(name);
+                        }
+                    });
+            baseDialog = dialog.show();
+        } else if (id == R.id.tv_vod_full_definition) {
+
         }
     }
 
-    /**
-     * 横竖屏切换
-     */
     private void toggleFullScreen() {
         Activity activity = PlayerUtils.scanForActivity(getContext());
         mControlWrapper.toggleFullScreen(activity);
@@ -293,7 +357,7 @@ public class VodControlView extends FrameLayout implements IControlComponent, Vi
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
         long duration = mControlWrapper.getDuration();
-        long newPosition = (duration * seekBar.getProgress()) / mVideoProgress.getMax();
+        long newPosition = (duration * seekBar.getProgress()) / getRealVideoProgress().getMax();
         mControlWrapper.seekTo((int) newPosition);
         mIsDragging = false;
         mControlWrapper.startProgress();
@@ -307,17 +371,54 @@ public class VodControlView extends FrameLayout implements IControlComponent, Vi
         }
 
         long duration = mControlWrapper.getDuration();
-        long newPosition = (duration * progress) / mVideoProgress.getMax();
-        if (mTimePercent != null) {
-            mTimePercent.setText(stringForTime((int) newPosition));
+        long newPosition = (duration * progress) / getRealVideoProgress().getMax();
+        if (getRealTimePercent() != null) {
+            getRealTimePercent().setText(stringForTime((int) newPosition));
         }
     }
 
-    private boolean checkIsFullScreen() {
-        if (mControlWrapper != null && mControlWrapper.isFullScreen()) {
-            return true;
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        dismissDialog();
+    }
+
+    private boolean checkFullScreen() {
+        return mControlWrapper != null && mControlWrapper.isFullScreen();
+    }
+
+    private LinearLayout getRealBottomContainer() {
+        return checkFullScreen() ? mFullBottomContainer : mBottomContainer;
+    }
+
+    private ImageView getRealPlayButton() {
+        return checkFullScreen() ? mFullPlayButton : mPlayButton;
+    }
+
+    private SeekBar getRealVideoProgress() {
+        return checkFullScreen() ? mFullVideoProgress : mVideoProgress;
+    }
+
+    private TextView getRealTimePercent() {
+        return checkFullScreen() ? mFullTimePercent : mTimePercent;
+    }
+
+    public void dismissDialog() {
+        if (baseDialog != null) {
+            baseDialog.dismiss();
         }
-        return false;
+    }
+
+    public void setTheme(Theme theme) {
+        this.mTheme = theme;
+        //通过判断子View是否实现了ITheme的接口，去更新主题
+        int childCounts = getChildCount();
+        for (int i = 0; i < childCounts; i++) {
+            View view = getChildAt(i);
+            if (view instanceof ITheme) {
+                ((ITheme) view).setTheme(theme);
+            }
+        }
     }
 
 }

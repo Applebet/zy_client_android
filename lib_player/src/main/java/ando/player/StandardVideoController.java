@@ -1,5 +1,6 @@
 package ando.player;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.util.AttributeSet;
@@ -34,6 +35,8 @@ import ando.player.utils.VideoUtils;
  * @author javakam
  */
 public class StandardVideoController extends GestureVideoController implements View.OnClickListener {
+
+    protected int systemUiVisibility;
 
     protected ImageView mLockButton;
     protected ImageView mScreenShot;
@@ -139,6 +142,8 @@ public class StandardVideoController extends GestureVideoController implements V
         switch (playerState) {
             case VideoView.PLAYER_NORMAL:
                 L.e("PLAYER_NORMAL");
+                postDelayed(() -> VideoUtils.showNavKey(getContext(), systemUiVisibility), 200);
+
                 setLayoutParams(new LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.MATCH_PARENT));
@@ -146,10 +151,11 @@ public class StandardVideoController extends GestureVideoController implements V
                 mScreenShot.setVisibility(GONE);
                 break;
             case VideoView.PLAYER_FULL_SCREEN:
+                L.e("PLAYER_FULL_SCREEN");
                 //Fixed: VIVO 无法关闭导航栏的问题
+                systemUiVisibility = ((Activity) getContext()).getWindow().getDecorView().getSystemUiVisibility();
                 postDelayed(() -> VideoUtils.hideNavigation(getContext()), 500);
 
-                L.e("PLAYER_FULL_SCREEN");
                 if (isShowing()) {
                     mLockButton.setVisibility(VISIBLE);
                     mScreenShot.setVisibility(VISIBLE);

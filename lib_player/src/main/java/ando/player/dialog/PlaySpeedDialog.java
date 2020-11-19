@@ -41,21 +41,25 @@ public class PlaySpeedDialog {
     }
 
     private void setSpeedData(View view, final Dialog dialog) {
-        RadioGroup rg = (RadioGroup) view.findViewById(R.id.ll_full_definition_contain);
-        RadioButton rbSpeed075 = (RadioButton) rg.getChildAt(0);
-        RadioButton rbSpeed10 = (RadioButton) rg.getChildAt(1);
-        RadioButton rbSpeed12 = (RadioButton) rg.getChildAt(2);
-        RadioButton rbSpeed15 = (RadioButton) rg.getChildAt(3);
-        RadioButton rbSpeed20 = (RadioButton) rg.getChildAt(4);
+        final RadioGroup rg = view.findViewById(R.id.ll_full_definition_contain);
+        RadioButton rbSpeed05 = (RadioButton) rg.getChildAt(0);
+        RadioButton rbSpeed075 = (RadioButton) rg.getChildAt(1);
+        RadioButton rbSpeed10 = (RadioButton) rg.getChildAt(2);
+        RadioButton rbSpeed12 = (RadioButton) rg.getChildAt(3);
+        RadioButton rbSpeed15 = (RadioButton) rg.getChildAt(4);
+        RadioButton rbSpeed20 = (RadioButton) rg.getChildAt(5);
         int currentSpeed = initSpeed;
         switch (currentSpeed) {
+            case MediaConstants.PLAYSPEED_05:
+                setRes(rbSpeed05, true);
+                break;
             case MediaConstants.PLAYSPEED_075:
                 setRes(rbSpeed075, true);
                 break;
             case MediaConstants.PLAYSPEED_10:
                 setRes(rbSpeed10, true);
                 break;
-            case MediaConstants.PLAYSPEED_12:
+            case MediaConstants.PLAYSPEED_125:
                 setRes(rbSpeed12, true);
                 break;
             case MediaConstants.PLAYSPEED_15:
@@ -72,7 +76,11 @@ public class PlaySpeedDialog {
                 int speedType = MediaConstants.PLAYSPEED_10;
                 float playSpeed = 1f;
                 String playSpeedName = mContext.getString(R.string.str_player_speed75);
-                if (checkedId == R.id.speed_075) {
+                if (checkedId == R.id.speed_05) {
+                    playSpeed = 0.5f;
+                    speedType = MediaConstants.PLAYSPEED_05;
+                    playSpeedName = mContext.getString(R.string.str_player_speed05);
+                } else if (checkedId == R.id.speed_075) {
                     playSpeed = 0.75f;
                     speedType = MediaConstants.PLAYSPEED_075;
                     playSpeedName = mContext.getString(R.string.str_player_speed75);
@@ -80,10 +88,10 @@ public class PlaySpeedDialog {
                     playSpeed = 1f;
                     speedType = MediaConstants.PLAYSPEED_10;
                     playSpeedName = mContext.getString(R.string.str_player_speed100);
-                } else if (checkedId == R.id.speed_12) {
+                } else if (checkedId == R.id.speed_125) {
                     playSpeed = 1.2f;
-                    speedType = MediaConstants.PLAYSPEED_12;
-                    playSpeedName = mContext.getString(R.string.str_player_speed120);
+                    speedType = MediaConstants.PLAYSPEED_125;
+                    playSpeedName = mContext.getString(R.string.str_player_speed125);
                 } else if (checkedId == R.id.speed_15) {
                     playSpeed = 1.5f;
                     speedType = MediaConstants.PLAYSPEED_15;

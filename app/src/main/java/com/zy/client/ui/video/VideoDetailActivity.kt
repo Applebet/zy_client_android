@@ -1,5 +1,6 @@
 package com.zy.client.ui.video
 
+import ando.player.utils.VideoUtils
 import android.graphics.Color
 import android.view.MenuItem
 import android.widget.FrameLayout
@@ -26,6 +27,7 @@ import com.zy.client.utils.NotchUtils
 import com.zy.client.views.loader.LoadState
 import com.zy.client.views.loader.LoaderLayout
 import kotlinx.android.synthetic.main.activity_video_detail.*
+import kotlinx.android.synthetic.main.activity_video_tv.view.*
 import org.greenrobot.eventbus.EventBus
 
 /**
@@ -82,6 +84,8 @@ class VideoDetailActivity : BaseActivity() {
         } else {
             videoController?.setVideoTag(VideoSource(id = id, sourceKey = sourceKey))
         }
+
+        videoContainer.addView(videoController?.getPlayer())
     }
 
     override fun initListener() {
@@ -258,8 +262,6 @@ class VideoDetailActivity : BaseActivity() {
         if (video == null) return
         this.mVideo = video
         if (video.playUrl.isVideoUrl()) {
-
-            videoContainer.addView(videoController?.videoPlayer)
             videoController?.setRecoverActivity(VideoDetailActivity::class.java)
             videoController?.startPlay(
                 video.playUrl,

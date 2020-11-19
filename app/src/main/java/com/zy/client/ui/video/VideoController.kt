@@ -9,7 +9,6 @@ import ando.player.setting.UserSetting
 import ando.player.setting.UserSetting.PIP
 import android.app.Activity
 import android.content.Context
-import android.os.Environment
 import android.util.Log
 import android.view.MenuItem
 import android.widget.ImageView
@@ -21,7 +20,6 @@ import com.zy.client.common.getScreenShotPath
 import com.zy.client.utils.PermissionManager.overlay
 import com.zy.client.utils.ext.*
 import java.text.SimpleDateFormat
-import java.time.format.DateTimeFormatter
 import java.util.*
 
 
@@ -44,9 +42,10 @@ class VideoController {
     private lateinit var controller: StandardVideoController
     private lateinit var prepareView: PrepareView
     private lateinit var titleView: TitleView
+    private lateinit var videoPlayer: IjkVideoView
 
     private var pipManager: PIPManager? = null
-    lateinit var videoPlayer: IjkVideoView
+    private var currentUrl: String? = null
 
     fun init(context: Context, isLive: Boolean) {
         this.pipManager = PIPManager.get()
@@ -99,17 +98,10 @@ class VideoController {
         if (isLive) {
             controller.addControlComponent(LiveControlView(context)) //直播控制条
         } else {
-            //普通
             val vodControlView = VodControlView(context) //点播控制条
             //是否显示底部进度条。默认显示
             vodControlView.showBottomProgress(true)
             controller.addControlComponent(vodControlView)
-
-            //全屏
-            val vodFullControlView = VodFullControlView(context) //点播控制条
-            //是否显示底部进度条。默认显示
-            vodFullControlView.showBottomProgress(true)
-            controller.addControlComponent(vodFullControlView)
         }
 
         val gestureControlView = GestureView(context) //滑动控制视图
@@ -281,12 +273,19 @@ class VideoController {
      *      videoPlayer.setUrl(proxyUrl)
      */
     fun startPlay(videoUrl: String?, title: String?) {
-        if (videoUrl?.isVideoUrl() == false || videoPlayer.isPlaying) return
+        Log.i("123", "startPlay  currentUrl= $currentUrl  videoUrl= $videoUrl  title=$title")
+        if (videoUrl?.isVideoUrl() == false) return
+        //放止同一剧集重复点击
+        if (currentUrl != null && currentUrl.equals(videoUrl, true)) return
+
+        currentUrl = videoUrl
         titleView.setTitle(title.noNull())
         videoPlayer.release()
-        videoPlayer.setUrl(VOD_URL)//videoUrl  VOD_URL
+        videoPlayer.setUrl(videoUrl)//videoUrl  VOD_URL
         videoPlayer.start()
     }
+
+    fun getPlayer(): IjkVideoView? = videoPlayer
 
     fun isEnableBackPlay(): Boolean = UserSetting.getBackgroundPlay(context)
 
