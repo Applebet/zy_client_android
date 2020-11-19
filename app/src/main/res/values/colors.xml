@@ -25,9 +25,9 @@
     <!--    <color name="dkplayer_theme_color_translucent">@color/teal_700</color>-->
     <!--    <color name="dkplayer_background_color">#4D000000</color>-->
 
-    <color name="dkplayer_theme_color">#FB7299</color>
-    <color name="dkplayer_theme_color_translucent">#FFFB7299</color>
-    <color name="dkplayer_background_color">#4D000000</color>
+    <color name="color_player_theme">#FB7299</color>
+    <color name="color_player_theme_translucent">#FFFB7299</color>
+    <color name="color_player_background">#4D000000</color>
 
 
 </resources>

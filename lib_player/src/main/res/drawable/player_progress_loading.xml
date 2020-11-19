@@ -11,7 +11,7 @@
         android:thicknessRatio="16"
         android:useLevel="false">
         <gradient
-            android:endColor="@color/dkplayer_theme_color"
+            android:endColor="@color/color_player_theme"
             android:startColor="@android:color/transparent"
             android:type="sweep"
             android:useLevel="false" />

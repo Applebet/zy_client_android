@@ -13,11 +13,11 @@ import android.os.Environment
 import android.util.Log
 import android.view.MenuItem
 import android.widget.ImageView
-import com.dueeeke.videoplayer.controller.GestureVideoController
 import com.dueeeke.videoplayer.player.VideoView.*
 import com.dueeeke.videoplayer.player.VideoViewManager
 import com.dueeeke.videoplayer.util.L
 import com.lxj.xpopup.XPopup
+import com.zy.client.common.getScreenShotPath
 import com.zy.client.utils.PermissionManager.overlay
 import com.zy.client.utils.ext.*
 import java.text.SimpleDateFormat
@@ -99,10 +99,17 @@ class VideoController {
         if (isLive) {
             controller.addControlComponent(LiveControlView(context)) //直播控制条
         } else {
+            //普通
             val vodControlView = VodControlView(context) //点播控制条
             //是否显示底部进度条。默认显示
             vodControlView.showBottomProgress(true)
             controller.addControlComponent(vodControlView)
+
+            //全屏
+            val vodFullControlView = VodFullControlView(context) //点播控制条
+            //是否显示底部进度条。默认显示
+            vodFullControlView.showBottomProgress(true)
+            controller.addControlComponent(vodFullControlView)
         }
 
         val gestureControlView = GestureView(context) //滑动控制视图
@@ -149,19 +156,15 @@ class VideoController {
 
         videoPlayer.setScreenScaleType(SCREEN_SCALE_16_9)
 
-        controller.setCanChangePosition(!isLive)
         //截屏
         controller.setScreenShotListener {
             val bitmap = videoPlayer.doScreenShot()
             val timestamp = SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault()).format(Date())
             insertBitmap(
                 context, bitmap,
-                createContentValues(
-                    "screenshot_$timestamp",
-                    relativePath = "${Environment.DIRECTORY_PICTURES}/kuyou"
-                )
+                createContentValues("screenshot_$timestamp", relativePath = getScreenShotPath())
             ) {
-                context.toastShort("已保存截图")
+                context.toastShort("保存截图成功!")
             }
         }
 
@@ -229,12 +232,11 @@ class VideoController {
         return true
     }
 
-
     private val mOnStateChangeListener: OnStateChangeListener =
         object : SimpleOnStateChangeListener() {
             override fun onPlayerStateChanged(playerState: Int) {
 
-                Log.e("123", "onPlayerStateChanged My Controller = $playerState")
+                //Log.e("123", "onPlayerStateChanged My Controller = $playerState")
                 when (playerState) {
                     PLAYER_NORMAL -> {
                     }
@@ -282,7 +284,7 @@ class VideoController {
         if (videoUrl?.isVideoUrl() == false || videoPlayer.isPlaying) return
         titleView.setTitle(title.noNull())
         videoPlayer.release()
-        videoPlayer.setUrl(videoUrl)//videoUrl  VOD_URL
+        videoPlayer.setUrl(VOD_URL)//videoUrl  VOD_URL
         videoPlayer.start()
     }
 

@@ -52,7 +52,7 @@ public class GestureView extends FrameLayout implements IGestureComponent {
 
     {
         setVisibility(GONE);
-        LayoutInflater.from(getContext()).inflate(R.layout.dkplayer_layout_gesture_control_view, this, true);
+        LayoutInflater.from(getContext()).inflate(R.layout.player_layout_gesture_control, this, true);
         mIcon = findViewById(R.id.iv_icon);
         mProgressPercent = findViewById(R.id.pro_percent);
         mTextPercent = findViewById(R.id.tv_percent);
@@ -103,9 +103,9 @@ public class GestureView extends FrameLayout implements IGestureComponent {
     public void onPositionChange(int slidePosition, int currentPosition, int duration) {
         mProgressPercent.setVisibility(GONE);
         if (slidePosition > currentPosition) {
-            mIcon.setImageResource(R.drawable.dkplayer_ic_action_fast_forward);
+            mIcon.setImageResource(R.drawable.ic_player_fast_forward);
         } else {
-            mIcon.setImageResource(R.drawable.dkplayer_ic_action_fast_rewind);
+            mIcon.setImageResource(R.drawable.ic_player_fast_rewind);
         }
         mTextPercent.setText(String.format("%s/%s", stringForTime(slidePosition), stringForTime(duration)));
     }
@@ -113,7 +113,7 @@ public class GestureView extends FrameLayout implements IGestureComponent {
     @Override
     public void onBrightnessChange(int percent) {
         mProgressPercent.setVisibility(VISIBLE);
-        mIcon.setImageResource(R.drawable.dkplayer_ic_action_brightness);
+        mIcon.setImageResource(R.drawable.ic_player_brightness);
         mTextPercent.setText(String.format(Locale.getDefault(), "%d%%", percent));
         mProgressPercent.setProgress(percent);
     }
@@ -123,9 +123,9 @@ public class GestureView extends FrameLayout implements IGestureComponent {
 
         mProgressPercent.setVisibility(VISIBLE);
         if (percent <= 0) {
-            mIcon.setImageResource(R.drawable.dkplayer_ic_action_volume_off);
+            mIcon.setImageResource(R.drawable.ic_player_volume_off);
         } else {
-            mIcon.setImageResource(R.drawable.dkplayer_ic_action_volume_up);
+            mIcon.setImageResource(R.drawable.ic_player_volume_on);
         }
         mTextPercent.setText(String.format(Locale.getDefault(), "%d%%", percent));
         mProgressPercent.setProgress(percent);

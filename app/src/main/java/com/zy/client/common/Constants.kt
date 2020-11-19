@@ -1,5 +1,7 @@
 package com.zy.client.common
 
+import android.os.Environment
+import com.zy.client.App
 import com.zy.client.R
 
 /**
@@ -15,7 +17,11 @@ const val SOURCE_KEY = "source_key"
 const val ID = "id"
 const val TV_BEAN = "tv"
 
-const val SP_OPEN_FL = "sp_open_fl"     //福利
+const val SP_OPEN_FL = "sp_open_fl"
 
 const val HOME_SPAN_COUNT = 3
 const val VIDEO_VIEW_HEIGHT = R.dimen.dp_220
+
+//截图保存路径
+fun getScreenShotPath(): String =
+    "${Environment.DIRECTORY_PICTURES}/${App.instance.getString(R.string.app_name)}"

@@ -22,7 +22,7 @@ import com.zy.client.http.repo.CommonRepository
 import com.zy.client.utils.ClipboardUtils
 import com.zy.client.utils.Utils
 import com.zy.client.utils.ext.*
-import com.zy.client.utils.notch.NotchUtils
+import com.zy.client.utils.NotchUtils
 import com.zy.client.views.loader.LoadState
 import com.zy.client.views.loader.LoaderLayout
 import kotlinx.android.synthetic.main.activity_video_detail.*

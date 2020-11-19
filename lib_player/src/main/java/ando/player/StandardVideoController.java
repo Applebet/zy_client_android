@@ -26,6 +26,7 @@ import ando.player.component.LiveControlView;
 import ando.player.component.PrepareView;
 import ando.player.component.TitleView;
 import ando.player.component.VodControlView;
+import ando.player.utils.VideoUtils;
 
 /**
  * 直播/点播控制器
@@ -52,7 +53,7 @@ public class StandardVideoController extends GestureVideoController implements V
 
     @Override
     protected int getLayoutId() {
-        return R.layout.dkplayer_layout_standard_controller;
+        return R.layout.player_layout_standard_controller;
     }
 
     @Override
@@ -99,10 +100,10 @@ public class StandardVideoController extends GestureVideoController implements V
     protected void onLockStateChanged(boolean isLocked) {
         if (isLocked) {
             mLockButton.setSelected(true);
-            Toast.makeText(getContext(), R.string.dkplayer_locked, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), R.string.str_player_locked, Toast.LENGTH_SHORT).show();
         } else {
             mLockButton.setSelected(false);
-            Toast.makeText(getContext(), R.string.dkplayer_unlocked, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), R.string.str_player_unlocked, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -115,14 +116,18 @@ public class StandardVideoController extends GestureVideoController implements V
             if (isVisible) {
                 if (mLockButton.getVisibility() == GONE) {
                     mLockButton.setVisibility(VISIBLE);
+                    mScreenShot.setVisibility(VISIBLE);
                     if (anim != null) {
                         mLockButton.startAnimation(anim);
+                        mScreenShot.startAnimation(anim);
                     }
                 }
             } else {
                 mLockButton.setVisibility(GONE);
+                mScreenShot.setVisibility(GONE);
                 if (anim != null) {
                     mLockButton.startAnimation(anim);
+                    mScreenShot.startAnimation(anim);
                 }
             }
         }
@@ -141,6 +146,9 @@ public class StandardVideoController extends GestureVideoController implements V
                 mScreenShot.setVisibility(GONE);
                 break;
             case VideoView.PLAYER_FULL_SCREEN:
+                //Fixed: VIVO 无法关闭导航栏的问题
+                postDelayed(() -> VideoUtils.hideNavigation(getContext()), 500);
+
                 L.e("PLAYER_FULL_SCREEN");
                 if (isShowing()) {
                     mLockButton.setVisibility(VISIBLE);
@@ -222,7 +230,7 @@ public class StandardVideoController extends GestureVideoController implements V
     public boolean onBackPressed() {
         if (isLocked()) {
             show();
-            Toast.makeText(getContext(), R.string.dkplayer_lock_tip, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), R.string.str_player_lock_tip, Toast.LENGTH_SHORT).show();
             return true;
         }
         if (mControlWrapper.isFullScreen()) {

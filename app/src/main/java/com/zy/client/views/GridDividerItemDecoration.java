@@ -8,12 +8,6 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
-/**
- * @author javakam
- *
- * @date 2020/9/6 12:24
- * @desc 分割线
- */
 public class GridDividerItemDecoration extends RecyclerView.ItemDecoration {
 
     /**
@@ -77,7 +71,6 @@ public class GridDividerItemDecoration extends RecyclerView.ItemDecoration {
         int lastPosition = state.getItemCount() - 1;
         int position = parent.getChildAdapterPosition(view);
         if (mStartFromSize <= position && position <= lastPosition - mEndFromSize) {
-
             // 行
             int spanGroupIndex = -1;
             // 列
@@ -115,7 +108,7 @@ public class GridDividerItemDecoration extends RecyclerView.ItemDecoration {
 
             if (mIncludeEdge) {
                 /*
-                 *示例：
+                 * 示例：
                  * spacing = 10 ；spanCount = 3
                  * ---------10--------
                  * 10   3+7   6+4    10
@@ -154,7 +147,7 @@ public class GridDividerItemDecoration extends RecyclerView.ItemDecoration {
 
             } else {
                 /*
-                 *示例：
+                 * 示例：
                  * spacing = 10 ；spanCount = 3
                  * --------0--------
                  * 0   3+7   6+4    0

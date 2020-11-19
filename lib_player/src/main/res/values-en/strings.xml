@@ -1,10 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="dkplayer_replay">Replay</string>
-    <string name="dkplayer_lock_tip">Please unlock the screen first!</string>
-    <string name="dkplayer_unlocked">Unlocked</string>
-    <string name="dkplayer_locked">Locked</string>
-    <string name="dkplayer_error_message">Something went wrong, please try again later</string>
-    <string name="dkplayer_retry">  Retry  </string>
-    <string name="dkplayer_continue_play">Continue playing</string>
-    <string name="dkplayer_wifi_tip">You are currently using the mobile network, and continuing to play will consume traffic</string>
+    <string name="str_player_replay">Replay</string>
+    <string name="str_player_lock_tip">Please unlock the screen first!</string>
+    <string name="str_player_unlocked">Unlocked</string>
+    <string name="str_player_locked">Locked</string>
+    <string name="str_player_error_message">Something went wrong, please try again later</string>
+    <string name="str_player_retry">  Retry  </string>
+    <string name="str_player_continue_play">Continue playing</string>
+    <string name="str_player_wifi_tip">You are currently using the mobile network, and continuing to play will consume traffic</string>
+    <string name="str_player_time_percent">%1$s/%2$s</string>
+    <string name="str_player_select_list">Episodes</string>
+    <string name="str_player_speed">Speed</string>
+    <string name="str_player_definition">Definition</string>
+
+    <string name="str_player_speed75">0.75</string>
+    <string name="str_player_speed100">1</string>
+    <string name="str_player_speed120">1.2</string>
+    <string name="str_player_speed150">1.5</string>
+    <string name="str_player_speed200">2.0</string>
+
 </resources>

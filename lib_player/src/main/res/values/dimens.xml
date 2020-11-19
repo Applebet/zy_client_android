@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="dkplayer_controller_height">45dp</dimen>
-    <dimen name="dkplayer_controller_title_height">50dp</dimen>
+    <dimen name="dimen_player_controller_height">45dp</dimen>
+    <dimen name="dimen_player_controller_title_height">50dp</dimen>
 
-    <dimen name="dkplayer_controller_arrow">45dp</dimen>
-    <dimen name="dkplayer_controller_icon_padding">10dp</dimen>
-    <dimen name="dkplayer_controller_text_size">16sp</dimen>
-    <dimen name="dkplayer_default_spacing">10dp</dimen>
-    <dimen name="dkplayer_controller_seekbar_size_n">14dp</dimen>
-    <dimen name="dkplayer_controller_seekbar_size_s">14dp</dimen>
-    <dimen name="dkplayer_controller_seekbar_max_size">1dp</dimen>
-    <dimen name="dkplayer_play_btn_size">45dp</dimen>
-    <dimen name="dkplayer_controller_time_text_size">14sp</dimen>
+    <dimen name="dimen_player_controller_arrow">45dp</dimen>
+    <dimen name="dimen_player_controller_icon_padding">10dp</dimen>
+    <dimen name="dimen_player_controller_icon_padding_b">15dp</dimen>
+    <dimen name="dimen_player_controller_icon_padding_s">6dp</dimen>
+    <dimen name="dimen_player_controller_text_size">16sp</dimen>
+    <dimen name="dimen_player_default_spacing">10dp</dimen>
+    <dimen name="dimen_player_controller_seekbar_size_n">14dp</dimen>
+    <dimen name="dimen_player_play_btn_size">45dp</dimen>
 
-
-    <dimen name="dkplayer_controller_vod_height">50dp</dimen>
-    <dimen name="dkplayer_controller_vod_time_text_size">11sp</dimen>
+    <dimen name="dimen_player_controller_vod_height_full">40dp</dimen>
+    <dimen name="dimen_player_controller_vod_time_text_size">11sp</dimen>
+    <dimen name="dimen_player_controller_vod_time_text_size_full">13sp</dimen>
 
     <!-- PIP -->
-    <dimen name="player_play_btn_size">50dp</dimen>
-    <dimen name="controller_time_text_size">14sp</dimen>
-    <dimen name="player_default_spacing">10dp</dimen>
+    <dimen name="dimen_player_play_btn_size_pip">50dp</dimen>
+    <dimen name="dimen_player_controller_time_text_size_pip">14sp</dimen>
+    <dimen name="dimen_player_default_spacing_pip">10dp</dimen>
+
 </resources>

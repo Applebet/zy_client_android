@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
@@ -25,7 +26,6 @@ import com.dueeeke.videoplayer.player.VideoView;
 import com.dueeeke.videoplayer.util.PlayerUtils;
 
 import ando.player.R;
-import ando.player.utils.VideoUtils;
 
 /**
  * 播放器顶部标题栏
@@ -41,6 +41,7 @@ public class TitleView extends FrameLayout implements IControlComponent {
     private final ImageView mIvBattery;
 
     private String mTitle;
+    private boolean isUserPaused = false;
     private boolean isShowWhenPortrait = false;//竖屏是否显示TitleView, 默认不显示
 
     private final BatteryReceiver mBatteryReceiver;
@@ -60,7 +61,7 @@ public class TitleView extends FrameLayout implements IControlComponent {
 
     {
         setVisibility(GONE);
-        LayoutInflater.from(getContext()).inflate(R.layout.dkplayer_layout_title_view, this, true);
+        LayoutInflater.from(getContext()).inflate(R.layout.player_layout_title, this, true);
         mLlTitleContainer = findViewById(R.id.ll_title_container);
         ImageView back = findViewById(R.id.iv_back);
         back.setOnClickListener(new OnClickListener() {
@@ -120,16 +121,25 @@ public class TitleView extends FrameLayout implements IControlComponent {
 
     @Override
     public void onVisibilityChanged(boolean isVisible, Animation anim) {
+        Log.e("123", "onVisibilityChanged title = " + isVisible);
+        final boolean isFullScreen = mControlWrapper.isFullScreen();
         //竖屏播放暂停时,Title不隐藏
-        if (!isVisible && isShowWhenPortrait && !mControlWrapper.isPlaying() && !mControlWrapper.isFullScreen()) {
+        if (!isVisible && !isUserPaused && isShowWhenPortrait && !mControlWrapper.isPlaying() && !isFullScreen) {
             return;
         }
+        isUserPaused = false;
+
         //只在全屏时才有效
-        if (!mControlWrapper.isFullScreen() && !isShowWhenPortrait) {
+        if (!isFullScreen && !isShowWhenPortrait) {
             return;
         }
         if (isVisible) {
             if (getVisibility() == GONE) {
+                if (isFullScreen && isShowWhenPortrait) {
+                    mTvTitle.setText(mTitle);
+                } else {
+                    mTvTitle.setText("");
+                }
                 mTvTime.setText(PlayerUtils.getCurrentSystemTime());
                 setVisibility(VISIBLE);
                 if (anim != null) {
@@ -149,6 +159,10 @@ public class TitleView extends FrameLayout implements IControlComponent {
     @Override
     public void onPlayStateChanged(int playState) {
         switch (playState) {
+            case VideoView.STATE_PAUSED:
+                isUserPaused = true;
+                setVisibility(VISIBLE);
+                break;
             case VideoView.STATE_IDLE:
             case VideoView.STATE_START_ABORT:
             case VideoView.STATE_PREPARING:
@@ -156,6 +170,12 @@ public class TitleView extends FrameLayout implements IControlComponent {
             case VideoView.STATE_ERROR:
             case VideoView.STATE_PLAYBACK_COMPLETED:
                 setVisibility(GONE);
+                break;
+            case VideoView.STATE_PLAYING:
+                if (isUserPaused) {
+                    setVisibility(GONE);
+                }
+                isUserPaused = false;
                 break;
             default:
         }
@@ -179,18 +199,18 @@ public class TitleView extends FrameLayout implements IControlComponent {
                 if (mControlWrapper.isShowing() && !mControlWrapper.isLocked()) {
                     setVisibility(VISIBLE);
 
-                    mTvTitle.setText(mTitle);
                     mIvPip.setVisibility(GONE);
                     mIvBattery.setVisibility(VISIBLE);
                     mTvTime.setVisibility(VISIBLE);
                     mTvTime.setText(PlayerUtils.getCurrentSystemTime());
                 }
+                mTvTitle.setText(mTitle);
                 mTvTitle.setSelected(true);
                 break;
             default:
         }
 
-        final int fullTopPadding = PlayerUtils.dp2px(getContext(),15.0F);
+        final int fullTopPadding = PlayerUtils.dp2px(getContext(), 15.0F);
         final Activity activity = PlayerUtils.scanForActivity(getContext());
         if (activity != null && mControlWrapper.hasCutout()) {
             int orientation = activity.getRequestedOrientation();
