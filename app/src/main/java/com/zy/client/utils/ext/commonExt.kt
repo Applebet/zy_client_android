@@ -87,9 +87,10 @@ fun String?.noNull(default: String? = ""): String {
  * 可以在应用内播放的地址
  */
 fun String?.isVideoUrl(): Boolean {
-    return (this.noNull()).toLowerCase(Locale.ROOT).run {
+    return (this.noNull()).toLowerCase(Locale.getDefault()).run {
         endsWith(".m3u8")
                 || endsWith(".mp4")
+                || endsWith(".mkv")
                 || endsWith(".flv")
                 || endsWith(".avi")
                 || endsWith(".rm")
@@ -134,12 +135,16 @@ val Context.screenHeight: Int
  * @param description 描述
  * @param mimeType 媒体类型
  * @param title 标题
- * @param relativePath 相对路径 eg: ${Environment.DIRECTORY_PICTURES}/xxx
+ * @param relativePath 相对路径 eg: ${Environment.DIRECTORY_PICTURES}/app_name , 默认为文件管理中的 Picture 目录(Environment.DIRECTORY_PICTURES)
  * @param isPending 默认0 , 0是可见，其他不可见
  */
 fun createContentValues(
-    displayName: String? = null, description: String? = null, mimeType: String? = null, title: String? = null,
-    relativePath: String? = null, isPending: Int? = 1,
+    displayName: String? = null,
+    description: String? = null,
+    mimeType: String? = null,
+    title: String? = null,
+    relativePath: String? = null,
+    isPending: Int? = 1,
 ): ContentValues {
     return ContentValues().apply {
         put(MediaStore.Images.Media.DISPLAY_NAME, displayName)
@@ -153,7 +158,12 @@ fun createContentValues(
     }
 }
 
-fun insertBitmap(context: Context,bitmap: Bitmap?, values: ContentValues,block: (v: Uri?) -> Unit={}): Uri? {
+fun insertBitmap(
+    context: Context,
+    bitmap: Bitmap?,
+    values: ContentValues,
+    block: (v: Uri?) -> Unit = {}
+): Uri? {
     val externalUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
 
     val resolver = context.contentResolver
@@ -170,7 +180,7 @@ fun insertBitmap(context: Context,bitmap: Bitmap?, values: ContentValues,block: 
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, os)
             os?.flush()
 
-            Log.i("123","创建Bitmap成功 insertBitmap $insertUri")
+            Log.i("123", "创建Bitmap成功 insertBitmap $insertUri")
 
             //https://developer.android.google.cn/training/data-storage/files/media#native-code
             // Now that we're finished, release the "pending" status, and allow other apps
@@ -183,7 +193,7 @@ fun insertBitmap(context: Context,bitmap: Bitmap?, values: ContentValues,block: 
         }
         block.invoke(insertUri)
     } catch (e: Exception) {
-        Log.e("123","创建失败：${e.message}")
+        Log.e("123", "创建失败：${e.message}")
     } finally {
         if (bitmap?.isRecycled == false) bitmap.recycle()
         os?.close()

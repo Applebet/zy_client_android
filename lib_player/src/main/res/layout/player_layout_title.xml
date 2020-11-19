@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_title_container"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dimen_player_controller_height"
+    android:background="@drawable/player_shape_standard_controller_top_bg"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingStart="6dp"
+    android:paddingEnd="16dp">
+
+    <ImageView
+        android:id="@+id/iv_back"
+        android:layout_width="@dimen/dimen_player_controller_height"
+        android:layout_height="@dimen/dimen_player_controller_height"
+        android:layout_gravity="center"
+        android:paddingStart="@dimen/dimen_player_controller_icon_padding"
+        android:paddingTop="@dimen/dimen_player_controller_icon_padding"
+        android:paddingEnd="@dimen/dimen_player_controller_icon_padding"
+        android:paddingBottom="@dimen/dimen_player_controller_icon_padding"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_player_arrow_back" />
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:ellipsize="marquee"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:paddingLeft="6dp"
+        android:paddingRight="6dp"
+        android:singleLine="true"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/dimen_player_controller_text_size"
+        tools:text="这是一个标题" />
+
+    <ImageView
+        android:id="@+id/iv_pip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_player_float" />
+
+    <TextView
+        android:id="@+id/tv_sys_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/white"
+        android:textSize="14sp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:visibility="gone"
+        tools:text="12:00"
+        tools:visibility="visible" />
+
+    <ImageView
+        android:id="@+id/iv_battery"
+        android:layout_width="26dp"
+        android:layout_height="20dp"
+        android:scaleType="centerInside"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:src="@drawable/player_battery_level"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
+    <ImageView
+        android:id="@+id/iv_setting"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_player_setting" />
+
+</LinearLayout>

@@ -40,7 +40,7 @@ public class PipControlView extends FrameLayout implements IControlComponent, Vi
     }
 
     {
-        LayoutInflater.from(getContext()).inflate(R.layout.layout_float_controller, this, true);
+        LayoutInflater.from(getContext()).inflate(R.layout.player_layout_float_controller, this, true);
         mPlay = findViewById(R.id.start_play);
         mLoading = findViewById(R.id.loading);
         mClose = findViewById(R.id.btn_close);

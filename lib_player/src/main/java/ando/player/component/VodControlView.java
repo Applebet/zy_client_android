@@ -25,6 +25,8 @@ import com.dueeeke.videoplayer.controller.IControlComponent;
 import com.dueeeke.videoplayer.player.VideoView;
 import com.dueeeke.videoplayer.util.PlayerUtils;
 
+import java.util.Locale;
+
 import ando.player.R;
 
 import static com.dueeeke.videoplayer.util.PlayerUtils.stringForTime;
@@ -36,8 +38,7 @@ public class VodControlView extends FrameLayout implements IControlComponent, Vi
 
     protected ControlWrapper mControlWrapper;
 
-    private final TextView mTotalTime;
-    private final TextView mCurrTime;
+    private final TextView mTimePercent;
     private final ImageView mFullScreen;
     private final LinearLayout mBottomContainer;
     private final SeekBar mVideoProgress;
@@ -68,8 +69,7 @@ public class VodControlView extends FrameLayout implements IControlComponent, Vi
         mBottomContainer = findViewById(R.id.bottom_container);
         mVideoProgress = findViewById(R.id.seekBar);
         mVideoProgress.setOnSeekBarChangeListener(this);
-        mTotalTime = findViewById(R.id.total_time);
-        mCurrTime = findViewById(R.id.curr_time);
+        mTimePercent = findViewById(R.id.player_time_percent);
         mPlayButton = findViewById(R.id.iv_play);
         mPlayButton.setOnClickListener(this);
         mBottomProgress = findViewById(R.id.bottom_progress);
@@ -81,7 +81,7 @@ public class VodControlView extends FrameLayout implements IControlComponent, Vi
     }
 
     protected int getLayoutId() {
-        return R.layout.dkplayer_layout_vod_control_view;
+        return R.layout.player_layout_vod;
     }
 
     /**
@@ -104,8 +104,24 @@ public class VodControlView extends FrameLayout implements IControlComponent, Vi
     @Override
     public void onVisibilityChanged(boolean isVisible, Animation anim) {
         //Log.e("123", "onVisibilityChanged Vod = " + isVisible + "  isFull = " + mControlWrapper.isFullScreen());
+        if (checkIsFullScreen()) {
+            mBottomProgress.setProgress(0);
+            mBottomProgress.setSecondaryProgress(0);
+            mVideoProgress.setProgress(0);
+            mVideoProgress.setSecondaryProgress(0);
+
+            mBottomContainer.setVisibility(GONE);
+            if (mIsShowBottomProgress) {
+                mBottomProgress.setVisibility(GONE);
+            }
+            setVisibility(GONE);
+            return;
+        }
 
         if (isVisible) {
+            if (getVisibility() == GONE) {
+                setVisibility(VISIBLE);
+            }
             mBottomContainer.setVisibility(VISIBLE);
             if (anim != null) {
                 mBottomContainer.startAnimation(anim);
@@ -114,6 +130,9 @@ public class VodControlView extends FrameLayout implements IControlComponent, Vi
                 mBottomProgress.setVisibility(GONE);
             }
         } else {
+            if (getVisibility() == VISIBLE) {
+                setVisibility(GONE);
+            }
             mBottomContainer.setVisibility(GONE);
             if (anim != null) {
                 mBottomContainer.startAnimation(anim);
@@ -174,21 +193,23 @@ public class VodControlView extends FrameLayout implements IControlComponent, Vi
 
     @Override
     public void onPlayerStateChanged(int playerState) {
-        //Log.e("123", "onPlayerStateChanged vod = " + playerState);
+//        Log.e("123", "onPlayerStateChanged vod = " + playerState);
 
         switch (playerState) {
             case VideoView.PLAYER_NORMAL:
+                setVisibility(VISIBLE);
                 mFullScreen.setSelected(false);
                 mFullScreen.setVisibility(VISIBLE);
                 break;
             case VideoView.PLAYER_FULL_SCREEN:
+                setVisibility(GONE);
                 mFullScreen.setSelected(true);
                 mFullScreen.setVisibility(GONE);
-                break;
+                return;
             default:
         }
 
-        final int fullTopPadding = PlayerUtils.dp2px(getContext(),15.0F);
+        final int fullTopPadding = PlayerUtils.dp2px(getContext(), 15.0F);
         final Activity activity = PlayerUtils.scanForActivity(getContext());
         if (activity != null && mControlWrapper.hasCutout()) {
             int orientation = activity.getRequestedOrientation();
@@ -197,6 +218,7 @@ public class VodControlView extends FrameLayout implements IControlComponent, Vi
                 mBottomContainer.setPadding(0, 0, 0, 0);
                 mBottomProgress.setPadding(0, 0, 0, 0);
             } else if (orientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
+                //Log.e("123", "onPlayerStateChanged vod fullTopPadding = " + fullTopPadding);
                 mBottomContainer.setPadding(cutoutHeight, 0, 0, fullTopPadding);
                 mBottomProgress.setPadding(cutoutHeight, 0, 0, 0);
             } else if (orientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE) {
@@ -231,11 +253,10 @@ public class VodControlView extends FrameLayout implements IControlComponent, Vi
             }
         }
 
-        if (mTotalTime != null) {
-            mTotalTime.setText(stringForTime(duration));
-        }
-        if (mCurrTime != null) {
-            mCurrTime.setText(stringForTime(position));
+        if (mTimePercent != null) {
+            String t = String.format(Locale.getDefault(), getContext().getString(R.string.str_player_time_percent),
+                    stringForTime(position), stringForTime(duration));
+            mTimePercent.setText(t);
         }
     }
 
@@ -287,9 +308,16 @@ public class VodControlView extends FrameLayout implements IControlComponent, Vi
 
         long duration = mControlWrapper.getDuration();
         long newPosition = (duration * progress) / mVideoProgress.getMax();
-        if (mCurrTime != null) {
-            mCurrTime.setText(stringForTime((int) newPosition));
+        if (mTimePercent != null) {
+            mTimePercent.setText(stringForTime((int) newPosition));
         }
+    }
+
+    private boolean checkIsFullScreen() {
+        if (mControlWrapper != null && mControlWrapper.isFullScreen()) {
+            return true;
+        }
+        return false;
     }
 
 }

@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="dkplayer_theme_color">#39C5BB</color>
-    <color name="dkplayer_theme_color_translucent">#9939C5BB</color>
-    <color name="dkplayer_background_color">#4D000000</color>
+    <color name="color_player_theme">#39C5BB</color>
+    <color name="color_player_theme_translucent">#9939C5BB</color>
+    <color name="color_player_background">#4D000000</color>
+    <color name="color_player_white">#FFFFFFFF</color>
+
+    <color name="player_white">#e7e7e7</color>
+    <color name="player_blue">#379DF2</color>
+    <color name="player_green">#57AB44</color>
+    <color name="player_orange">#EE7C33</color>
+    <color name="player_red">#E94033</color>
+    <color name="blue_20a0ff">#20a0ff</color>
+    <color name="green_76C9FC">#76C9FC</color>
 </resources>

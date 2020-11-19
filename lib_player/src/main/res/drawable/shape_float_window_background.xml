@@ -3,5 +3,5 @@
     <solid android:color="@android:color/black" />
     <stroke
         android:width="0.5dp"
-        android:color="@color/dkplayer_theme_color" />
+        android:color="@color/color_player_theme" />
 </shape>

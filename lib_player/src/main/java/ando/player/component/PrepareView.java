@@ -42,7 +42,7 @@ public class PrepareView extends FrameLayout implements IControlComponent {
     }
 
     {
-        LayoutInflater.from(getContext()).inflate(R.layout.dkplayer_layout_prepare_view, this, true);
+        LayoutInflater.from(getContext()).inflate(R.layout.player_layout_prepare, this, true);
         mThumb = findViewById(R.id.thumb);
         mStartPlay = findViewById(R.id.start_play);
         mNetWarning = findViewById(R.id.net_warning_layout);
