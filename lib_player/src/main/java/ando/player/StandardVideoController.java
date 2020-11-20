@@ -66,6 +66,8 @@ public class StandardVideoController extends GestureVideoController implements V
         mScreenShot = findViewById(R.id.player_screenshot);
         mLoadingProgress = findViewById(R.id.player_loading);
         mLockButton.setOnClickListener(this);
+
+        systemUiVisibility = ((Activity) getContext()).getWindow().getDecorView().getSystemUiVisibility();
     }
 
     /**
@@ -153,7 +155,6 @@ public class StandardVideoController extends GestureVideoController implements V
             case VideoView.PLAYER_FULL_SCREEN:
                 L.e("PLAYER_FULL_SCREEN");
                 //Fixed: VIVO 无法关闭导航栏的问题
-                systemUiVisibility = ((Activity) getContext()).getWindow().getDecorView().getSystemUiVisibility();
                 postDelayed(() -> VideoUtils.hideNavigation(getContext()), 500);
 
                 if (isShowing()) {

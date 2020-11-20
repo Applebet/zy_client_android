@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="300dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:background="@color/color_player_trans"
+        android:paddingLeft="10dp"
+        android:paddingTop="20dp"
+        android:paddingRight="5dp"
+        android:paddingBottom="20dp">
+
+        <TextView
+            android:id="@+id/tv_video_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:text="@string/str_player_list_size"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="14sp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_video_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/tv_video_list"
+            android:layout_alignParentBottom="true"
+            android:layout_marginTop="10dp"
+            android:overScrollMode="never"
+            android:scrollbars="vertical" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

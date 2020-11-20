@@ -183,6 +183,7 @@ public class TitleView extends FrameLayout implements IControlComponent {
 
     @Override
     public void onPlayerStateChanged(int playerState) {
+
         switch (playerState) {
             case VideoView.PLAYER_NORMAL:
                 if (!isShowWhenPortrait) {

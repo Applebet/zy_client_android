@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,13 +25,15 @@ import com.dueeeke.videoplayer.controller.IControlComponent;
 import com.dueeeke.videoplayer.player.VideoView;
 import com.dueeeke.videoplayer.util.PlayerUtils;
 
+import java.util.List;
 import java.util.Locale;
 
 import ando.player.R;
-import ando.player.dialog.BaseDialog;
-import ando.player.dialog.PlaySpeedDialog;
+import ando.player.dialog.IPlayerCallBack;
 import ando.player.dialog.PlayerDialogFactory;
-import ando.player.dialog.SimpleItemClickListener;
+import ando.player.dialog.SimplePlayerCallBack;
+import ando.player.dialog.SpeedDialog;
+import ando.player.dialog.VideoListDialog;
 import ando.player.setting.ITheme;
 import ando.player.setting.MediaConstants;
 import ando.player.setting.Theme;
@@ -43,9 +44,6 @@ import static com.dueeeke.videoplayer.util.PlayerUtils.stringForTime;
  * 点播底部控制栏
  */
 public class VodControlView extends FrameLayout implements IControlComponent, View.OnClickListener, SeekBar.OnSeekBarChangeListener {
-
-    protected Theme mTheme;
-    protected BaseDialog baseDialog;
 
     protected ControlWrapper mControlWrapper;
 
@@ -68,6 +66,17 @@ public class VodControlView extends FrameLayout implements IControlComponent, Vi
     private boolean mIsDragging;
 
     private boolean mIsShowBottomProgress = true;
+
+    //播放速度
+    private SpeedDialog mSpeedDialog;
+    private Theme mSpeedDialogTheme;
+    private int mSpeed = MediaConstants.PLAYSPEED_10;//播放速度, 临时变量
+
+    //剧集
+    private VideoListDialog mListDialog;
+    private List<String> mVideoList;
+    private int mCurrPosition;
+    private IPlayerCallBack mCallBack;
 
     public VodControlView(@NonNull Context context) {
         super(context);
@@ -228,6 +237,8 @@ public class VodControlView extends FrameLayout implements IControlComponent, Vi
     public void onPlayerStateChanged(int playerState) {
 //        Log.e("123", "onPlayerStateChanged vod = " + playerState);
 
+        dismissDialogs();
+
         switch (playerState) {
             case VideoView.PLAYER_NORMAL:
                 mFullBottomContainer.setVisibility(GONE);
@@ -241,8 +252,6 @@ public class VodControlView extends FrameLayout implements IControlComponent, Vi
                 mBottomContainer.setVisibility(GONE);
                 mBottomProgress.setVisibility(GONE);
                 mFullBottomContainer.setVisibility(VISIBLE);
-//                mFullTimePercent.setVisibility(VISIBLE);
-//                mFullVideoProgress.setVisibility(VISIBLE);
                 mFullPlayButton.setSelected(mControlWrapper.isPlaying());
 
                 mFullScreen.setSelected(true);
@@ -322,21 +331,25 @@ public class VodControlView extends FrameLayout implements IControlComponent, Vi
         } else if (id == R.id.iv_vod_full_play) {
             mControlWrapper.togglePlay();
         } else if (id == R.id.tv_vod_full_select_list) {
-
+            //隐藏掉其他所有遮盖物
+            mControlWrapper.hide();
+            //选集
+            mListDialog = PlayerDialogFactory.INSTANCE.createVideoListDialog(this, true, mVideoList,mCurrPosition, mCallBack);
         } else if (id == R.id.tv_vod_full_speed) {
             //隐藏掉其他所有遮盖物
             mControlWrapper.hide();
 
-            PlaySpeedDialog dialog = PlayerDialogFactory.getFullSpeedDialog(getContext(), true,
-                    MediaConstants.PLAYSPEED_10, getLayoutParams(), mTheme, new SimpleItemClickListener() {
+            mSpeedDialog = PlayerDialogFactory.INSTANCE.createFullSpeedDialog(
+                    this, true, mSpeed,
+                    mSpeedDialogTheme, new SimplePlayerCallBack() {
                         @Override
                         public void onSpeedItemClick(int speedType, float speed, String name) {
                             super.onSpeedItemClick(speedType, speed, name);
+                            mSpeed = speedType;
                             mControlWrapper.setSpeed(speed);
                             mFullTvSpeed.setText(name);
                         }
                     });
-            baseDialog = dialog.show();
         } else if (id == R.id.tv_vod_full_definition) {
 
         }
@@ -379,8 +392,8 @@ public class VodControlView extends FrameLayout implements IControlComponent, Vi
 
     @Override
     protected void onDetachedFromWindow() {
+        dismissDialogs();
         super.onDetachedFromWindow();
-        dismissDialog();
     }
 
     private boolean checkFullScreen() {
@@ -403,14 +416,19 @@ public class VodControlView extends FrameLayout implements IControlComponent, Vi
         return checkFullScreen() ? mFullTimePercent : mTimePercent;
     }
 
-    public void dismissDialog() {
-        if (baseDialog != null) {
-            baseDialog.dismiss();
+    public void dismissDialogs() {
+        if (mListDialog != null) {
+            mListDialog.dismiss();
+            mListDialog=null;
+        }
+        if (mSpeedDialog != null) {
+            mSpeedDialog.dismiss();
+            mSpeedDialog=null;
         }
     }
 
     public void setTheme(Theme theme) {
-        this.mTheme = theme;
+        this.mSpeedDialogTheme = theme;
         //通过判断子View是否实现了ITheme的接口，去更新主题
         int childCounts = getChildCount();
         for (int i = 0; i < childCounts; i++) {
@@ -421,4 +439,17 @@ public class VodControlView extends FrameLayout implements IControlComponent, Vi
         }
     }
 
+    public void setVideoList(List<String> videoList, int position) {
+        this.mVideoList = videoList;
+        this.mCurrPosition = position;
+        if (mVideoList != null && mVideoList.size() > 1) {
+            mFullTvSelectList.setVisibility(VISIBLE);
+        } else {
+            mFullTvSelectList.setVisibility(GONE);
+        }
+    }
+
+    public void setCallBack(SimplePlayerCallBack callBack) {
+        this.mCallBack = callBack;
+    }
 }

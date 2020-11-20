@@ -9,13 +9,13 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_220"
+        android:layout_height="@dimen/dp_210"
         android:background="@color/black">
 
         <FrameLayout
             android:id="@id/playerWebContainer"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_220"
+            android:layout_height="@dimen/dp_210"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="16:9"

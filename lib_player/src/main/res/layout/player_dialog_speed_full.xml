@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/rl_bg"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -16,8 +15,8 @@
             android:id="@+id/ll_full_definition_contain"
             android:layout_width="match_parent"
             android:layout_height="270dp"
-            android:minHeight="220dp"
             android:layout_centerInParent="true"
+            android:minHeight="220dp"
             android:orientation="vertical">
 
             <RadioButton
@@ -28,6 +27,7 @@
                 android:layout_weight="1"
                 android:button="@null"
                 android:gravity="center"
+                android:padding="@dimen/dimen_player_controller_icon_padding_b"
                 android:text="@string/str_player_speed05"
                 android:textColor="@color/player_selector_speed_choice"
                 android:textSize="14sp" />
@@ -37,10 +37,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="35dp"
                 android:layout_weight="1"
                 android:button="@null"
                 android:gravity="center"
+                android:padding="@dimen/dimen_player_controller_icon_padding_b"
                 android:text="@string/str_player_speed75"
                 android:textColor="@color/player_selector_speed_choice"
                 android:textSize="14sp" />
@@ -50,11 +50,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="35dp"
                 android:layout_weight="1"
                 android:button="@null"
                 android:checked="true"
                 android:gravity="center"
+                android:padding="@dimen/dimen_player_controller_icon_padding_b"
                 android:text="@string/str_player_speed100"
                 android:textColor="@color/player_selector_speed_choice"
                 android:textSize="14sp" />
@@ -64,10 +64,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="35dp"
                 android:layout_weight="1"
                 android:button="@null"
                 android:gravity="center"
+                android:padding="@dimen/dimen_player_controller_icon_padding_b"
                 android:text="@string/str_player_speed125"
                 android:textColor="@color/player_selector_speed_choice"
                 android:textSize="14sp" />
@@ -77,11 +77,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="35dp"
                 android:layout_weight="1"
                 android:button="@null"
                 android:checked="false"
                 android:gravity="center"
+                android:padding="@dimen/dimen_player_controller_icon_padding_b"
                 android:text="@string/str_player_speed150"
                 android:textColor="@color/player_selector_speed_choice"
                 android:textSize="14sp" />
@@ -91,11 +91,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="35dp"
                 android:layout_weight="1"
                 android:button="@null"
                 android:checked="false"
                 android:gravity="center"
+                android:padding="@dimen/dimen_player_controller_icon_padding_b"
                 android:text="@string/str_player_speed200"
                 android:textColor="@color/player_selector_speed_choice"
                 android:textSize="14sp" />

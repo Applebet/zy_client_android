@@ -1,14 +1,12 @@
 package com.zy.client.ui.video
 
-import ando.player.utils.VideoUtils
 import android.graphics.Color
-import android.view.MenuItem
 import android.widget.FrameLayout
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.impl.BottomListPopupView
 import com.wuhenzhizao.titlebar.statusbar.StatusBarUtils
 import com.zy.client.R
-import com.zy.client.base.BaseActivity
+import com.zy.client.base.BaseMediaActivity
 import com.zy.client.bean.Video
 import com.zy.client.bean.VideoDetail
 import com.zy.client.bean.CollectEvent
@@ -27,7 +25,6 @@ import com.zy.client.utils.NotchUtils
 import com.zy.client.views.loader.LoadState
 import com.zy.client.views.loader.LoaderLayout
 import kotlinx.android.synthetic.main.activity_video_detail.*
-import kotlinx.android.synthetic.main.activity_video_tv.view.*
 import org.greenrobot.eventbus.EventBus
 
 /**
@@ -36,7 +33,7 @@ import org.greenrobot.eventbus.EventBus
  * @author javakam
  * @date 2020-11-12 15:00:17
  */
-class VideoDetailActivity : BaseActivity() {
+class VideoDetailActivity : BaseMediaActivity() {
 
     private lateinit var repo: CommonRepository
     private lateinit var id: String
@@ -44,14 +41,9 @@ class VideoDetailActivity : BaseActivity() {
     private lateinit var videoContainer: FrameLayout
     private lateinit var statusView: LoaderLayout
 
-    private var videoController: VideoController? = null
-    private var webController: WebController? = null
     private var mVideoDetail: VideoDetail? = null
     private var mVideo: Video? = null
     private var mVideoList: List<Video>? = null
-    private var mCurrVideoListPos = 0
-
-    private var mSelectDialog: BottomListPopupView? = null
 
     override fun getLayoutId() = R.layout.activity_video_detail
 
@@ -113,23 +105,23 @@ class VideoDetailActivity : BaseActivity() {
 
         llAnthology.setOnClickListener {
             if (mVideoList?.size ?: 0 > 1) {
-                if (mSelectDialog == null) {
-                    mCurrVideoListPos = mVideoList?.lastIndex ?: 0
-                    mSelectDialog = XPopup.Builder(this)
+                if (mSelectListDialog == null) {
+                    videoController?.mCurrVideoListPos = mVideoList?.lastIndex ?: 0
+                    mSelectListDialog = XPopup.Builder(this)
                         .maxHeight(dialogHeight)
                         .asBottomList(
                             "选集",
                             mVideoList?.map { it.name }?.toTypedArray(),
                             null,
-                            mCurrVideoListPos //传0会显示选中的✔号
+                            videoController?.mCurrVideoListPos ?: 0 //传0会显示选中的✔号
                         ) { position, _ ->
-                            mCurrVideoListPos = position
+                            videoController?.mCurrVideoListPos = position
                             playVideo(mVideoList?.get(position))
                         }
                         .bindLayout(R.layout.fragment_search_result)
-                    mSelectDialog?.popupInfo
+                    mSelectListDialog?.popupInfo
                 }
-                mSelectDialog?.show()
+                mSelectListDialog?.show()
             }
         }
 
@@ -188,7 +180,6 @@ class VideoDetailActivity : BaseActivity() {
 
     override fun initData() {
         super.initData()
-
         CollectDBUtils.searchAsync(id + repo.req.key) {
             if (it != null && it.isSaved) {
                 ivCollect.isSelected = true
@@ -197,38 +188,6 @@ class VideoDetailActivity : BaseActivity() {
 
         repo.requestDetailData(id) {
             if (it?.videoList == null) statusView.setLoadState(LoadState.ERROR) else refreshUI(it)
-        }
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == android.R.id.home) {
-            finish()
-        }
-        return super.onOptionsItemSelected(item)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        webController?.onResume()
-        videoController?.onResume()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        webController?.onPause()
-        videoController?.onPause()
-    }
-
-    override fun onDestroy() {
-        mSelectDialog?.dismiss()
-        webController?.onDestroy()
-        videoController?.onDestroy()
-        super.onDestroy()
-    }
-
-    override fun onBackPressed() {
-        if (videoController?.onBackPressed() == true || webController?.onBackPressed() == true) {
-            super.onBackPressed()
         }
     }
 
@@ -242,12 +201,15 @@ class VideoDetailActivity : BaseActivity() {
                 statusView.setLoadState(LoadState.SUCCESS)
             } else {
                 ivPlayMore.invisible()
+                //TODO
                 statusView.setLoadState(LoadState.EMPTY)
             }
 
-            mCurrVideoListPos = mVideoList?.lastIndex ?: 0
-            playVideo(mVideoList?.get(mCurrVideoListPos))
+            videoController?.mCurrVideoListPos = mVideoList?.lastIndex ?: 0
+            playVideo(mVideoList?.get(videoController?.mCurrVideoListPos ?: 0))
             //playVideo(mVideoList?.get(0))
+
+            videoController?.setVideoList(mVideoList)
 
             //名字
             tvName.text = name

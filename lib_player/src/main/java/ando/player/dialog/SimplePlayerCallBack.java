@@ -1,5 +1,7 @@
 package ando.player.dialog;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Title:
  * <p>
@@ -9,9 +11,9 @@ package ando.player.dialog;
  * @author javakam
  * @date 2020/11/19  16:07
  */
-public class SimpleItemClickListener implements OnItemClickListener {
+public class SimplePlayerCallBack implements IPlayerCallBack {
     @Override
-    public void itemClicked() {
+    public void onItemClick() {
 
     }
 
@@ -47,6 +49,11 @@ public class SimpleItemClickListener implements OnItemClickListener {
 
     @Override
     public void showSmallRouteLayout() {
+
+    }
+
+    @Override
+    public void onListItemClick(@NotNull String item, int position) {
 
     }
 }

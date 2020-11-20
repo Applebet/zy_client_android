@@ -20,7 +20,7 @@ const val TV_BEAN = "tv"
 const val SP_OPEN_FL = "sp_open_fl"
 
 const val HOME_SPAN_COUNT = 3
-const val VIDEO_VIEW_HEIGHT = R.dimen.dp_220
+const val VIDEO_VIEW_HEIGHT = R.dimen.dp_210
 
 //截图保存路径
 fun getScreenShotPath(): String =

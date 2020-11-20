@@ -6,7 +6,6 @@
         <item name="android:windowExitAnimation">@anim/anim_float_window_exit</item>
     </style>
 
-
     <!-- Dialog全透明背景 -->
     <style name="dialog_full_transparent">
         <item name="android:windowBackground">@android:color/transparent</item>

@@ -4,6 +4,8 @@ import ando.player.IjkVideoView
 import ando.player.R
 import ando.player.StandardVideoController
 import ando.player.component.*
+import ando.player.dialog.SimplePlayerCallBack
+import ando.player.dialog.VideoListDialog
 import ando.player.pip.PIPManager
 import ando.player.setting.UserSetting
 import ando.player.setting.UserSetting.PIP
@@ -16,6 +18,7 @@ import com.dueeeke.videoplayer.player.VideoView.*
 import com.dueeeke.videoplayer.player.VideoViewManager
 import com.dueeeke.videoplayer.util.L
 import com.lxj.xpopup.XPopup
+import com.zy.client.bean.Video
 import com.zy.client.common.getScreenShotPath
 import com.zy.client.utils.PermissionManager.overlay
 import com.zy.client.utils.ext.*
@@ -40,12 +43,16 @@ class VideoController {
 
     private lateinit var context: Context
     private lateinit var controller: StandardVideoController
+    private lateinit var videoPlayer: IjkVideoView
+
     private lateinit var prepareView: PrepareView
     private lateinit var titleView: TitleView
-    private lateinit var videoPlayer: IjkVideoView
+    private lateinit var vodControlView: VodControlView
 
     private var pipManager: PIPManager? = null
     private var currentUrl: String? = null
+    private var videoList: List<Video>? = null
+    var mCurrVideoListPos: Int = 0
 
     fun init(context: Context, isLive: Boolean) {
         this.pipManager = PIPManager.get()
@@ -98,9 +105,24 @@ class VideoController {
         if (isLive) {
             controller.addControlComponent(LiveControlView(context)) //直播控制条
         } else {
-            val vodControlView = VodControlView(context) //点播控制条
+            vodControlView = VodControlView(context) //点播控制条
             //是否显示底部进度条。默认显示
             vodControlView.showBottomProgress(true)
+            vodControlView.setCallBack(object : SimplePlayerCallBack() {
+                override fun onListItemClick(item: String, position: Int) {
+                    super.onListItemClick(item, position)
+                    vodControlView.postDelayed({
+                        videoList?.get(position)?.apply {
+                            mCurrVideoListPos = position
+                            if (playUrl?.isVideoUrl() == true) {
+                                vodControlView.dismissDialogs()
+                                startPlay(videoUrl = playUrl, title = name)
+                                updateVodViewPosition()
+                            }
+                        }
+                    }, 300)
+                }
+            })
             controller.addControlComponent(vodControlView)
         }
 
@@ -288,6 +310,23 @@ class VideoController {
     fun getPlayer(): IjkVideoView? = videoPlayer
 
     fun isEnableBackPlay(): Boolean = UserSetting.getBackgroundPlay(context)
+
+    fun setVideoList(data: List<Video>?) {
+        this.videoList = data
+        updateVodViewPosition()
+    }
+
+    private fun updateVodViewPosition() {
+        videoList?.apply {
+            if (size > 1) {
+                val list = mutableListOf<String>()
+                this.forEachIndexed { i: Int, _: Video ->
+                    list.add((size - i).toString())
+                }
+                vodControlView.setVideoList(list, mCurrVideoListPos)
+            }
+        }
+    }
 
     /**
      * 小窗返回的页面
