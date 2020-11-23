@@ -2,6 +2,7 @@ package com.zy.client.ui.home
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BasePopupView
 import com.zy.client.R
@@ -11,7 +12,9 @@ import com.zy.client.http.repo.CommonRepository
 import com.zy.client.base.BaseFragment
 import com.wuhenzhizao.titlebar.widget.CommonTitleBar
 import com.zy.client.common.AppRouter
+import com.zy.client.database.HistoryDBUtils
 import com.zy.client.utils.ext.noNull
+import com.zy.client.utils.ext.toastShort
 import kotlinx.android.synthetic.main.fragment_home.*
 
 /**
@@ -33,6 +36,9 @@ class HomeFragment : BaseFragment() {
                 if (action == CommonTitleBar.ACTION_SEARCH) {
                     AppRouter.toSearchActivity(baseActivity)
                 }
+            }
+            leftCustomView?.setOnClickListener {
+                AppRouter.toHistoryActivity(baseActivity)
             }
         }
     }

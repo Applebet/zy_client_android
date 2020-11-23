@@ -86,10 +86,15 @@ data class VideoHistory(
     var vid: String? = "",
     var tid: String? = "",       //分类id
     var sourceKey: String? = "", //所属视频源的key
+    var sourceName: String? = "", //所属视频源的 name
 
     var position: Int = 0,  //第n集
     var progress: Long = 0, //进度
     //
     var name: String? = "",
     var playUrl: String? = "",
-) : LitePalSupport()
+) : LitePalSupport() {
+    override fun toString(): String {
+        return "$name \n\n $sourceKey \n\n $playUrl"
+    }
+}

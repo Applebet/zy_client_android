@@ -90,6 +90,10 @@
             android:theme="@style/Theme.ScaleActivity"
             android:windowSoftInputMode="stateVisible" />
 
+        <activity
+            android:name=".ui.HistoryActivity"
+            android:screenOrientation="portrait" />
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileProvider"

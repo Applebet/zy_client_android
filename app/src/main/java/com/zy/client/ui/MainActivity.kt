@@ -1,7 +1,6 @@
 package com.zy.client.ui
 
 import android.os.SystemClock
-import android.util.Log
 import android.util.SparseArray
 import androidx.core.util.forEach
 import androidx.fragment.app.Fragment
@@ -9,7 +8,6 @@ import com.zy.client.App
 import com.zy.client.utils.ext.ToastUtils
 import com.zy.client.R
 import com.zy.client.base.BaseActivity
-import com.zy.client.database.HistoryDBUtils
 import com.zy.client.ui.collect.CollectFragment
 import com.zy.client.ui.home.HomeFragment
 import com.zy.client.ui.iptv.IPTVFragment
@@ -68,15 +66,4 @@ class MainActivity : BaseActivity() {
         }
     }
 
-    override fun onPause() {
-        super.onPause()
-        HistoryDBUtils.searchAllAsync {
-            it?.let {
-                Log.e("123", "历史记录 : ${it.size}")
-                it.forEach { h ->
-                    Log.e("123", " ===> $h")
-                }
-            }
-        }
-    }
 }

@@ -288,6 +288,7 @@ class VideoDetailActivity : BaseMediaActivity() {
                     sourceKey = sourceKey,
                     tid = mVideoDetail?.tid,
                     vid = mVideoDetail?.id,
+                    sourceName = sourceKey,
                     position = currentListPosition,
                     playUrl = currentUrl,
                     progress = getPlayer()?.currentPosition ?: 0L,

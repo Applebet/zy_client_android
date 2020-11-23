@@ -14,7 +14,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:centerSearchEditable="false"
-            app:centerType="searchView" />
+            app:centerType="searchView"
+            app:leftCustomView="@layout/layout_home_title_left"
+            app:leftType="customView" />
 
         <FrameLayout
             android:id="@+id/flContainer"
