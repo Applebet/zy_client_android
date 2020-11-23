@@ -1,16 +1,13 @@
 package com.zy.client.ui.video
 
 import android.graphics.Color
+import android.util.Log
 import android.widget.FrameLayout
 import com.lxj.xpopup.XPopup
-import com.lxj.xpopup.impl.BottomListPopupView
 import com.wuhenzhizao.titlebar.statusbar.StatusBarUtils
 import com.zy.client.R
 import com.zy.client.base.BaseMediaActivity
-import com.zy.client.bean.Video
-import com.zy.client.bean.VideoDetail
-import com.zy.client.bean.CollectEvent
-import com.zy.client.bean.VideoSource
+import com.zy.client.bean.*
 import com.zy.client.common.ID
 import com.zy.client.common.SOURCE_KEY
 import com.zy.client.common.VIDEO_VIEW_HEIGHT
@@ -35,15 +32,20 @@ import org.greenrobot.eventbus.EventBus
  */
 class VideoDetailActivity : BaseMediaActivity() {
 
-    private lateinit var repo: CommonRepository
     private lateinit var id: String
+    private lateinit var sourceKey: String
+    private lateinit var repo: CommonRepository
+
+    //
     private lateinit var playerWebContainer: FrameLayout
     private lateinit var videoContainer: FrameLayout
     private lateinit var statusView: LoaderLayout
 
+    //
     private var mVideoDetail: VideoDetail? = null
     private var mVideo: Video? = null
     private var mVideoList: List<Video>? = null
+    private var mHistory: VideoHistory? = null
 
     override fun getLayoutId() = R.layout.activity_video_detail
 
@@ -51,9 +53,9 @@ class VideoDetailActivity : BaseMediaActivity() {
         StatusBarUtils.setStatusBarColor(window, Color.BLACK, 0)
         //PermissionManager.verifyStoragePermissions(this)
 
-        var sourceKey = intent?.getStringExtra(SOURCE_KEY)
-        repo = ConfigManager.generateSource(sourceKey.noNull())
         id = intent?.getStringExtra(ID).noNull()
+        sourceKey = intent?.getStringExtra(SOURCE_KEY).noNull()
+        repo = ConfigManager.generateSource(sourceKey)
 
         statusView = findViewById(R.id.statusView)
         statusView.setLoadState(LoadState.LOADING)
@@ -66,15 +68,15 @@ class VideoDetailActivity : BaseMediaActivity() {
         videoController = VideoController()
         videoController?.init(this, false)
 
-        //缓存请求数据 View.getTag
-        if (id.isBlank() || sourceKey.isNullOrBlank()) {
-            (videoController?.getVideoTag() as? VideoSource)?.let {
+        //小窗情况下 缓存请求数据 Bundle
+        if (id.isBlank() || sourceKey.isBlank()) {
+            videoController?.getPipCacheData()?.let {
                 id = it.id.noNull()
                 sourceKey = it.sourceKey.noNull()
                 repo = ConfigManager.generateSource(sourceKey.noNull())
             }
         } else {
-            videoController?.setVideoTag(VideoSource(id = id, sourceKey = sourceKey))
+            videoController?.setPipCacheData(VideoSource(id = id, sourceKey = sourceKey))
         }
 
         videoContainer.addView(videoController?.getPlayer())
@@ -106,16 +108,16 @@ class VideoDetailActivity : BaseMediaActivity() {
         llAnthology.setOnClickListener {
             if (mVideoList?.size ?: 0 > 1) {
                 if (mSelectListDialog == null) {
-                    videoController?.mCurrVideoListPos = mVideoList?.lastIndex ?: 0
+                    // videoController?.currentListPosition = mVideoList?.lastIndex ?: 0
                     mSelectListDialog = XPopup.Builder(this)
                         .maxHeight(dialogHeight)
                         .asBottomList(
                             "选集",
                             mVideoList?.map { it.name }?.toTypedArray(),
                             null,
-                            videoController?.mCurrVideoListPos ?: 0 //传0会显示选中的✔号
+                            videoController?.currentListPosition ?: 0 //传0会显示选中的✔号
                         ) { position, _ ->
-                            videoController?.mCurrVideoListPos = position
+                            videoController?.currentListPosition = position
                             playVideo(mVideoList?.get(position))
                         }
                         .bindLayout(R.layout.fragment_search_result)
@@ -191,31 +193,57 @@ class VideoDetailActivity : BaseMediaActivity() {
         }
     }
 
-    private fun refreshUI(videoDetail: VideoDetail) {
-        this.mVideoDetail = videoDetail
-        videoDetail.run {
-            mVideoList = this.videoList?.reversed()
-            //是否支持选集
-            if (mVideoList?.size ?: 0 > 1) {
-                ivPlayMore.visible()
-                statusView.setLoadState(LoadState.SUCCESS)
-            } else {
-                ivPlayMore.invisible()
-                //TODO
-                statusView.setLoadState(LoadState.EMPTY)
-            }
+    override fun onPause() {
+        saveHistory()
+        super.onPause()
+    }
 
-            videoController?.mCurrVideoListPos = mVideoList?.lastIndex ?: 0
-            playVideo(mVideoList?.get(videoController?.mCurrVideoListPos ?: 0))
-            //playVideo(mVideoList?.get(0))
+    override fun onBackPressed() {
+        saveHistory()
+        super.onBackPressed()
+    }
 
-            videoController?.setVideoList(mVideoList)
+    private fun refreshUI(detail: VideoDetail) {
+        this.mVideoDetail = detail
+        this.mVideoDetail?.apply {
+            sourceKey = this@VideoDetailActivity.sourceKey
+            videoController?.searchHistory(sourceKey, tid, id) { h ->
+                this@VideoDetailActivity.mHistory = h
 
-            //名字
-            tvName.text = name
-            des.noNull().let {
-                tvIntro.visibleOrGone(it.isNotBlank())//剧情简介
-                tvDesc.text = it //简介内容
+                mVideoList = this.videoList?.reversed()
+                //状态视图
+                if (mVideoList?.isNullOrEmpty() == true) {
+                    //TODO 传入默认数据
+                    statusView.setLoadState(LoadState.EMPTY)
+                } else {
+                    statusView.setLoadState(LoadState.SUCCESS)
+                }
+                //是否支持选集
+                if (mVideoList?.size ?: 0 > 1) {
+                    ivPlayMore.visible()
+                } else {
+                    ivPlayMore.invisible()
+                }
+
+                videoController?.currentListPosition = mVideoList?.lastIndex ?: 0
+
+                val pos = if (mHistory != null) {
+                    mHistory?.position ?: 0
+                } else {
+                    videoController?.currentListPosition ?: 0
+                }
+                playVideo(mVideoList?.get(pos))
+                //playVideo(mVideoList?.get(0))
+
+                videoController?.currentListPosition = pos
+                videoController?.setVideoList(mVideoList)
+
+                //名字
+                tvName.text = name
+                des.noNull().let {
+                    tvIntro.visibleOrGone(it.isNotBlank())//剧情简介
+                    tvDesc.text = it //简介内容
+                }
             }
         }
     }
@@ -244,9 +272,29 @@ class VideoDetailActivity : BaseMediaActivity() {
         //正在播放
         video.name.noNull().let {
             tvCurPlayName.text = it
-            ivPlayMore.visibleOrGone(it.isNotBlank())
+            ivPlayMore.visibleOrGone(it.isNotBlank() && (mVideoDetail?.videoList?.size ?: 0 > 1))
         }
 
+    }
+
+    private fun saveHistory() {
+        if (mVideoDetail == null) return
+        videoController?.apply {
+            val uniqueId = "${mVideoDetail?.sourceKey}${mVideoDetail?.tid}${mVideoDetail?.id}"
+            Log.e("123", "uniqueId === $uniqueId  ${mVideoDetail?.id}")
+            saveHistory(
+                VideoHistory(
+                    uniqueId = uniqueId,
+                    sourceKey = sourceKey,
+                    tid = mVideoDetail?.tid,
+                    vid = mVideoDetail?.id,
+                    position = currentListPosition,
+                    playUrl = currentUrl,
+                    progress = getPlayer()?.currentPosition ?: 0L,
+                    name = mVideoDetail?.name
+                )
+            )
+        }
     }
 
 }

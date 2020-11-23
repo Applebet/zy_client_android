@@ -1,12 +1,15 @@
 package com.zy.client.ui
 
 import android.os.SystemClock
+import android.util.Log
 import android.util.SparseArray
 import androidx.core.util.forEach
 import androidx.fragment.app.Fragment
+import com.zy.client.App
 import com.zy.client.utils.ext.ToastUtils
 import com.zy.client.R
 import com.zy.client.base.BaseActivity
+import com.zy.client.database.HistoryDBUtils
 import com.zy.client.ui.collect.CollectFragment
 import com.zy.client.ui.home.HomeFragment
 import com.zy.client.ui.iptv.IPTVFragment
@@ -58,9 +61,22 @@ class MainActivity : BaseActivity() {
         System.arraycopy(mHits, 1, mHits, 0, mHits.size - 1);
         mHits[mHits.size - 1] = SystemClock.uptimeMillis()
         if (mHits[0] >= (SystemClock.uptimeMillis() - 1000)) {
-            super.onBackPressed();
+            App.instance.exitSys()
+            super.onBackPressed()
         } else {
             ToastUtils.showShort("再按一次退出程序")
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        HistoryDBUtils.searchAllAsync {
+            it?.let {
+                Log.e("123", "历史记录 : ${it.size}")
+                it.forEach { h ->
+                    Log.e("123", " ===> $h")
+                }
+            }
         }
     }
 }

@@ -1,5 +1,9 @@
 package com.zy.client.bean
 
+import org.litepal.annotation.Column
+import org.litepal.crud.LitePalSupport
+import java.io.Serializable
+
 /**
  * @author javakam
  * @date 2020/6/10 10:47
@@ -24,8 +28,8 @@ data class VideoSource(
     val pic: String? = "",
 
     //渠道id  eg: zdzyw , okzyw
-    val sourceKey: String?= ""
-)
+    val sourceKey: String? = ""
+) : Serializable
 
 //分类
 data class Classify(
@@ -37,36 +41,55 @@ data class Classify(
 
 ////////////详情
 
+//联合主键
 data class VideoDetail(
     //视频id
-    val id: String?,
+    var id: String? = "",
     //分类id
-    val tid: String?,
+    var tid: String? = "",
     //名字
-    val name: String?,
+    var name: String? = "",
     //类型
-    val type: String?,
+    var type: String? = "",
     //语言
-    val lang: String?,
+    var lang: String? = "",
     //地区
-    val area: String?,
+    var area: String? = "",
     //图片
-    val pic: String?,
+    var pic: String? = "",
     //上映年份
-    val year: String?,
+    var year: String? = "",
     //主演
-    val actor: String?,
+    var actor: String? = "",
     //导演
-    val director: String?,
+    var director: String? = "",
     //简介
-    val des: String?,
+    var des: String? = "",
     //播放列表
-    val videoList: ArrayList<Video>?,
+    var videoList: List<Video>? = emptyList(),
+
     //所属视频源的key
-    val sourceKey: String?
+    var sourceKey: String?
 )
 
 data class Video(
     val name: String?,
-    val playUrl: String?
+    val playUrl: String?,
 )
+
+data class VideoHistory(
+    @Column(unique = true)
+    var _id: Long = 0L,//避免和 id 字段冲突
+    //
+    //uniqueId = sourceKey + tid + id
+    var uniqueId: String? = "",
+    var vid: String? = "",
+    var tid: String? = "",       //分类id
+    var sourceKey: String? = "", //所属视频源的key
+
+    var position: Int = 0,  //第n集
+    var progress: Long = 0, //进度
+    //
+    var name: String? = "",
+    var playUrl: String? = "",
+) : LitePalSupport()

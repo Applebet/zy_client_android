@@ -34,7 +34,8 @@
     <list>
         <mapping class="com.zy.client.database.SearchHistoryModel" />
         <mapping class="com.zy.client.database.CollectModel" />
-        <mapping class="com.zy.client.database.TvModel" />
+        <mapping class="com.zy.client.database.IPTVModel" />
+        <mapping class="com.zy.client.bean.VideoHistory" />
     </list>
 
     <!--

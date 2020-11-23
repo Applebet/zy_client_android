@@ -75,7 +75,7 @@ https://github.com/huangdali/M3U8Manger
 
 - 搜索页共享动画
 - 搜索增加全站检索
-- 缓存具体剧集记录
+- IPTV 源地址
 
 
 ## 重要:

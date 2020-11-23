@@ -9,16 +9,17 @@ import com.zy.client.R
 import com.zy.client.base.BaseListFragment
 import com.zy.client.common.AppRouter
 import com.zy.client.base.BaseLoadMoreAdapter
-import com.zy.client.database.TvDBUtils
-import com.zy.client.database.TvModel
+import com.zy.client.database.ConfigDBUtils
+import com.zy.client.database.IPTVModel
 import com.zy.client.utils.ext.noNull
 
-class IPTVListFragment : BaseListFragment<TvModel, BaseViewHolder>() {
+class IPTVListFragment : BaseListFragment<IPTVModel, BaseViewHolder>() {
 
+    //分类
     private lateinit var group: String
 
     companion object {
-        fun instance(group:String): IPTVListFragment {
+        fun instance(group: String): IPTVListFragment {
             return IPTVListFragment().apply {
                 arguments = bundleOf("group" to group)
             }
@@ -30,7 +31,7 @@ class IPTVListFragment : BaseListFragment<TvModel, BaseViewHolder>() {
         group = arguments?.getString("group").noNull()
     }
 
-    override fun getListAdapter(): BaseLoadMoreAdapter<TvModel, BaseViewHolder> {
+    override fun getListAdapter(): BaseLoadMoreAdapter<IPTVModel, BaseViewHolder> {
         return IPTVListAdapter().apply {
             setOnItemClickListener { _, _, position ->
                 AppRouter.toTvActivity(baseActivity, data[position])
@@ -42,9 +43,9 @@ class IPTVListFragment : BaseListFragment<TvModel, BaseViewHolder>() {
         return LinearLayoutManager(requireActivity())
     }
 
-    override fun loadData(page: Int, callback: (list: List<TvModel>?) -> Unit) {
+    override fun loadData(page: Int, callback: (list: List<IPTVModel>?) -> Unit) {
         if (page == 1) {
-            TvDBUtils.searchGroupAsync(group){
+            ConfigDBUtils.searchGroupAsync(group) {
                 callback.invoke(it)
             }
         } else {
@@ -53,9 +54,9 @@ class IPTVListFragment : BaseListFragment<TvModel, BaseViewHolder>() {
     }
 
     inner class IPTVListAdapter :
-        BaseLoadMoreAdapter<TvModel, BaseViewHolder>(R.layout.item_iptv) {
+        BaseLoadMoreAdapter<IPTVModel, BaseViewHolder>(R.layout.item_iptv) {
 
-        override fun convert(holder: BaseViewHolder, item: TvModel) {
+        override fun convert(holder: BaseViewHolder, item: IPTVModel) {
             holder.setText(R.id.tvName, item.name)
             holder.setText(R.id.tvSourceName, item.group)
         }

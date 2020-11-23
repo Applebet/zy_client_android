@@ -3,11 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/ll_title_container"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/dimen_player_controller_height"
+    android:layout_height="@dimen/dimen_player_controller_title_height"
     android:background="@drawable/player_shape_standard_controller_top_bg"
     android:gravity="center_vertical"
     android:orientation="horizontal"
     android:paddingStart="6dp"
+    android:paddingTop="5dp"
     android:paddingEnd="16dp">
 
     <ImageView
@@ -49,10 +50,10 @@
         android:id="@+id/tv_sys_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@android:color/white"
-        android:textSize="14sp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
+        android:textColor="@android:color/white"
+        android:textSize="14sp"
         android:visibility="gone"
         tools:text="12:00"
         tools:visibility="visible" />
@@ -61,9 +62,9 @@
         android:id="@+id/iv_battery"
         android:layout_width="26dp"
         android:layout_height="20dp"
-        android:scaleType="centerInside"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
+        android:scaleType="centerInside"
         android:src="@drawable/player_battery_level"
         android:visibility="gone"
         tools:visibility="visible" />

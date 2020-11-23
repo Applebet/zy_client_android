@@ -14,7 +14,7 @@
 
     <dimen name="dimen_player_controller_vod_height_full">40dp</dimen>
     <dimen name="dimen_player_controller_vod_time_text_size">11sp</dimen>
-    <dimen name="dimen_player_controller_vod_time_text_size_full">13sp</dimen>
+    <dimen name="dimen_player_controller_vod_time_text_size_full">14sp</dimen>
 
     <!-- PIP -->
     <dimen name="dimen_player_play_btn_size_pip">50dp</dimen>

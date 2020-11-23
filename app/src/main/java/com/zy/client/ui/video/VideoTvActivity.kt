@@ -5,14 +5,13 @@ import android.graphics.Color
 import android.widget.TextView
 import com.wuhenzhizao.titlebar.statusbar.StatusBarUtils
 import com.zy.client.R
-import com.zy.client.base.BaseActivity
 import com.zy.client.base.BaseMediaActivity
 import com.zy.client.common.TV_BEAN
-import com.zy.client.database.TvModel
+import com.zy.client.database.IPTVModel
 
 class VideoTvActivity : BaseMediaActivity() {
 
-    private lateinit var mIPTVModel: TvModel
+    private lateinit var mIPTVModel: IPTVModel
     private lateinit var mTvName: TextView
     private lateinit var mTvGroup: TextView
     private lateinit var videoPlayer: IjkVideoView
@@ -22,7 +21,7 @@ class VideoTvActivity : BaseMediaActivity() {
     override fun initView() {
         super.initView()
         StatusBarUtils.setStatusBarColor(window, Color.BLACK, 0)
-        mIPTVModel = intent.getSerializableExtra(TV_BEAN) as? TvModel ?: return
+        mIPTVModel = intent.getSerializableExtra(TV_BEAN) as? IPTVModel ?: return
 
         videoPlayer = findViewById(R.id.videoPlayer)
         mTvName = findViewById(R.id.tv_name)

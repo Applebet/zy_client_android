@@ -57,9 +57,19 @@ public class IjkVideoView extends BaseIjkVideoView<BaseIjkPlayer> {
     }
 
     @Override
+    protected void setInitOptions() {
+        super.setInitOptions();
+        Log.w("123", "setInitOptions 生效了");
+    }
+
+    @Override
     protected void setOptions() {
         super.setOptions();
         Log.w("123", "setOptions 生效了");
+        initIjkOptions();
+    }
+
+    private void initIjkOptions() {
 
         //https://github.com/CarGuo/GSYVideoPlayer/blob/b0efc902dc554787092c97d98f1e15f414ea2dcb/doc/QUESTION.md
         //https://zhuanlan.zhihu.com/p/47060105

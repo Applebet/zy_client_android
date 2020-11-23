@@ -3,7 +3,7 @@ package com.zy.client.http
 import com.zy.client.bean.Classify
 import com.zy.client.http.repo.CommonRepository
 import com.zy.client.http.repo.CommonRequest
-import com.zy.client.database.TvModel
+import com.zy.client.database.IPTVModel
 import com.zy.client.utils.SPUtils
 import com.zy.client.utils.Utils
 import com.zy.client.utils.ext.noNull
@@ -27,12 +27,15 @@ data class SourceConfig(val key: String, val name: String, val generate: () -> C
 
 object ConfigManager {
 
+    private const val DATA_VIDEO = "source.json"
+    private const val DATA_IPTV = "iptv.json"
+
     val sourceConfigs: LinkedHashMap<String, SourceConfig> by lazy {
-        val configJson = Utils.readAssetsData("source.json")
+        val configJson = Utils.readAssetsData(DATA_VIDEO)
         val configArray = JSONArray(configJson)
         val configMap = LinkedHashMap<String, SourceConfig>()
         for (i in 0 until configArray.length()) {
-            val config = configArray.getJSONObject(i)
+            val config = configArray.optJSONObject(i)
             val key = config.getString("key")
             val name = config.getString("name")
             val api = config.getString("api")
@@ -46,10 +49,10 @@ object ConfigManager {
         configMap
     }
 
-    val sourceTvConfigs: LinkedHashMap<String, MutableList<TvModel>> by lazy {
-        val configJson = Utils.readAssetsData("iptv.json")
+    val sourceTvConfigs: LinkedHashMap<String, MutableList<IPTVModel>> by lazy {
+        val configJson = Utils.readAssetsData(DATA_IPTV)
         val configArray = JSONArray(configJson)
-        val configMap = LinkedHashMap<String, MutableList<TvModel>>()
+        val configMap = LinkedHashMap<String, MutableList<IPTVModel>>()
         for (i in 0 until configArray.length()) {
             val config = configArray.optJSONObject(i)
             val id = config.getInt("id")
@@ -61,14 +64,22 @@ object ConfigManager {
                 if (configMap[group] == null) {
                     configMap[group] = mutableListOf()
                 }
-                configMap[group]?.add(TvModel(id = id, name = name, url = url, group = group, isActive = isActive))
+                configMap[group]?.add(
+                    IPTVModel(
+                        id = id,
+                        name = name,
+                        url = url,
+                        group = group,
+                        isActive = isActive
+                    )
+                )
             }
         }
         configMap
     }
 
     //IPTV 所有分类
-    fun getSourceTvGroups(): List<Classify>? {
+    fun getIPTVGroups(): List<Classify>? {
         var index = 0
         return sourceTvConfigs.keys.map {
             Classify((index++).toString(), it)
@@ -81,6 +92,9 @@ object ConfigManager {
     fun generateSource(key: String?): CommonRepository {
         return sourceConfigs[key]?.generateSource() ?: CommonRepository(CommonRequest())
     }
+
+    //源地址
+    //------------------------------------------------
 
     private const val defaultSourceKey = "okzy"
 

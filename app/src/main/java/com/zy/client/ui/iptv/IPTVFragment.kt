@@ -26,7 +26,7 @@ class IPTVFragment : BaseTabPagerFragment() {
         super.initData()
         initTitleBar(titleBar)
 
-        ConfigManager.getSourceTvGroups().apply {
+        ConfigManager.getIPTVGroups().apply {
             if (this == null) {
                 statusView.setLoadState(LoadState.ERROR)
                 return

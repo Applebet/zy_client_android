@@ -285,22 +285,22 @@ public class VodControlView extends FrameLayout implements IControlComponent, Vi
             return;
         }
 
-        final SeekBar videoProgress = getRealVideoProgress();
-        if (videoProgress != null) {
+        final SeekBar seekBar = getRealVideoProgress();
+        if (seekBar != null) {
             if (duration > 0) {
-                videoProgress.setEnabled(true);
-                int pos = (int) (position * 1.0 / duration * videoProgress.getMax());
-                videoProgress.setProgress(pos);
+                seekBar.setEnabled(true);
+                int pos = (int) (position * 1.0 / duration * seekBar.getMax());
+                seekBar.setProgress(pos);
                 mBottomProgress.setProgress(pos);
             } else {
-                videoProgress.setEnabled(false);
+                seekBar.setEnabled(false);
             }
             int percent = mControlWrapper.getBufferedPercentage();
             if (percent >= 96) { //解决缓冲进度不能100%问题
-                videoProgress.setSecondaryProgress(getRealVideoProgress().getMax());
+                seekBar.setSecondaryProgress(getRealVideoProgress().getMax());
                 mBottomProgress.setSecondaryProgress(mBottomProgress.getMax());
             } else {
-                videoProgress.setSecondaryProgress(percent * 10);
+                seekBar.setSecondaryProgress(percent * 10);
                 mBottomProgress.setSecondaryProgress(percent * 10);
             }
         }

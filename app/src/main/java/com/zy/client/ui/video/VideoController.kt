@@ -5,7 +5,6 @@ import ando.player.R
 import ando.player.StandardVideoController
 import ando.player.component.*
 import ando.player.dialog.SimplePlayerCallBack
-import ando.player.dialog.VideoListDialog
 import ando.player.pip.PIPManager
 import ando.player.setting.UserSetting
 import ando.player.setting.UserSetting.PIP
@@ -19,7 +18,10 @@ import com.dueeeke.videoplayer.player.VideoViewManager
 import com.dueeeke.videoplayer.util.L
 import com.lxj.xpopup.XPopup
 import com.zy.client.bean.Video
+import com.zy.client.bean.VideoHistory
+import com.zy.client.bean.VideoSource
 import com.zy.client.common.getScreenShotPath
+import com.zy.client.database.HistoryDBUtils
 import com.zy.client.utils.PermissionManager.overlay
 import com.zy.client.utils.ext.*
 import java.text.SimpleDateFormat
@@ -50,9 +52,9 @@ class VideoController {
     private lateinit var vodControlView: VodControlView
 
     private var pipManager: PIPManager? = null
-    private var currentUrl: String? = null
     private var videoList: List<Video>? = null
-    var mCurrVideoListPos: Int = 0
+    var currentUrl: String? = null
+    var currentListPosition: Int = 0
 
     fun init(context: Context, isLive: Boolean) {
         this.pipManager = PIPManager.get()
@@ -113,7 +115,7 @@ class VideoController {
                     super.onListItemClick(item, position)
                     vodControlView.postDelayed({
                         videoList?.get(position)?.apply {
-                            mCurrVideoListPos = position
+                            currentListPosition = position
                             if (playUrl?.isVideoUrl() == true) {
                                 vodControlView.dismissDialogs()
                                 startPlay(videoUrl = playUrl, title = name)
@@ -237,6 +239,7 @@ class VideoController {
 
     fun onBackPressed(): Boolean {
         if (pipManager != null && pipManager?.onBackPressed() == true) {
+            pipManager?.clearCacheData()
             return false
         }
         if (videoPlayer.isFullScreen) {
@@ -287,6 +290,13 @@ class VideoController {
             }
         }
 
+
+    fun getPlayer(): IjkVideoView? = if (pipManager != null) {
+        pipManager?.getPlayer()
+    } else videoPlayer
+
+    fun isEnableBackPlay(): Boolean = UserSetting.getBackgroundPlay(context)
+
     /**
      * use cache :
      *      PreloadManager.getInstance(this).getPlayUrl(item.videoDownloadUrl);
@@ -294,7 +304,7 @@ class VideoController {
      *      val proxyUrl = cacheServer.getProxyUrl(videoUrl)
      *      videoPlayer.setUrl(proxyUrl)
      */
-    fun startPlay(videoUrl: String?, title: String?) {
+    fun startPlay(videoUrl: String?, title: String?, progress: Long = 0) {
         Log.i("123", "startPlay  currentUrl= $currentUrl  videoUrl= $videoUrl  title=$title")
         if (videoUrl?.isVideoUrl() == false) return
         //放止同一剧集重复点击
@@ -305,11 +315,12 @@ class VideoController {
         videoPlayer.release()
         videoPlayer.setUrl(videoUrl)//videoUrl  VOD_URL
         videoPlayer.start()
+
+//        if (progress > 3) {
+//            videoPlayer.seekTo(progress)
+//        }
     }
 
-    fun getPlayer(): IjkVideoView? = videoPlayer
-
-    fun isEnableBackPlay(): Boolean = UserSetting.getBackgroundPlay(context)
 
     fun setVideoList(data: List<Video>?) {
         this.videoList = data
@@ -323,10 +334,13 @@ class VideoController {
                 this.forEachIndexed { i: Int, _: Video ->
                     list.add((size - i).toString())
                 }
-                vodControlView.setVideoList(list, mCurrVideoListPos)
+                vodControlView.setVideoList(list, currentListPosition)
             }
         }
     }
+
+    //PipManager
+    //------------------------------------------------
 
     /**
      * 小窗返回的页面
@@ -335,12 +349,41 @@ class VideoController {
         pipManager?.actClass = clz
     }
 
-    fun setVideoTag(any: Any?) {
-        any?.apply {
-            pipManager?.videoTag = any
+    fun setPipCacheData(data: VideoSource?) {
+        data?.apply {
+            pipManager?.cacheData?.putSerializable("pipCache", data)
         }
     }
 
-    fun getVideoTag(): Any? = pipManager?.videoTag
+    fun getPipCacheData(): VideoSource? =
+        pipManager?.cacheData?.getSerializable("pipCache") as? VideoSource
+
+    //History -> HistoryDBUtils
+    //------------------------------------------------
+
+    fun saveHistory(history: VideoHistory) {
+        HistoryDBUtils.saveAsync(history) {
+            //Log.w("123", "saveHistory $it")
+        }
+    }
+
+    fun searchHistory(
+        sourceKey: String?,
+        tid: String?,
+        vid: String?,
+        callback: ((VideoHistory?) -> Unit)?
+    ) {
+        HistoryDBUtils.searchAsync(uniqueId = "$sourceKey$tid$vid", callback)
+    }
+
+    fun clearHistory(
+        sourceKey: String?,
+        tid: String?,
+        vid: String?,
+    ): Boolean = HistoryDBUtils.delete(uniqueId = "$sourceKey$tid$vid")
+
+    fun clearAllHistory(): Boolean {
+        return HistoryDBUtils.deleteAll()
+    }
 
 }

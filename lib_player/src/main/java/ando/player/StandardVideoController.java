@@ -98,6 +98,11 @@ public class StandardVideoController extends GestureVideoController implements V
         int i = v.getId();
         if (i == R.id.player_lock) {
             mControlWrapper.toggleLockState();
+            if (isLocked()) {
+                mScreenShot.setVisibility(GONE);
+            }else {
+                mScreenShot.setVisibility(VISIBLE);
+            }
         }
     }
 
@@ -121,10 +126,13 @@ public class StandardVideoController extends GestureVideoController implements V
             if (isVisible) {
                 if (mLockButton.getVisibility() == GONE) {
                     mLockButton.setVisibility(VISIBLE);
-                    mScreenShot.setVisibility(VISIBLE);
+                    if (isLocked()) {
+                        mScreenShot.setVisibility(GONE);
+                    }else {
+                        mScreenShot.setVisibility(VISIBLE);
+                    }
                     if (anim != null) {
                         mLockButton.startAnimation(anim);
-                        mScreenShot.startAnimation(anim);
                     }
                 }
             } else {
@@ -132,7 +140,6 @@ public class StandardVideoController extends GestureVideoController implements V
                 mScreenShot.setVisibility(GONE);
                 if (anim != null) {
                     mLockButton.startAnimation(anim);
-                    mScreenShot.startAnimation(anim);
                 }
             }
         }
@@ -182,7 +189,6 @@ public class StandardVideoController extends GestureVideoController implements V
                 params.setMargins(dp24, 0, dp24, 0);
             }
         }
-
     }
 
     @Override

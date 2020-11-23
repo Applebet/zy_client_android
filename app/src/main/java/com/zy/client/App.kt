@@ -3,7 +3,6 @@ package com.zy.client
 import ando.player.pip.PIPManager
 import ando.player.utils.ProgressManagerImpl
 import android.app.Application
-import android.util.Log
 import com.dueeeke.videoplayer.BuildConfig
 import com.dueeeke.videoplayer.ijk.IjkPlayerFactory
 import com.dueeeke.videoplayer.player.VideoViewConfig
@@ -11,8 +10,8 @@ import com.dueeeke.videoplayer.player.VideoViewManager
 import com.lzy.okgo.OkGo
 import com.lzy.okgo.cache.CacheEntity
 import com.lzy.okgo.cache.CacheMode
-import com.zy.client.database.TvDBUtils
-import com.zy.client.database.TvModel
+import com.zy.client.database.ConfigDBUtils
+import com.zy.client.database.IPTVModel
 import com.zy.client.http.ConfigManager
 import org.litepal.LitePal
 
@@ -23,7 +22,7 @@ import org.litepal.LitePal
 class App : Application() {
 
     companion object {
-        lateinit var instance: Application
+        lateinit var instance: App
         var hasInApp: Boolean = false
     }
 
@@ -71,17 +70,22 @@ class App : Application() {
     private fun initDataConfig() {
         //读取视频源配置
         ConfigManager.sourceConfigs
+
         //读取TV源配置
         val tvModels = ConfigManager.sourceTvConfigs
-        val list = mutableListOf<TvModel>()
-        tvModels.values.forEach { list.addAll(it) }
-        TvDBUtils.isExit().apply {
+        ConfigDBUtils.isIPTVExit().apply {
             if (!this) {
-                TvDBUtils.saveAllAsync(list) {
+                val list = mutableListOf<IPTVModel>()
+                tvModels.values.forEach { list.addAll(it) }
+                ConfigDBUtils.saveAllAsync(list) {
                     //Log.i("123", ".............. $it ${LitePal.count(TvModel::class.java)}")
                 }
             }
         }
+    }
+
+    fun exitSys() {
+        PIPManager.get()?.clearCacheData()
     }
 
 }
