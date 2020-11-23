@@ -13,6 +13,7 @@ import com.zy.client.common.SOURCE_KEY
 import com.zy.client.common.VIDEO_VIEW_HEIGHT
 import com.zy.client.database.CollectDBUtils
 import com.zy.client.database.CollectModel
+import com.zy.client.database.SourceDBUtils
 import com.zy.client.http.ConfigManager
 import com.zy.client.http.repo.CommonRepository
 import com.zy.client.utils.ClipboardUtils
@@ -64,7 +65,7 @@ class VideoDetailActivity : BaseMediaActivity() {
         playerWebContainer = findViewById<FrameLayout>(R.id.playerWebContainer)
         videoContainer = findViewById<FrameLayout>(R.id.playerContainer)
 
-        //Ijkplayer
+        //IjkPlayer
         videoController = VideoController()
         videoController?.init(this, false)
 
@@ -288,7 +289,7 @@ class VideoDetailActivity : BaseMediaActivity() {
                     sourceKey = sourceKey,
                     tid = mVideoDetail?.tid,
                     vid = mVideoDetail?.id,
-                    sourceName = sourceKey,
+                    sourceName = SourceDBUtils.searchName(key = mVideoDetail?.sourceKey),
                     position = currentListPosition,
                     playUrl = currentUrl,
                     progress = getPlayer()?.currentPosition ?: 0L,

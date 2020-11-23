@@ -95,6 +95,6 @@ data class VideoHistory(
     var playUrl: String? = "",
 ) : LitePalSupport() {
     override fun toString(): String {
-        return "$name \n\n $sourceKey \n\n $playUrl"
+        return "$name \n $sourceKey \n $playUrl"
     }
 }

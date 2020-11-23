@@ -9,11 +9,11 @@ import com.zy.client.R
 import com.zy.client.base.BaseListFragment
 import com.zy.client.common.AppRouter
 import com.zy.client.base.BaseLoadMoreAdapter
-import com.zy.client.database.ConfigDBUtils
-import com.zy.client.database.IPTVModel
+import com.zy.client.database.SourceDBUtils
+import com.zy.client.database.SourceModel
 import com.zy.client.utils.ext.noNull
 
-class IPTVListFragment : BaseListFragment<IPTVModel, BaseViewHolder>() {
+class IPTVListFragment : BaseListFragment<SourceModel, BaseViewHolder>() {
 
     //分类
     private lateinit var group: String
@@ -31,7 +31,7 @@ class IPTVListFragment : BaseListFragment<IPTVModel, BaseViewHolder>() {
         group = arguments?.getString("group").noNull()
     }
 
-    override fun getListAdapter(): BaseLoadMoreAdapter<IPTVModel, BaseViewHolder> {
+    override fun getListAdapter(): BaseLoadMoreAdapter<SourceModel, BaseViewHolder> {
         return IPTVListAdapter().apply {
             setOnItemClickListener { _, _, position ->
                 AppRouter.toTvActivity(baseActivity, data[position])
@@ -43,9 +43,9 @@ class IPTVListFragment : BaseListFragment<IPTVModel, BaseViewHolder>() {
         return LinearLayoutManager(requireActivity())
     }
 
-    override fun loadData(page: Int, callback: (list: List<IPTVModel>?) -> Unit) {
+    override fun loadData(page: Int, callback: (list: List<SourceModel>?) -> Unit) {
         if (page == 1) {
-            ConfigDBUtils.searchGroupAsync(group) {
+            SourceDBUtils.searchGroupAsync(group) {
                 callback.invoke(it)
             }
         } else {
@@ -54,9 +54,9 @@ class IPTVListFragment : BaseListFragment<IPTVModel, BaseViewHolder>() {
     }
 
     inner class IPTVListAdapter :
-        BaseLoadMoreAdapter<IPTVModel, BaseViewHolder>(R.layout.item_iptv) {
+        BaseLoadMoreAdapter<SourceModel, BaseViewHolder>(R.layout.item_iptv) {
 
-        override fun convert(holder: BaseViewHolder, item: IPTVModel) {
+        override fun convert(holder: BaseViewHolder, item: SourceModel) {
             holder.setText(R.id.tvName, item.name)
             holder.setText(R.id.tvSourceName, item.group)
         }

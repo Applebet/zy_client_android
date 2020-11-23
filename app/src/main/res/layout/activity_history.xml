@@ -18,9 +18,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:overScrollMode="ifContentScrolls"
-        android:paddingStart="@dimen/dp_15"
-        android:paddingEnd="@dimen/dp_15"
-        android:paddingBottom="@dimen/dp_50"
         android:scrollbars="vertical" />
 
 </LinearLayout>

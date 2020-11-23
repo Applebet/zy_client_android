@@ -2,7 +2,7 @@ package com.zy.client.common
 
 import android.content.Intent
 import com.zy.client.base.BaseActivity
-import com.zy.client.database.IPTVModel
+import com.zy.client.database.SourceModel
 import com.zy.client.ui.HistoryActivity
 import com.zy.client.ui.video.VideoDetailActivity
 import com.zy.client.ui.search.SearchActivity
@@ -33,7 +33,7 @@ object AppRouter {
         })
     }
 
-    fun toTvActivity(activity: BaseActivity,bean:IPTVModel) {
+    fun toTvActivity(activity: BaseActivity,bean:SourceModel) {
         activity.startActivity(Intent(activity, VideoTvActivity::class.java).apply {
             putExtra(TV_BEAN, bean)
         })

@@ -10,8 +10,8 @@ import com.dueeeke.videoplayer.player.VideoViewManager
 import com.lzy.okgo.OkGo
 import com.lzy.okgo.cache.CacheEntity
 import com.lzy.okgo.cache.CacheMode
-import com.zy.client.database.ConfigDBUtils
-import com.zy.client.database.IPTVModel
+import com.zy.client.database.SourceDBUtils
+import com.zy.client.database.SourceModel
 import com.zy.client.http.ConfigManager
 import org.litepal.LitePal
 
@@ -69,15 +69,17 @@ class App : Application() {
 
     private fun initDataConfig() {
         //读取视频源配置
-        ConfigManager.sourceConfigs
+       ConfigManager.sourceConfigs
+       val siteModels= ConfigManager.sourceSiteConfigs
 
         //读取TV源配置
         val tvModels = ConfigManager.sourceTvConfigs
-        ConfigDBUtils.isIPTVExit().apply {
+        SourceDBUtils.isIPTVExit().apply {
             if (!this) {
-                val list = mutableListOf<IPTVModel>()
-                tvModels.values.forEach { list.addAll(it) }
-                ConfigDBUtils.saveAllAsync(list) {
+                val list = mutableListOf<SourceModel>()
+                siteModels.values.addAll(tvModels.values)
+                siteModels.values.forEach { list.addAll(it) }
+                SourceDBUtils.saveAllAsync(list) {
                     //Log.i("123", ".............. $it ${LitePal.count(TvModel::class.java)}")
                 }
             }

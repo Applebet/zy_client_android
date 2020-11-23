@@ -7,11 +7,11 @@ import com.wuhenzhizao.titlebar.statusbar.StatusBarUtils
 import com.zy.client.R
 import com.zy.client.base.BaseMediaActivity
 import com.zy.client.common.TV_BEAN
-import com.zy.client.database.IPTVModel
+import com.zy.client.database.SourceModel
 
 class VideoTvActivity : BaseMediaActivity() {
 
-    private lateinit var mIPTVModel: IPTVModel
+    private lateinit var mSourceModel: SourceModel
     private lateinit var mTvName: TextView
     private lateinit var mTvGroup: TextView
     private lateinit var videoPlayer: IjkVideoView
@@ -21,7 +21,7 @@ class VideoTvActivity : BaseMediaActivity() {
     override fun initView() {
         super.initView()
         StatusBarUtils.setStatusBarColor(window, Color.BLACK, 0)
-        mIPTVModel = intent.getSerializableExtra(TV_BEAN) as? IPTVModel ?: return
+        mSourceModel = intent.getSerializableExtra(TV_BEAN) as? SourceModel ?: return
 
         videoPlayer = findViewById(R.id.videoPlayer)
         mTvName = findViewById(R.id.tv_name)
@@ -35,8 +35,8 @@ class VideoTvActivity : BaseMediaActivity() {
 
     override fun initData() {
         super.initData()
-        videoController?.startPlay(mIPTVModel.url, mIPTVModel.name)
-        mIPTVModel.apply {
+        videoController?.startPlay(mSourceModel.url, mSourceModel.name)
+        mSourceModel.apply {
             mTvName.text = name
             mTvGroup.text = group
         }

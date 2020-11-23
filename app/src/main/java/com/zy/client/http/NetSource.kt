@@ -3,7 +3,7 @@ package com.zy.client.http
 import com.zy.client.bean.Classify
 import com.zy.client.http.repo.CommonRepository
 import com.zy.client.http.repo.CommonRequest
-import com.zy.client.database.IPTVModel
+import com.zy.client.database.SourceModel
 import com.zy.client.utils.SPUtils
 import com.zy.client.utils.Utils
 import com.zy.client.utils.ext.noNull
@@ -34,8 +34,10 @@ object ConfigManager {
         val configJson = Utils.readAssetsData(DATA_VIDEO)
         val configArray = JSONArray(configJson)
         val configMap = LinkedHashMap<String, SourceConfig>()
+        //val sourceModelMap = LinkedHashMap<String, MutableList<SourceModel>>()
         for (i in 0 until configArray.length()) {
             val config = configArray.optJSONObject(i)
+            val id = config.getInt("id")
             val key = config.getString("key")
             val name = config.getString("name")
             val api = config.getString("api")
@@ -44,29 +46,38 @@ object ConfigManager {
                 configMap[key] = SourceConfig(key, name) {
                     CommonRepository(CommonRequest(key, name, api, download))
                 }
+
+                if (sourceSiteConfigs[key] == null) {
+                    sourceSiteConfigs[key] = mutableListOf()
+                }
+                sourceSiteConfigs[key]?.add(SourceModel(sid = id, tid = -1, key = key, name = name, api = api, download = download))
             }
         }
+        //sourceModelMap
         configMap
     }
 
-    val sourceTvConfigs: LinkedHashMap<String, MutableList<IPTVModel>> by lazy {
-        val configJson = Utils.readAssetsData(DATA_IPTV)
-        val configArray = JSONArray(configJson)
-        val configMap = LinkedHashMap<String, MutableList<IPTVModel>>()
-        for (i in 0 until configArray.length()) {
-            val config = configArray.optJSONObject(i)
+    val sourceSiteConfigs = LinkedHashMap<String, MutableList<SourceModel>>()
+
+    val sourceTvConfigs: LinkedHashMap<String, MutableList<SourceModel>> by lazy {
+        val configJsonTv = Utils.readAssetsData(DATA_IPTV)
+        val configArrayTv = JSONArray(configJsonTv)
+        val configMapTv = LinkedHashMap<String, MutableList<SourceModel>>()
+        for (i in 0 until configArrayTv.length()) {
+            val config = configArrayTv.optJSONObject(i)
             val id = config.getInt("id")
             val name = config.getString("name")
             val url = config.getString("url")
             val group = config.getString("group").noNull("其他")
             val isActive = config.getBoolean("isActive")
             if (config != null && !name.isNullOrBlank() && !url.isNullOrBlank()) {
-                if (configMap[group] == null) {
-                    configMap[group] = mutableListOf()
+                if (configMapTv[group] == null) {
+                    configMapTv[group] = mutableListOf()
                 }
-                configMap[group]?.add(
-                    IPTVModel(
-                        id = id,
+                configMapTv[group]?.add(
+                    SourceModel(
+                        tid = id,
+                        sid = -1,
                         name = name,
                         url = url,
                         group = group,
@@ -75,13 +86,13 @@ object ConfigManager {
                 )
             }
         }
-        configMap
+        configMapTv
     }
 
     //IPTV 所有分类
     fun getIPTVGroups(): List<Classify>? {
         var index = 0
-        return sourceTvConfigs.keys.map {
+        return sourceTvConfigs.keys.filter { it.isNotBlank() }.map {
             Classify((index++).toString(), it)
         }
     }
@@ -109,7 +120,7 @@ object ConfigManager {
      * 保存当前选择的源
      */
     fun saveCurUseSourceConfig(sourceKey: String?) {
-        if (sourceConfigs.containsKey(sourceKey)) {
+        if (sourceKey?.isNotBlank() == true && sourceConfigs.containsKey(sourceKey)) {
             SPUtils.get().put("curSourceKey", sourceKey)
         }
     }

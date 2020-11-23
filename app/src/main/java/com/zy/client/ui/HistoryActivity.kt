@@ -45,7 +45,6 @@ class HistoryActivity : BaseActivity() {
         rvHistory.setHasFixedSize(true)
         rvHistory.itemAnimator = null
         rvHistory.layoutManager = LinearLayoutManager(this)
-        val padding: Int = resources.getDimensionPixelSize(R.dimen.dp_1)
         rvHistory.addItemDecoration(object : ItemDecoration() {
             override fun getItemOffsets(
                 outRect: Rect,
@@ -54,7 +53,7 @@ class HistoryActivity : BaseActivity() {
                 state: RecyclerView.State
             ) {
                 super.getItemOffsets(outRect, view, parent, state)
-                outRect.set(0, padding, 0, padding)
+                outRect.set(0, 1, 0, 1)
             }
         })
         val adapter = HistoryListAdapter()
@@ -87,7 +86,9 @@ class HistoryActivity : BaseActivity() {
         override fun onBindViewHolder(holder: HistoryHolder, position: Int) {
             val entity: VideoHistory? = mData?.get(position)
             entity?.apply {
-                holder.tvHistory.text = toString()
+                holder.tvName.text = name
+                holder.tvUrl.text = playUrl
+                holder.tvSource.text = sourceName
             }
         }
 
@@ -95,7 +96,9 @@ class HistoryActivity : BaseActivity() {
             if (mData?.isNullOrEmpty() == true) 0 else mData?.size ?: 0
 
         class HistoryHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-            var tvHistory: TextView = itemView.findViewById(R.id.tv_history)
+            var tvName: TextView = itemView.findViewById(R.id.tv_history)
+            var tvUrl: TextView = itemView.findViewById(R.id.tv_history_url)
+            var tvSource: TextView = itemView.findViewById(R.id.tv_history_source)
         }
     }
 
