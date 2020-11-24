@@ -314,6 +314,15 @@ class VideoController {
         titleView.setTitle(title.noNull())
         videoPlayer.release()
         videoPlayer.setUrl(videoUrl)//videoUrl  VOD_URL
+//        videoPlayer.setUrl(
+//            "https://cctvtxyh5c.liveplay.myqcloud.com/live/cdrmcctv2_1_td.m3u8"
+//
+//            ,mutableMapOf(
+//                "User-Agent" to "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.25 Safari/537.36 Core/1.70.3776.400 QQBrowser/10.6.4212.400",
+////                "Referer" to "https://tv.cctv.com/live/cctv2/?spm=C28340.PGJXtt9IosRP.S63207.89",
+////                "Host" to "vdn.live.cntv.cn"
+//            )
+        )
         videoPlayer.start()
 
 //        if (progress > 3) {
