@@ -1,6 +1,8 @@
 package com.zy.client.ui.video
 
+import android.annotation.SuppressLint
 import android.graphics.Color
+import android.text.Html
 import android.util.Log
 import android.widget.FrameLayout
 import com.dueeeke.videoplayer.util.PlayerUtils
@@ -206,6 +208,7 @@ class VideoDetailActivity : BaseMediaActivity() {
         super.onBackPressed()
     }
 
+    @SuppressLint("SetTextI18n")
     private fun refreshUI(detail: VideoDetail) {
         this.mVideoDetail = detail
         this.mVideoDetail?.apply {
@@ -243,9 +246,27 @@ class VideoDetailActivity : BaseMediaActivity() {
 
                 //名字
                 tvName.text = name
+                //导演
+                tvActor.text = "导演: $actor"
+                tvActor.visibleOrGone(actor?.isNotBlank() == true)
+                //语言
+                tvLanguage.text = "语言: $lang"
+                tvLanguage.visibleOrGone(lang?.isNotBlank() == true)
+                //影片类型
+                tvType.text = "影片类型: $type"
+                tvType.visibleOrGone(type?.isNotBlank() == true)
+                //上映年份
+                tvYear.text = "上映年份: $year"
+                tvYear.visibleOrGone(year?.isNotBlank() == true)
+
+                //剧情简介 & 简介内容
                 des.noNull().let {
-                    tvIntro.visibleOrGone(it.isNotBlank())//剧情简介
-                    tvDesc.text = it //简介内容
+                    tvIntro.visibleOrGone(it.isNotBlank())
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                        tvDesc.text = Html.fromHtml(it, Html.FROM_HTML_MODE_LEGACY)
+                    } else {
+                        tvDesc.text = Html.fromHtml(it)
+                    }
                 }
             }
         }
@@ -303,7 +324,7 @@ class VideoDetailActivity : BaseMediaActivity() {
                     position = currentListPosition,
                     playUrl = currentUrl,
                     progress = getPlayer()?.currentPosition ?: 0L,
-                    timePercent = currTimePercent,
+                    timePercent = if (currPosition < 3) "" else currTimePercent,
                     name = mVideoDetail?.name
                 )
             )

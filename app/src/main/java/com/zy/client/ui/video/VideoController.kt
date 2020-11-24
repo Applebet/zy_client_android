@@ -100,6 +100,7 @@ class VideoController {
         controller.addControlComponent(ErrorView(context)) //错误界面
 
         titleView = TitleView(context) //标题栏
+        titleView.setLive(isLive)
         titleView.showWhenPortrait(true)
         controller.addControlComponent(titleView)
 
@@ -304,7 +305,7 @@ class VideoController {
      *      val proxyUrl = cacheServer.getProxyUrl(videoUrl)
      *      videoPlayer.setUrl(proxyUrl)
      */
-    fun startPlay(videoUrl: String?, title: String?, progress: Long = 0) {
+    fun startPlay(videoUrl: String?, title: String?) {
         Log.i("123", "startPlay  currentUrl= $currentUrl  videoUrl= $videoUrl  title=$title")
         if (videoUrl?.isVideoUrl() == false) return
         //放止同一剧集重复点击
@@ -324,12 +325,7 @@ class VideoController {
 //            )
 //        )
         videoPlayer.start()
-
-//        if (progress > 3) {
-//            videoPlayer.seekTo(progress)
-//        }
     }
-
 
     fun setVideoList(data: List<Video>?) {
         this.videoList = data

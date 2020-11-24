@@ -36,11 +36,13 @@ public class TitleView extends FrameLayout implements IControlComponent {
 
     private final LinearLayout mLlTitleContainer;
     private final TextView mTvTitle;
-    private final TextView mTvTime; //系统当前时间
-    private final ImageView mIvPip; //悬浮窗
+    private final TextView mTvTime;     //系统当前时间
+    private final ImageView mIvPip;     //悬浮窗
+    private final ImageView mIvSetting; //设置
     private final ImageView mIvBattery;
 
     private String mTitle;
+    private boolean isLive = false;
     private boolean isUserPaused = false;
     private boolean isShowWhenPortrait = false;//竖屏是否显示TitleView, 默认不显示
 
@@ -81,6 +83,7 @@ public class TitleView extends FrameLayout implements IControlComponent {
         mTvTitle = findViewById(R.id.tv_title);
         mTvTime = findViewById(R.id.tv_sys_time);
         mIvPip = findViewById(R.id.iv_pip);
+        mIvSetting = findViewById(R.id.iv_setting);
 
         //电量
         mIvBattery = findViewById(R.id.iv_battery);
@@ -190,7 +193,10 @@ public class TitleView extends FrameLayout implements IControlComponent {
                     setVisibility(GONE);
                 } else {
                     mTvTitle.setText("");
+
                     mIvPip.setVisibility(VISIBLE);
+                    mIvSetting.setVisibility(VISIBLE);
+
                     mIvBattery.setVisibility(GONE);
                     mTvTime.setVisibility(GONE);
                 }
@@ -241,6 +247,10 @@ public class TitleView extends FrameLayout implements IControlComponent {
             setVisibility(VISIBLE);
             mTvTime.setText(PlayerUtils.getCurrentSystemTime());
         }
+    }
+
+    public void setLive(boolean live) {
+        this.isLive = live;
     }
 
     public void showWhenPortrait(boolean visible) {

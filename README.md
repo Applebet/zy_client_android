@@ -7,6 +7,9 @@ http://zyplayer.fun/doc/sites/#%E5%AF%BC%E5%87%BA
 
 JSON 👉 https://github.com/Hunlongyu/ZY-Player/blob/e72af95c75/src/lib/dexie/iniData
 
+
+http://ivi.bupt.edu.cn/hls/cctv1hd.m3u8
+
 ## 其他
 
 CommonTitleBar 👉 https://github.com/wuhenzhizao/android-titlebar

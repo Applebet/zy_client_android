@@ -29,6 +29,7 @@ object ConfigManager {
 
     private const val DATA_VIDEO = "source.json"
     private const val DATA_IPTV = "iptv.json"
+    private const val DATA_IPTV_IVI = "iptv_ivi.json"
 
     /**
      * 读取视频和TV源配置
@@ -77,7 +78,7 @@ object ConfigManager {
     private  val sourceSiteConfigs = LinkedHashMap<String, MutableList<SourceModel>>()
 
     private  val sourceTvConfigs: LinkedHashMap<String, MutableList<SourceModel>> by lazy {
-        val configJsonTv = Utils.readAssetsData(DATA_IPTV)
+        val configJsonTv = Utils.readAssetsData(DATA_IPTV_IVI)
         val configArrayTv = JSONArray(configJsonTv)
         val configMapTv = LinkedHashMap<String, MutableList<SourceModel>>()
         for (i in 0 until configArrayTv.length()) {
