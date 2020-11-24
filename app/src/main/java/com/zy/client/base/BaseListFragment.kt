@@ -2,6 +2,7 @@ package com.zy.client.base
 
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.zy.client.R
@@ -19,6 +20,8 @@ abstract class BaseLazyListFragment<T, H : BaseViewHolder> : BaseListFragment<T,
  * 列表类型的页面父类
  */
 abstract class BaseListFragment<T, H : BaseViewHolder> : BaseFragment() {
+
+    private lateinit var mSwipeRefresh: SwipeRefreshLayout
     private var curPage = 1
     private val listAdapter: BaseQuickAdapter<T, H> by lazy {
         getListAdapter().apply {
@@ -43,7 +46,12 @@ abstract class BaseListFragment<T, H : BaseViewHolder> : BaseFragment() {
 
     override fun initView() {
         super.initView()
+        mSwipeRefresh = rootView.findViewById(R.id.swipe_refresh)
+        mSwipeRefresh.setColorSchemeResources(R.color.color_main_theme)
         statusView.setLoadState(LoadState.LOADING)
+        mSwipeRefresh.setOnRefreshListener {
+            initData()
+        }
 
         rvList.run {
             adapter = listAdapter
@@ -75,6 +83,7 @@ abstract class BaseListFragment<T, H : BaseViewHolder> : BaseFragment() {
 
     private fun requestData() {
         loadData(curPage) {
+            if (mSwipeRefresh.isRefreshing) mSwipeRefresh.isRefreshing = false
             try {
                 if (!isAdded) return@loadData
                 if (it != null) {
