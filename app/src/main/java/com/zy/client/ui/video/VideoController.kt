@@ -322,7 +322,7 @@ class VideoController {
 ////                "Referer" to "https://tv.cctv.com/live/cctv2/?spm=C28340.PGJXtt9IosRP.S63207.89",
 ////                "Host" to "vdn.live.cntv.cn"
 //            )
-        )
+//        )
         videoPlayer.start()
 
 //        if (progress > 3) {
