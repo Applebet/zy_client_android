@@ -3,6 +3,7 @@ package com.zy.client.ui.video
 import android.graphics.Color
 import android.util.Log
 import android.widget.FrameLayout
+import com.dueeeke.videoplayer.util.PlayerUtils
 import com.lxj.xpopup.XPopup
 import com.wuhenzhizao.titlebar.statusbar.StatusBarUtils
 import com.zy.client.R
@@ -17,13 +18,14 @@ import com.zy.client.database.SourceDBUtils
 import com.zy.client.http.ConfigManager
 import com.zy.client.http.repo.CommonRepository
 import com.zy.client.utils.ClipboardUtils
+import com.zy.client.utils.NotchUtils
 import com.zy.client.utils.Utils
 import com.zy.client.utils.ext.*
-import com.zy.client.utils.NotchUtils
 import com.zy.client.views.loader.LoadState
 import com.zy.client.views.loader.LoaderLayout
 import kotlinx.android.synthetic.main.activity_video_detail.*
 import org.greenrobot.eventbus.EventBus
+import java.util.*
 
 /**
  * 视频详情页
@@ -283,6 +285,14 @@ class VideoDetailActivity : BaseMediaActivity() {
         videoController?.apply {
             val uniqueId = "${mVideoDetail?.sourceKey}${mVideoDetail?.tid}${mVideoDetail?.id}"
             Log.e("123", "uniqueId === $uniqueId  ${mVideoDetail?.id}")
+
+            val currPosition = getPlayer()?.currentPosition ?: 0L
+            val currTimePercent = String.format(
+                Locale.getDefault(), getString(R.string.str_player_time_percent),
+                PlayerUtils.stringForTime(currPosition.toInt()), PlayerUtils.stringForTime(
+                    (getPlayer()?.duration ?: 0).toInt()
+                )
+            )
             saveHistory(
                 VideoHistory(
                     uniqueId = uniqueId,
@@ -293,6 +303,7 @@ class VideoDetailActivity : BaseMediaActivity() {
                     position = currentListPosition,
                     playUrl = currentUrl,
                     progress = getPlayer()?.currentPosition ?: 0L,
+                    timePercent = currTimePercent,
                     name = mVideoDetail?.name
                 )
             )

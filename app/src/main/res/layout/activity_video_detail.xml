@@ -49,8 +49,9 @@
 
         <ImageView
             android:id="@+id/ivWebPlay"
-            android:layout_width="@dimen/dp_25"
-            android:layout_height="@dimen/dp_25"
+            android:layout_width="@dimen/dp_28"
+            android:layout_height="@dimen/dp_28"
+            android:scaleType="centerCrop"
             android:src="@drawable/ic_web_play" />
 
         <Space
@@ -63,6 +64,7 @@
             android:layout_width="@dimen/dp_25"
             android:layout_height="@dimen/dp_25"
             android:layout_marginLeft="15dp"
+            android:scaleType="centerCrop"
             android:src="@drawable/ic_film_download" />
 
         <Space
@@ -75,12 +77,14 @@
             android:layout_width="@dimen/dp_25"
             android:layout_height="@dimen/dp_25"
             android:layout_marginLeft="15dp"
+            android:scaleType="centerCrop"
             android:src="@drawable/sel_collect_bg" />
 
         <Space
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_weight="1" />
+
     </LinearLayout>
 
     <View style="@style/DivideLine" />
@@ -166,7 +170,8 @@
                     android:text="剧情简介"
                     android:textColor="@color/normalFontColor"
                     android:textSize="@dimen/font_15"
-                    android:visibility="gone" />
+                    android:visibility="gone"
+                    tools:visibility="visible" />
 
                 <TextView
                     android:id="@+id/tvDesc"

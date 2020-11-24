@@ -14,6 +14,7 @@
 
     <color name="colorContainerBg">#F5F5F5</color>
     <color name="colorMain">#FFFFFF</color>
+    <color name="color_main_theme">#FB7299</color>
 
     <color name="normalFontColor">#323232</color>
     <color name="minorFontColor">#A2A2A2</color>

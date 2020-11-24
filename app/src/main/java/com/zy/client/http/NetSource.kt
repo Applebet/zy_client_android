@@ -30,14 +30,23 @@ object ConfigManager {
     private const val DATA_VIDEO = "source.json"
     private const val DATA_IPTV = "iptv.json"
 
-    val sourceConfigs: LinkedHashMap<String, SourceConfig> by lazy {
+    /**
+     * 读取视频和TV源配置
+     */
+    fun getSources(): LinkedHashMap<String, MutableList<SourceModel>> {
+        sourceConfigs
+        sourceSiteConfigs.putAll(sourceTvConfigs)
+        return sourceSiteConfigs
+    }
+
+     val sourceConfigs: LinkedHashMap<String, SourceConfig> by lazy {
         val configJson = Utils.readAssetsData(DATA_VIDEO)
         val configArray = JSONArray(configJson)
         val configMap = LinkedHashMap<String, SourceConfig>()
         //val sourceModelMap = LinkedHashMap<String, MutableList<SourceModel>>()
         for (i in 0 until configArray.length()) {
             val config = configArray.optJSONObject(i)
-            val id = config.getInt("id")
+            val sid = config.getInt("sid")
             val key = config.getString("key")
             val name = config.getString("name")
             val api = config.getString("api")
@@ -50,22 +59,30 @@ object ConfigManager {
                 if (sourceSiteConfigs[key] == null) {
                     sourceSiteConfigs[key] = mutableListOf()
                 }
-                sourceSiteConfigs[key]?.add(SourceModel(sid = id, tid = -1, key = key, name = name, api = api, download = download))
+                sourceSiteConfigs[key]?.add(
+                    SourceModel(
+                        sid = sid,
+                        tid = -1,
+                        key = key,
+                        name = name,
+                        api = api,
+                        download = download
+                    )
+                )
             }
         }
-        //sourceModelMap
         configMap
     }
 
-    val sourceSiteConfigs = LinkedHashMap<String, MutableList<SourceModel>>()
+    private  val sourceSiteConfigs = LinkedHashMap<String, MutableList<SourceModel>>()
 
-    val sourceTvConfigs: LinkedHashMap<String, MutableList<SourceModel>> by lazy {
+    private  val sourceTvConfigs: LinkedHashMap<String, MutableList<SourceModel>> by lazy {
         val configJsonTv = Utils.readAssetsData(DATA_IPTV)
         val configArrayTv = JSONArray(configJsonTv)
         val configMapTv = LinkedHashMap<String, MutableList<SourceModel>>()
         for (i in 0 until configArrayTv.length()) {
             val config = configArrayTv.optJSONObject(i)
-            val id = config.getInt("id")
+            val tid = config.getInt("tid")
             val name = config.getString("name")
             val url = config.getString("url")
             val group = config.getString("group").noNull("其他")
@@ -76,7 +93,7 @@ object ConfigManager {
                 }
                 configMapTv[group]?.add(
                     SourceModel(
-                        tid = id,
+                        tid = tid,
                         sid = -1,
                         name = name,
                         url = url,

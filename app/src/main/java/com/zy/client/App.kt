@@ -32,7 +32,7 @@ class App : Application() {
 
         LitePal.initialize(this)
 
-        initDataConfig()
+        initSourceConfig()
 
         OkGo.getInstance().init(this)
             //建议设置OkHttpClient，不设置将使用默认的
@@ -67,18 +67,11 @@ class App : Application() {
         PIPManager.init(this)
     }
 
-    private fun initDataConfig() {
-        //读取视频源配置
-       ConfigManager.sourceConfigs
-       val siteModels= ConfigManager.sourceSiteConfigs
-
-        //读取TV源配置
-        val tvModels = ConfigManager.sourceTvConfigs
+    private fun initSourceConfig() {
         SourceDBUtils.isIPTVExit().apply {
             if (!this) {
                 val list = mutableListOf<SourceModel>()
-                siteModels.values.addAll(tvModels.values)
-                siteModels.values.forEach { list.addAll(it) }
+                ConfigManager.getSources().values.forEach { list.addAll(it) }
                 SourceDBUtils.saveAllAsync(list) {
                     //Log.i("123", ".............. $it ${LitePal.count(TvModel::class.java)}")
                 }

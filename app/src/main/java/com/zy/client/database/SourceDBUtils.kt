@@ -16,6 +16,14 @@ object SourceDBUtils {
         }))
     }
 
+    fun searchAllSites(): List<SourceModel>? {
+        return LitePal.where(" tid == ? ", "-1").find(SourceModel::class.java)
+    }
+
+    fun searchAllTv(): List<SourceModel>? {
+        return LitePal.where(" sid == ? ", "-1").find(SourceModel::class.java)
+    }
+
     fun searchName(key: String?): String? {
         if (key.isNullOrBlank()) {
             return null

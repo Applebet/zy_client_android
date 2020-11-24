@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -19,7 +20,7 @@
             app:leftType="customView" />
 
         <FrameLayout
-            android:id="@+id/flContainer"
+            android:id="@id/container"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
@@ -35,5 +36,7 @@
         android:backgroundTint="@color/white"
         android:src="@drawable/ic_exchange_source"
         app:borderWidth="0dp"
-        app:fabSize="mini" />
+        app:fabSize="mini"
+        app:rippleColor="@color/color_main_theme"
+        tools:ignore="ContentDescription" />
 </FrameLayout>

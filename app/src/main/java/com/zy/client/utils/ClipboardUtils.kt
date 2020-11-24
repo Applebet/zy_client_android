@@ -8,12 +8,6 @@ import android.content.Intent
 import android.net.Uri
 import com.zy.client.App
 
-
-/**
- * @author javakam
- *
- * @date 2020/6/17 15:55
- */
 object ClipboardUtils {
     /**
      * 复制文本到剪贴板
@@ -34,7 +28,7 @@ object ClipboardUtils {
     fun getText(): CharSequence? {
         val cm: ClipboardManager = App.instance
             .getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        val clip: ClipData? = cm.getPrimaryClip()
+        val clip: ClipData? = cm.primaryClip
         return if (clip != null && clip.itemCount > 0) {
             clip.getItemAt(0)
                 .coerceToText(App.instance)
@@ -51,7 +45,7 @@ object ClipboardUtils {
             .getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         cm.setPrimaryClip(
             ClipData.newUri(
-                App.instance.getContentResolver(), "uri", uri
+                App.instance.contentResolver, "uri", uri
             )
         )
     }

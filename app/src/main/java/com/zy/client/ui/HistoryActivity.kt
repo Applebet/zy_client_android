@@ -1,19 +1,30 @@
 package com.zy.client.ui
 
+import android.content.Intent
 import android.graphics.Rect
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
+import com.guanaj.easyswipemenulibrary.EasySwipeMenuLayout
+import com.lxj.xpopup.XPopup
+import com.lxj.xpopup.core.BasePopupView
 import com.wuhenzhizao.titlebar.widget.CommonTitleBar
 import com.zy.client.R
 import com.zy.client.base.BaseActivity
 import com.zy.client.bean.VideoHistory
+import com.zy.client.common.AppRouter
 import com.zy.client.database.HistoryDBUtils
+import com.zy.client.utils.ext.copyToClipBoard
+import com.zy.client.utils.ext.toastShort
+import com.zy.client.views.loader.LoadState
+import com.zy.client.views.loader.LoaderLayout
+
 
 /**
  * Title:
@@ -26,7 +37,10 @@ import com.zy.client.database.HistoryDBUtils
 class HistoryActivity : BaseActivity() {
 
     private lateinit var titleBar: CommonTitleBar
+    private lateinit var statusView: LoaderLayout
     private lateinit var rvHistory: RecyclerView
+    private var adapter: HistoryListAdapter? = null
+    private var tipDialog: BasePopupView? = null
 
     override fun getLayoutId(): Int {
         return R.layout.activity_history
@@ -34,12 +48,29 @@ class HistoryActivity : BaseActivity() {
 
     override fun initView() {
         super.initView()
-
         titleBar = findViewById(R.id.title_bar)
+        statusView = findViewById(R.id.statusView)
         rvHistory = findViewById(R.id.rv_video_history)
 
         titleBar.run {
             centerTextView.text = "播放记录"
+        }
+        titleBar.setListener { _, action, _ ->
+            if (action == CommonTitleBar.ACTION_LEFT_BUTTON) {
+                finish()
+            } else if (action == CommonTitleBar.ACTION_RIGHT_BUTTON) {
+                if (HistoryDBUtils.count() == 0) {
+                    toastShort("播放记录为空!")
+                    return@setListener
+                }
+                tipDialog = XPopup.Builder(this)
+                    .asConfirm("清空全部播放记录?", "") {
+                        HistoryDBUtils.deleteAll().apply {
+                            toastShort(if (this) "全部记录已清空" else "清除失败!")
+                            findHistory()
+                        }
+                    }.show()
+            }
         }
 
         rvHistory.setHasFixedSize(true)
@@ -56,23 +87,49 @@ class HistoryActivity : BaseActivity() {
                 outRect.set(0, 1, 0, 1)
             }
         })
-        val adapter = HistoryListAdapter()
-        rvHistory.adapter = adapter
 
-        HistoryDBUtils.searchAllAsync {
-            it?.let {
-                Log.e("123", "历史记录 : ${it.size}")
-                adapter.setData(it)
-            }
+        adapter = HistoryListAdapter()
+        rvHistory.adapter = adapter
+        adapter?.setCallBack {
+            findHistory()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        findHistory()
+    }
+
+    private fun findHistory() {
+        HistoryDBUtils.searchAllAsync {
+            //Log.e("123", "历史记录 : ${it?.size}")
+            if (it.isNullOrEmpty()) {
+                statusView.setLoadState(LoadState.EMPTY)
+            } else {
+                statusView.setLoadState(LoadState.SUCCESS)
+            }
+            adapter?.setData(it)
+        }
+    }
+
+    override fun onDestroy() {
+        tipDialog?.dismiss()
+        tipDialog = null
+        super.onDestroy()
     }
 
     internal class HistoryListAdapter : RecyclerView.Adapter<HistoryListAdapter.HistoryHolder>() {
 
-        var mData: List<VideoHistory>? = null
+        private var mData: List<VideoHistory>? = null
+        private var mCallBack: (() -> Unit)? = null
 
-        fun setData(data: List<VideoHistory>) {
+        fun setData(data: List<VideoHistory>?) {
             this.mData = data
+            notifyDataSetChanged()
+        }
+
+        fun setCallBack(callback: () -> Unit) {
+            this.mCallBack = callback
             notifyDataSetChanged()
         }
 
@@ -88,7 +145,26 @@ class HistoryActivity : BaseActivity() {
             entity?.apply {
                 holder.tvName.text = name
                 holder.tvUrl.text = playUrl
+                holder.tvTimePercent.text = timePercent
                 holder.tvSource.text = sourceName
+
+                holder.swipeContent.setOnClickListener {
+                    Log.e("123", "setOnClickListener...")
+                    val activity = (holder.itemView.context as BaseActivity)
+                    AppRouter.toVideoDetailActivity(activity, sourceKey ?: "", vid ?: "")
+                }
+                holder.swipeContent.setOnLongClickListener {
+                    if (playUrl?.isNotBlank() == true) {
+                        playUrl?.copyToClipBoard()
+                        holder.itemView.context.toastShort("视频地址已复制")
+                    }
+                    true
+                }
+            }
+            holder.swipeMenuDelete.setOnClickListener {
+                HistoryDBUtils.delete(entity?.uniqueId).apply {
+                    if (this) mCallBack?.invoke()
+                }
             }
         }
 
@@ -98,7 +174,11 @@ class HistoryActivity : BaseActivity() {
         class HistoryHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             var tvName: TextView = itemView.findViewById(R.id.tv_history)
             var tvUrl: TextView = itemView.findViewById(R.id.tv_history_url)
+            var tvTimePercent: TextView = itemView.findViewById(R.id.tv_history_time_percent)
             var tvSource: TextView = itemView.findViewById(R.id.tv_history_source)
+            var swipeMenu: EasySwipeMenuLayout = itemView.findViewById(R.id.swipe_menu)
+            var swipeContent: ConstraintLayout = itemView.findViewById(R.id.content)
+            var swipeMenuDelete: TextView = itemView.findViewById(R.id.right)
         }
     }
 

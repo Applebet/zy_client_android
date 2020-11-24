@@ -90,6 +90,7 @@ data class VideoHistory(
 
     var position: Int = 0,  //第n集
     var progress: Long = 0, //进度
+    var timePercent: String? = "", // eg: 12:32/1:22:32
     //
     var name: String? = "",
     var playUrl: String? = "",

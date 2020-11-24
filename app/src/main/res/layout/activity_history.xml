@@ -11,13 +11,25 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="visible"
-        app:centerType="textView" />
+        app:centerType="textView"
+        app:leftDrawablePadding="@dimen/dp_3"
+        app:leftType="imageButton"
+        app:rightImageResource="@drawable/ic_history_delete"
+        app:rightType="imageButton" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_video_history"
+    <com.zy.client.views.loader.LoaderLayout
+        android:id="@id/statusView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:overScrollMode="ifContentScrolls"
-        android:scrollbars="vertical" />
+        app:state="loading">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_video_history"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:overScrollMode="ifContentScrolls"
+            android:scrollbars="vertical" />
+
+    </com.zy.client.views.loader.LoaderLayout>
 
 </LinearLayout>

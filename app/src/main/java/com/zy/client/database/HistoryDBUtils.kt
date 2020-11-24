@@ -34,6 +34,10 @@ object HistoryDBUtils {
 
     fun isExit(): Boolean = LitePal.isExist(VideoHistory::class.java)
 
+    fun count(): Int {
+        return LitePal.count(VideoHistory::class.java)
+    }
+
     fun saveAllAsync(histories: List<VideoHistory>, callback: ((Boolean) -> Unit)? = null) {
         ThreadUtils.executeByCached(CustomTask({
             LitePal.saveAll(histories)

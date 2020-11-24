@@ -1,8 +1,6 @@
 package com.zy.client.ui.home
 
-import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BasePopupView
 import com.zy.client.R
@@ -12,9 +10,8 @@ import com.zy.client.http.repo.CommonRepository
 import com.zy.client.base.BaseFragment
 import com.wuhenzhizao.titlebar.widget.CommonTitleBar
 import com.zy.client.common.AppRouter
-import com.zy.client.database.HistoryDBUtils
+import com.zy.client.database.SourceDBUtils
 import com.zy.client.utils.ext.noNull
-import com.zy.client.utils.ext.toastShort
 import kotlinx.android.synthetic.main.fragment_home.*
 
 /**
@@ -24,8 +21,8 @@ import kotlinx.android.synthetic.main.fragment_home.*
  */
 class HomeFragment : BaseFragment() {
 
-    private var source: CommonRepository? = null
-    private var selectSourceDialog: BasePopupView? = null
+    private var mRepo: CommonRepository? = null
+    private var mSourceDialog: BasePopupView? = null
 
     override fun getLayoutId(): Int = R.layout.fragment_home
 
@@ -45,39 +42,38 @@ class HomeFragment : BaseFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        source = ConfigManager.curUseSourceConfig()
+        mRepo = ConfigManager.curUseSourceConfig()
     }
 
     override fun initListener() {
         super.initListener()
         faBtn.setOnClickListener {
             //选择视频源
-            if (selectSourceDialog == null) {
+            if (mSourceDialog == null) {
                 val values = ConfigManager.sourceConfigs.values
                 val keys = ConfigManager.sourceConfigs.keys.toTypedArray()
-                selectSourceDialog = XPopup.Builder(requireActivity())
-                    .asCenterList("选择视频源",
+                mSourceDialog = XPopup.Builder(requireActivity())
+                    .asCenterList("视频源",
                         values.map { it.name }.toTypedArray(),
                         null,
-                        keys.indexOfFirst { it == source?.req?.key }
+                        keys.indexOfFirst { it == mRepo?.req?.key }
                     ) { position, _ ->
-                        source =
-                            ConfigManager.generateSource(keys[position])
-                        ConfigManager.saveCurUseSourceConfig(source?.req?.key)
+                        mRepo = ConfigManager.generateSource(keys[position])
+                        ConfigManager.saveCurUseSourceConfig(mRepo?.req?.key)
                         initData()
                     }
                     .bindLayout(R.layout.fragment_search_result)
             }
-            selectSourceDialog?.show()
+            mSourceDialog?.show()
         }
     }
 
     override fun initData() {
         super.initData()
-        titleBar?.centerSearchEditText?.hint = source?.req?.name.noNull("搜索")
+        titleBar?.centerSearchEditText?.hint = mRepo?.req?.name.noNull("搜索")
         childFragmentManager
             .beginTransaction()
-            .replace(R.id.flContainer, HomeTabPagerFragment())
+            .replace(R.id.container, HomeTabPagerFragment())
             .commitNowAllowingStateLoss()
     }
 }
