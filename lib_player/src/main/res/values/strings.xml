@@ -19,4 +19,9 @@
     <string name="str_player_speed150">1.5X</string>
     <string name="str_player_speed200">2.0X</string>
     <string name="str_player_list_size">选集 (%1$d)</string>
+
+    <string-array name="group_urls">
+        <item>https://downs.muzhiwan.com/2019/06/19/com.and.games505.TerrariaPaid5d0a074e451c0.gpk</item>
+        <item>https://downs.muzhiwan.com/2017/03/28/com.xyzstudio_58da07426e959.apk</item>
+    </string-array>
 </resources>

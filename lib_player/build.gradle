@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.library'
     id 'kotlin-android'
+    id 'kotlin-kapt'
 }
 
 android {
@@ -42,4 +43,9 @@ dependencies {
     api 'com.github.dueeeke.dkplayer:videocache:3.2.6'
     api 'com.github.dueeeke.dkplayer:player-ijk:3.2.6'
     //api 'com.github.dueeeke.dkplayer:player-exo:3.2.6'
+
+    api 'com.arialyy.aria:core:3.8.12'
+    kapt 'com.arialyy.aria:compiler:3.8.12'
+    api 'com.arialyy.aria:m3u8Component:3.8.12'
+
 }

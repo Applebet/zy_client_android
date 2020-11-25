@@ -1,5 +1,7 @@
 package com.zy.client.ui.home
 
+import ando.player.service.DownloadService
+import android.content.Intent
 import android.widget.ImageView
 import android.widget.TextView
 import com.lxj.xpopup.XPopup
@@ -36,7 +38,10 @@ class HomeFragment : BaseFragment() {
     override fun initListener() {
         super.initListener()
         ivHistory.setOnClickListener {
-            AppRouter.toHistoryActivity(baseActivity)
+            // AppRouter.toHistoryActivity(baseActivity)
+            val intent = Intent(baseActivity, DownloadService::class.java)
+            baseActivity.startService(intent)
+
         }
 
         tvSearch.setOnClickListener {
@@ -49,16 +54,16 @@ class HomeFragment : BaseFragment() {
                 val values = ConfigManager.sourceConfigs.values
                 val keys = ConfigManager.sourceConfigs.keys.toTypedArray()
                 mSourceDialog = XPopup.Builder(requireActivity())
-                        .asCenterList("视频源",
-                                values.map { it.name }.toTypedArray(),
-                                null,
-                                keys.indexOfFirst { it == mRepo?.req?.key }
-                        ) { position, _ ->
-                            mRepo = ConfigManager.generateSource(keys[position])
-                            ConfigManager.saveCurUseSourceConfig(mRepo?.req?.key)
-                            initData()
-                        }
-                        .bindLayout(R.layout.fragment_search_result)
+                    .asCenterList("视频源",
+                        values.map { it.name }.toTypedArray(),
+                        null,
+                        keys.indexOfFirst { it == mRepo?.req?.key }
+                    ) { position, _ ->
+                        mRepo = ConfigManager.generateSource(keys[position])
+                        ConfigManager.saveCurUseSourceConfig(mRepo?.req?.key)
+                        initData()
+                    }
+                    .bindLayout(R.layout.fragment_search_result)
             }
             mSourceDialog?.show()
         }
@@ -68,8 +73,8 @@ class HomeFragment : BaseFragment() {
         super.initData()
         tvSearch.hint = mRepo?.req?.name.noNull("搜索")
         childFragmentManager
-                .beginTransaction()
-                .replace(R.id.container, HomeTabPagerFragment())
-                .commitNowAllowingStateLoss()
+            .beginTransaction()
+            .replace(R.id.container, HomeTabPagerFragment())
+            .commitNowAllowingStateLoss()
     }
 }
