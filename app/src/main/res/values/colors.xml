@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#E8E8E8</color>
-    <color name="colorPrimaryDark">#3700B3</color>
+    <color name="colorPrimary">#FB7299</color>
+    <color name="colorPrimaryDark">#CCFB7299</color>
     <color name="colorAccent">#000000</color>
 
     <color name="purple_200">#FFBB86FC</color>
@@ -12,20 +12,15 @@
 
     <color name="color_main_theme">#FB7299</color>
     <color name="color_main_theme_dark">#FFFB7299</color>
-    <color name="colorContainerBg">#F5F5F5</color>
-    <color name="colorMain">#FFFFFF</color>
-<!--    <color name="color_main_theme">#</color>-->
-
-    <color name="normalFontColor">#323232</color>
-    <color name="minorFontColor">#A2A2A2</color>
+    <color name="color_font_black">#323232</color>
+    <color name="color_font_gray">#A2A2A2</color>
+    <color name="color_font_gray_light">#C0C0C0</color>
+    <color name="color_container_bg">#F5F5F5</color>
     <color name="dividerColor">#E8E8E8</color>
 
     <color name="transparent">#00000000</color>
 
-    <!--    <color name="dkplayer_theme_color">@color/teal_200</color>-->
-    <!--    <color name="dkplayer_theme_color_translucent">@color/teal_700</color>-->
-    <!--    <color name="dkplayer_background_color">#4D000000</color>-->
-
+    <!--  Player  -->
     <color name="color_player_theme">#FB7299</color>
     <color name="color_player_theme_translucent">#FFFB7299</color>
     <color name="color_player_background">#4D000000</color>

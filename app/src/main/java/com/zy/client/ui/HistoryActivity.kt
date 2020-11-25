@@ -1,11 +1,11 @@
 package com.zy.client.ui
 
-import android.content.Intent
 import android.graphics.Rect
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import com.guanaj.easyswipemenulibrary.EasySwipeMenuLayout
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BasePopupView
-import com.wuhenzhizao.titlebar.widget.CommonTitleBar
 import com.zy.client.R
 import com.zy.client.base.BaseActivity
 import com.zy.client.bean.VideoHistory
@@ -36,7 +35,9 @@ import com.zy.client.views.loader.LoaderLayout
  */
 class HistoryActivity : BaseActivity() {
 
-    private lateinit var titleBar: CommonTitleBar
+    private lateinit var ivBack: ImageView
+    private lateinit var tvTitle: TextView
+    private lateinit var ivDelete: ImageView
     private lateinit var statusView: LoaderLayout
     private lateinit var rvHistory: RecyclerView
     private var adapter: HistoryListAdapter? = null
@@ -48,29 +49,26 @@ class HistoryActivity : BaseActivity() {
 
     override fun initView() {
         super.initView()
-        titleBar = findViewById(R.id.title_bar)
+        ivBack = findViewById(R.id.iv_history_back)
+        tvTitle = findViewById(R.id.tv_history_title)
+        ivDelete = findViewById(R.id.iv_history_delete)
         statusView = findViewById(R.id.statusView)
         rvHistory = findViewById(R.id.rv_video_history)
 
-        titleBar.run {
-            centerTextView.text = "播放记录"
-        }
-        titleBar.setListener { _, action, _ ->
-            if (action == CommonTitleBar.ACTION_LEFT_BUTTON) {
-                finish()
-            } else if (action == CommonTitleBar.ACTION_RIGHT_BUTTON) {
-                if (HistoryDBUtils.count() == 0) {
-                    toastShort("播放记录为空!")
-                    return@setListener
-                }
-                tipDialog = XPopup.Builder(this)
-                    .asConfirm("清空全部播放记录?", "") {
-                        HistoryDBUtils.deleteAll().apply {
-                            toastShort(if (this) "全部记录已清空" else "清除失败!")
-                            findHistory()
-                        }
-                    }.show()
+        tvTitle.text = "播放记录"
+        ivBack.setOnClickListener { finish() }
+        ivDelete.setOnClickListener {
+            if (HistoryDBUtils.count() == 0) {
+                toastShort("播放记录为空!")
+                return@setOnClickListener
             }
+            tipDialog = XPopup.Builder(this)
+                .asConfirm("清空全部播放记录?", "") {
+                    HistoryDBUtils.deleteAll().apply {
+                        toastShort(if (this) "全部记录已清空" else "清除失败!")
+                        findHistory()
+                    }
+                }.show()
         }
 
         rvHistory.setHasFixedSize(true)

@@ -15,7 +15,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : BaseActivity() {
 
-    private val fragmentArray = SparseArray<Fragment>(2)
+    private val fragmentArray = SparseArray<Fragment>(3)
 
     var mHits = LongArray(2)
 
@@ -27,13 +27,13 @@ class MainActivity : BaseActivity() {
         fragmentArray.put(R.id.navigation_iptv, IPTVFragment())
         fragmentArray.put(R.id.navigation_collect, CollectFragment())
         supportFragmentManager
-            .beginTransaction()
-            .apply {
-                fragmentArray.forEach { key, value ->
-                    add(R.id.container, value, key.toString())
+                .beginTransaction()
+                .apply {
+                    fragmentArray.forEach { key, value ->
+                        add(R.id.container, value, key.toString())
+                    }
                 }
-            }
-            .commitAllowingStateLoss()
+                .commitAllowingStateLoss()
         switchPage(R.id.navigation_home)
     }
 
@@ -47,16 +47,16 @@ class MainActivity : BaseActivity() {
 
     private fun switchPage(id: Int) {
         supportFragmentManager
-            .beginTransaction()
-            .apply {
-                fragmentArray.forEach { key, value ->
-                    if (key == id) show(value) else hide(value)
-                }
-            }.commitAllowingStateLoss()
+                .beginTransaction()
+                .apply {
+                    fragmentArray.forEach { key, value ->
+                        if (key == id) show(value) else hide(value)
+                    }
+                }.commitAllowingStateLoss()
     }
 
     override fun onBackPressed() {
-        System.arraycopy(mHits, 1, mHits, 0, mHits.size - 1);
+        System.arraycopy(mHits, 1, mHits, 0, mHits.size - 1)
         mHits[mHits.size - 1] = SystemClock.uptimeMillis()
         if (mHits[0] >= (SystemClock.uptimeMillis() - 1000)) {
             App.instance.exitSys()

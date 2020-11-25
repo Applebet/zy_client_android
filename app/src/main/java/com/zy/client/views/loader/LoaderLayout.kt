@@ -22,7 +22,7 @@ class LoaderLayout @JvmOverloads constructor(
     context, attrs, defStyle
 ) {
     init {
-        setBackgroundResource(R.color.colorContainerBg)
+        setBackgroundResource(android.R.color.white)
     }
 
     override fun createLoadingView(): View? {

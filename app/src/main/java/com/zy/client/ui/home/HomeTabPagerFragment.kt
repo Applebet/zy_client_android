@@ -1,6 +1,7 @@
 package com.zy.client.ui.home
 
 import androidx.fragment.app.Fragment
+import com.google.android.material.tabs.TabLayout
 import com.zy.client.bean.Classify
 import com.zy.client.base.BaseTabPagerFragment
 import com.zy.client.common.OPEN_FL
@@ -29,7 +30,7 @@ class HomeTabPagerFragment : BaseTabPagerFragment() {
                 !classify.id.isNullOrBlank() && !classify.name.isNullOrBlank() &&
                         //筛去福利
                         (if (openFL) true else (!classify.name.contains("福利") && !classify.name.contains(
-                            "伦理"
+                                "伦理"
                         )
                                 && !classify.name.contains("倫")))
             } as ArrayList<Classify>)

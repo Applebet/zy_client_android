@@ -6,7 +6,11 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorAccent">@color/colorPrimary</item>
+    </style>
+
+    <style name="TabLayoutTextStyle">
+        <item name="android:textSize">@dimen/font_16</item>
     </style>
 
     <!-- 使用style方式定义activity切换动画 -->
@@ -33,6 +37,15 @@
         <item name="android:background">@color/dividerColor</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">1px</item>
+    </style>
+
+    <style name="MainTheme" parent="AppTheme">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowFullscreen">false</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowIsTranslucent">false</item>
+        <item name="android:windowDisablePreview">true</item>
     </style>
 
     <style name="GuideTheme" parent="FullScreen">

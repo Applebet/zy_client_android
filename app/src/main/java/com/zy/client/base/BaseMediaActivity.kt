@@ -4,6 +4,7 @@ import android.view.MenuItem
 import com.lxj.xpopup.impl.BottomListPopupView
 import com.zy.client.ui.video.VideoController
 import com.zy.client.ui.video.WebController
+import com.zy.client.utils.status.StatusBarUtils
 
 /**
  * Title: BaseMediaActivity
@@ -19,6 +20,14 @@ abstract class BaseMediaActivity : BaseActivity() {
     protected var videoController: VideoController? = null
 
     protected var mSelectListDialog: BottomListPopupView? = null
+
+    override fun initStyle(statusBarColor: Int) {
+        //super.initStyle(statusBarColor)
+        StatusBarUtils.transparentStatusBar(window)
+        StatusBarUtils.setLightMode(window)
+        StatusBarUtils.setStatusBarView(this, android.R.color.black)
+        //StatusBarUtils.setStatusBarColor(window, Color.BLACK, 0)
+    }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == android.R.id.home) {

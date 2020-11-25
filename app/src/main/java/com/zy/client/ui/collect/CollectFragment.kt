@@ -1,6 +1,7 @@
 package com.zy.client.ui.collect
 
 import android.view.View
+import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
@@ -13,9 +14,7 @@ import com.zy.client.bean.CollectEvent
 import com.zy.client.base.BaseListFragment
 import com.zy.client.database.CollectModel
 import com.zy.client.database.CollectDBUtils
-import com.wuhenzhizao.titlebar.widget.CommonTitleBar
 import com.zy.client.common.AppRouter
-import com.zy.client.utils.ext.ToastUtils
 import com.zy.client.utils.ext.toastShort
 import com.zy.client.views.loader.LoadState
 import kotlinx.android.synthetic.main.layout_com_title_list.*
@@ -33,11 +32,11 @@ import org.greenrobot.eventbus.ThreadMode
  */
 class CollectFragment : BaseListFragment<CollectModel, BaseViewHolder>() {
 
-    override fun initTitleBar(titleBar: CommonTitleBar?) {
-        titleBar?.run {
-            visible()
-            centerTextView.text = "收藏"
-        }
+    override fun initView() {
+        super.initView()
+        val tvTitle=rootView.findViewById<TextView>(R.id.tv_title)
+        tvTitle.visible()
+        tvTitle.text="收藏"
     }
 
     override fun getListAdapter(): BaseLoadMoreAdapter<CollectModel, BaseViewHolder> {
@@ -59,7 +58,7 @@ class CollectFragment : BaseListFragment<CollectModel, BaseViewHolder>() {
                 }
 
                 XPopup.Builder(context)
-                    .asConfirm("", "确认删除全部吗") {
+                    .asConfirm("确定删除全部收藏 ?", "") {
                         try {
                             val delete = CollectDBUtils.deleteAll()
                             if (delete) {
@@ -67,11 +66,9 @@ class CollectFragment : BaseListFragment<CollectModel, BaseViewHolder>() {
                                 if (data.isEmpty()) {
                                     statusView.setLoadState(LoadState.EMPTY)
                                 }
-                            } else {
-                                ToastUtils.showShort("删除失败")
-                            }
+                            } else  toastShort("删除失败")
                         } catch (e: Exception) {
-                            ToastUtils.showShort("删除失败")
+                            toastShort("删除失败")
                         }
                     }.show()
             }
@@ -102,7 +99,7 @@ class CollectFragment : BaseListFragment<CollectModel, BaseViewHolder>() {
 
             holder.getView<View>(R.id.ivDelete).setOnClickListener {
                 XPopup.Builder(context)
-                    .asConfirm("", "确认删除吗") {
+                    .asConfirm("确定删除 ?", "") {
                         try {
                             val delete = CollectDBUtils.delete(item.uniqueKey)
                             if (delete) {
@@ -110,11 +107,9 @@ class CollectFragment : BaseListFragment<CollectModel, BaseViewHolder>() {
                                 if (data.isEmpty()) {
                                     statusView.setLoadState(LoadState.EMPTY)
                                 }
-                            } else {
-                                ToastUtils.showShort("删除失败")
-                            }
+                            } else toastShort("删除失败")
                         } catch (e: Exception) {
-                            ToastUtils.showShort("删除失败")
+                            toastShort("删除失败")
                         }
                     }
                     .show()

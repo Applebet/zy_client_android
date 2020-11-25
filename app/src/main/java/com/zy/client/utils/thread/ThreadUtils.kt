@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicLong
  */
 object ThreadUtils {
 
-    val mainHandler = Handler(Looper.getMainLooper())
+    private val mainHandler = Handler(Looper.getMainLooper())
 
     private val TYPE_PRIORITY_POOLS: MutableMap<Int, MutableMap<Int, ExecutorService?>?> = HashMap()
     private val TASK_POOL_MAP: MutableMap<Task<*>, ExecutorService?> = ConcurrentHashMap()

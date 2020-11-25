@@ -125,7 +125,7 @@
                         android:ellipsize="marquee"
                         android:focusableInTouchMode="true"
                         android:singleLine="true"
-                        android:textColor="@color/normalFontColor"
+                        android:textColor="@color/color_font_black"
                         android:textSize="@dimen/font_15"
                         android:textStyle="bold"
                         tools:text="大内密探">
@@ -148,7 +148,7 @@
                             android:layout_height="wrap_content"
                             android:maxWidth="@dimen/dp_200"
                             android:singleLine="true"
-                            android:textColor="@color/minorFontColor"
+                            android:textColor="@color/color_font_gray"
                             android:textSize="@dimen/font_14"
                             tools:text="七龙珠七龙珠七龙珠七龙珠七龙珠七龙珠七龙珠七龙珠" />
 
@@ -168,7 +168,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/dp_8"
                     android:text="导演"
-                    android:textColor="@color/normalFontColor"
+                    android:textColor="@color/color_font_black"
                     android:textSize="@dimen/font_15"
                     android:visibility="gone"
                     tools:visibility="visible" />
@@ -178,7 +178,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/dp_8"
-                    android:textColor="@color/minorFontColor"
+                    android:textColor="@color/color_font_gray"
                     android:textSize="@dimen/font_13"
                     android:visibility="gone"
                     tools:visibility="visible"
@@ -191,7 +191,7 @@
                     android:layout_height="wrap_content"
                     android:visibility="gone"
                     tools:visibility="visible"
-                    android:textColor="@color/minorFontColor"
+                    android:textColor="@color/color_font_gray"
                     android:textSize="@dimen/font_13"
                     tools:text="影片类型" />
 
@@ -201,7 +201,7 @@
                     android:visibility="gone"
                     tools:visibility="visible"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/minorFontColor"
+                    android:textColor="@color/color_font_gray"
                     android:textSize="@dimen/font_13"
                     android:layout_marginBottom="@dimen/dp_8"
                     tools:text="上映时间" />
@@ -212,7 +212,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/dp_5"
                     android:text="剧情简介"
-                    android:textColor="@color/normalFontColor"
+                    android:textColor="@color/color_font_black"
                     android:textSize="@dimen/font_15"
                     android:visibility="gone"
                     tools:visibility="visible" />
@@ -222,7 +222,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="@dimen/dp_5"
-                    android:textColor="@color/minorFontColor"
+                    android:textColor="@color/color_font_gray"
                     android:textSize="@dimen/font_14"
                     tools:text="大内密探大内密探大内密探大内密探大内密探大内密探大内密探大内密探大内密探大内密探大内密探大内密探大内密探" />
 

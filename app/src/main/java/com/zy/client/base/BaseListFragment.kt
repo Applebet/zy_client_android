@@ -6,7 +6,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.zy.client.R
-import com.wuhenzhizao.titlebar.widget.CommonTitleBar
 import com.zy.client.views.loader.LoadState
 import com.zy.client.views.loader.Loader
 import kotlinx.android.synthetic.main.layout_com_title_list.*
@@ -37,9 +36,6 @@ abstract class BaseListFragment<T, H : BaseViewHolder> : BaseFragment() {
 
     override fun getLayoutId(): Int = R.layout.layout_com_title_list
 
-    override fun initTitleBar(titleBar: CommonTitleBar?) {
-    }
-
     abstract fun getListAdapter(): BaseLoadMoreAdapter<T, H>
 
     abstract fun getListLayoutManager(): RecyclerView.LayoutManager
@@ -48,7 +44,6 @@ abstract class BaseListFragment<T, H : BaseViewHolder> : BaseFragment() {
         super.initView()
         mSwipeRefresh = rootView.findViewById(R.id.swipe_refresh)
         mSwipeRefresh.setColorSchemeResources(R.color.color_main_theme)
-        statusView.setLoadState(LoadState.LOADING)
         mSwipeRefresh.setOnRefreshListener {
             initData()
         }

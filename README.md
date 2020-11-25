@@ -1,4 +1,4 @@
-# 酷优安卓客户端
+# ZPLAYER 安卓客户端
 
 ## 文档
 https://github.com/Hunlongyu/ZY-Player
@@ -12,7 +12,6 @@ http://ivi.bupt.edu.cn/hls/cctv1hd.m3u8
 
 ## 其他
 
-CommonTitleBar 👉 https://github.com/wuhenzhizao/android-titlebar
 免费图片 👉 https://pixabay.com/zh/photos/globe-world-earth-planet-2491989/
 
 ## NEED ADD

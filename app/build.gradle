@@ -134,8 +134,6 @@ dependencies {
 
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.4'
     implementation 'com.github.anzaizai:EasySwipeMenuLayout:1.1.4'
-    implementation 'com.wuhenzhizao:titlebar:1.2.0'
-    implementation 'com.github.zcweng:switch-button:0.0.3@aar'
     implementation 'me.gujun.android.taggroup:library:1.4@aar'
     implementation 'com.lxj:xpopup:1.8.17'
 

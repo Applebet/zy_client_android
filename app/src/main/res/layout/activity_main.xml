@@ -16,8 +16,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?android:attr/windowBackground"
-        app:itemTextColor="@drawable/sel_main_nav"
         app:itemIconTint="@drawable/sel_main_nav"
+        app:itemTextColor="@drawable/sel_main_nav"
         app:menu="@menu/menu_main_nav" />
 
 </LinearLayout>

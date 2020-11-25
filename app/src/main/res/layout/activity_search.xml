@@ -1,26 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/colorContainerBg">
+    android:layout_height="match_parent">
 
-    <com.wuhenzhizao.titlebar.widget.CommonTitleBar
-        android:id="@id/title_bar"
+    <LinearLayout
+        android:id="@+id/ll_search_title"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingStart="@dimen/dp_5"
-        android:paddingEnd="0dp"
-        app:centerSearchEditable="true"
-        app:centerSearchRightType="delete"
-        app:centerType="searchView"
+        android:layout_height="@dimen/dp_50"
+        android:paddingStart="@dimen/dp_20"
+        android:paddingTop="@dimen/dp_8"
+        android:paddingEnd="@dimen/dp_20"
+        android:paddingBottom="@dimen/dp_8"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:leftImageResource="@drawable/ic_arrow_back"
-        app:leftType="imageButton"
-        app:rightImageResource="@drawable/ic_search"
-        app:rightType="imageButton" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="@dimen/dp_20"
+            android:layout_weight="1"
+            android:background="@drawable/shape_home_search"
+            android:paddingStart="0dp"
+            android:paddingEnd="@dimen/dp_5">
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/edt_search"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@null"
+                android:drawablePadding="@dimen/dp_5"
+                android:gravity="center_vertical"
+                android:imeOptions="actionSearch"
+                android:maxLength="50"
+                android:maxLines="1"
+                android:paddingStart="@dimen/dp_10"
+                android:paddingEnd="@dimen/dp_30"
+                android:singleLine="true"
+                android:textColorHint="@color/color_font_gray_light"
+                android:textCursorDrawable="@drawable/shape_search_cursor"
+                android:textSize="@dimen/font_13"
+                app:drawableStartCompat="@drawable/ic_title_search"
+                tools:hint="Search" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_search_delete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|end"
+                android:padding="@dimen/dp_5"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_search_edit_delete"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/tv_search_action"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="取消"
+            android:textColor="@color/color_font_black"
+            android:textSize="@dimen/font_14" />
+
+    </LinearLayout>
 
     <!--  历史记录  -->
     <com.zy.client.ui.search.SearchHistoryView
@@ -32,7 +79,7 @@
         android:visibility="gone"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/title_bar" />
+        app:layout_constraintTop_toBottomOf="@id/ll_search_title" />
 
     <FrameLayout
         android:id="@+id/flContainer"
@@ -48,13 +95,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_20"
-        android:layout_marginEnd="@dimen/dp_20"
+        android:layout_marginEnd="@dimen/dp_25"
         android:layout_marginBottom="@dimen/dp_100"
         android:backgroundTint="@color/white"
         android:src="@drawable/ic_exchange_source"
         app:borderWidth="0dp"
         app:fabSize="mini"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:layout_constraintRight_toRightOf="parent"
+        tools:ignore="ContentDescription" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

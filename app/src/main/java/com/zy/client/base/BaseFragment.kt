@@ -6,8 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.zy.client.R
-import com.wuhenzhizao.titlebar.widget.CommonTitleBar
 
 /**
  * @author javakam
@@ -17,7 +15,6 @@ abstract class BaseFragment : Fragment(), IBackPressed {
 
     lateinit var baseActivity: BaseActivity
     lateinit var rootView: View
-    var titleBar: CommonTitleBar? = null
     private var isLoaded = false
 
     override fun onAttach(context: Context) {
@@ -26,9 +23,9 @@ abstract class BaseFragment : Fragment(), IBackPressed {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View? {
         rootView = inflater.inflate(getLayoutId(), container, false)
         return rootView
@@ -38,8 +35,6 @@ abstract class BaseFragment : Fragment(), IBackPressed {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        titleBar = view.findViewById(R.id.title_bar) as? CommonTitleBar
-        initTitleBar(titleBar)
         initView()
         initListener()
         if (this !is ILazyLoad) {
@@ -54,8 +49,6 @@ abstract class BaseFragment : Fragment(), IBackPressed {
             isLoaded = true
         }
     }
-
-    abstract fun initTitleBar(titleBar: CommonTitleBar?)
 
     open fun initView() {}
     open fun initListener() {}

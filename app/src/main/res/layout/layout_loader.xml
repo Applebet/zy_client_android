@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_20"
         android:text="数据加载中..."
-        android:textColor="@color/normalFontColor"
+        android:textColor="@color/color_font_black"
         android:textSize="@dimen/font_14" />
 
 </LinearLayout>

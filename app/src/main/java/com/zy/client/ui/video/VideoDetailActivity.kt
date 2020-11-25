@@ -7,7 +7,6 @@ import android.util.Log
 import android.widget.FrameLayout
 import com.dueeeke.videoplayer.util.PlayerUtils
 import com.lxj.xpopup.XPopup
-import com.wuhenzhizao.titlebar.statusbar.StatusBarUtils
 import com.zy.client.R
 import com.zy.client.base.BaseMediaActivity
 import com.zy.client.bean.*
@@ -55,7 +54,6 @@ class VideoDetailActivity : BaseMediaActivity() {
     override fun getLayoutId() = R.layout.activity_video_detail
 
     override fun initView() {
-        StatusBarUtils.setStatusBarColor(window, Color.BLACK, 0)
         //PermissionManager.verifyStoragePermissions(this)
 
         id = intent?.getStringExtra(ID).noNull()

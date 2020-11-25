@@ -1,9 +1,7 @@
 package com.zy.client.ui.video
 
-import android.graphics.Color
 import android.widget.FrameLayout
 import android.widget.TextView
-import com.wuhenzhizao.titlebar.statusbar.StatusBarUtils
 import com.zy.client.R
 import com.zy.client.base.BaseMediaActivity
 import com.zy.client.bean.VideoSource
@@ -21,7 +19,6 @@ class VideoTvActivity : BaseMediaActivity() {
 
     override fun initView() {
         super.initView()
-        StatusBarUtils.setStatusBarColor(window, Color.BLACK, 0)
 
         videoContainer = findViewById(R.id.playerContainer)
         mTvName = findViewById(R.id.tv_name)
