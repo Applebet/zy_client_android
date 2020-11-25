@@ -12,20 +12,8 @@
         android:layout_height="@dimen/dp_210"
         android:background="@color/black">
 
-<!--        <FrameLayout-->
-<!--            android:id="@id/playerWebContainer"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="@dimen/dp_210"-->
-<!--            android:visibility="gone"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent"-->
-<!--            app:layout_constraintDimensionRatio="16:9"-->
-<!--            app:layout_constraintLeft_toLeftOf="parent"-->
-<!--            app:layout_constraintRight_toRightOf="parent"-->
-<!--            app:layout_constraintTop_toTopOf="parent"-->
-<!--            tools:visibility="visible" />-->
-
-        <ando.player.IjkVideoView
-            android:id="@id/videoPlayer"
+        <FrameLayout
+            android:id="@id/playerContainer"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -52,9 +40,8 @@
             android:ellipsize="marquee"
             android:focusableInTouchMode="true"
             android:singleLine="true"
-            android:textColor="@color/normalFontColor"
-            android:textSize="@dimen/font_15"
-            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:textSize="@dimen/font_16"
             tools:text="大内密探">
 
             <requestFocus />
@@ -66,7 +53,7 @@
             android:layout_height="wrap_content"
             android:maxWidth="@dimen/dp_180"
             android:singleLine="true"
-            android:textColor="@color/minorFontColor"
+            android:textColor="@color/normalFontColor"
             android:textSize="@dimen/font_14"
             tools:text="七龙珠七龙珠七龙珠七龙珠七龙珠七龙珠七龙珠七龙珠" />
     </LinearLayout>

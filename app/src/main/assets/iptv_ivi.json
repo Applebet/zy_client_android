@@ -1,0 +1,779 @@
+[
+  {
+    "tid": 1,
+    "name": "CCTV-1高清",
+    "url": "http://ivi.bupt.edu.cn/hls/cctv1hd.m3u8",
+    "group": "央视高清",
+    "isActive": true
+  },
+  {
+    "tid": 2,
+    "name": "CCTV-2高清",
+    "url": "http://ivi.bupt.edu.cn/hls/cctv2hd.m3u8",
+    "group": "央视高清",
+    "isActive": true
+  },
+  {
+    "tid": 3,
+    "name": "CCTV-3高清",
+    "url": "http://ivi.bupt.edu.cn/hls/cctv3hd.m3u8",
+    "group": "央视高清",
+    "isActive": true
+  },
+  {
+    "tid": 4,
+    "name": "CCTV-4高清",
+    "url": "http://ivi.bupt.edu.cn/hls/cctv4hd.m3u8",
+    "group": "央视高清",
+    "isActive": true
+  },
+  {
+    "tid": 5,
+    "name": "CCTV-5+高清",
+    "url": "http://ivi.bupt.edu.cn/hls/cctv5phd.m3u8",
+    "group": "央视高清",
+    "isActive": true
+  },
+  {
+    "tid": 6,
+    "name": "CCTV-6高清",
+    "url": "http://ivi.bupt.edu.cn/hls/cctv6hd.m3u8",
+    "group": "央视高清",
+    "isActive": true
+  },
+  {
+    "tid": 7,
+    "name": "CCTV-7高清",
+    "url": "http://ivi.bupt.edu.cn/hls/cctv7hd.m3u8",
+    "group": "央视高清",
+    "isActive": true
+  },
+  {
+    "tid": 8,
+    "name": "CCTV-8高清",
+    "url": "http://ivi.bupt.edu.cn/hls/cctv8hd.m3u8",
+    "group": "央视高清",
+    "isActive": true
+  },
+  {
+    "tid": 9,
+    "name": "CCTV-9高清",
+    "url": "http://ivi.bupt.edu.cn/hls/cctv9hd.m3u8",
+    "group": "央视高清",
+    "isActive": true
+  },
+  {
+    "tid": 10,
+    "name": "CCTV-10高清",
+    "url": "http://ivi.bupt.edu.cn/hls/cctv10hd.m3u8",
+    "group": "央视高清",
+    "isActive": true
+  },
+  {
+    "tid": 11,
+    "name": "CCTV-11高清",
+    "url": "http://dbiptv.sn.chinamobile.com/PLTV/88888888/224/3221225499/1.m3u8",
+    "group": "央视高清",
+    "isActive": true
+  },
+  {
+    "tid": 12,
+    "name": "CCTV-12高清",
+    "url": "http://ivi.bupt.edu.cn/hls/cctv12hd.m3u8",
+    "group": "央视高清",
+    "isActive": true
+  },
+  {
+    "tid": 13,
+    "name": "CCTV-13高清",
+    "url": "http://ivi.bupt.edu.cn/hls/cctv13hd.m3u8",
+    "group": "央视高清",
+    "isActive": true
+  },
+  {
+    "tid": 14,
+    "name": "CCTV-14高清",
+    "url": "http://ivi.bupt.edu.cn/hls/cctv14hd.m3u8",
+    "group": "央视高清",
+    "isActive": true
+  },
+  {
+    "tid": 15,
+    "name": "CCTV-17高清",
+    "url": "http://ivi.bupt.edu.cn/hls/cctv17hd.m3u8",
+    "group": "央视高清",
+    "isActive": true
+  },
+  {
+    "tid": 16,
+    "name": "CGTN高清",
+    "url": "http://ivi.bupt.edu.cn/hls/cgtnhd.m3u8",
+    "group": "央视高清",
+    "isActive": true
+  },
+  {
+    "tid": 17,
+    "name": "CGTN DOC高清",
+    "url": "http://ivi.bupt.edu.cn/hls/cgtndochd.m3u8",
+    "group": "央视高清",
+    "isActive": true
+  },
+  {
+    "tid": 18,
+    "name": "CHC高清电影",
+    "url": "http://ivi.bupt.edu.cn/hls/chchd.m3u8",
+    "group": "央视高清",
+    "isActive": true
+  },
+  {
+    "tid": 19,
+    "name": "北京卫视高清",
+    "url": "http://ivi.bupt.edu.cn/hls/btv1hd.m3u8",
+    "group": "卫视高清",
+    "isActive": true
+  },
+  {
+    "tid": 20,
+    "name": "北京文艺高清",
+    "url": "http://ivi.bupt.edu.cn/hls/btv2hd.m3u8",
+    "group": "卫视高清",
+    "isActive": true
+  },
+  {
+    "tid": 21,
+    "name": "北京影视高清",
+    "url": "http://ivi.bupt.edu.cn/hls/btv4hd.m3u8",
+    "group": "卫视高清",
+    "isActive": true
+  },
+  {
+    "tid": 22,
+    "name": "北京新闻高清",
+    "url": "http://ivi.bupt.edu.cn/hls/btv9hd.m3u8",
+    "group": "卫视高清",
+    "isActive": true
+  },
+  {
+    "tid": 23,
+    "name": "北京冬奥纪实高清",
+    "url": "http://ivi.bupt.edu.cn/hls/btv11hd.m3u8",
+    "group": "卫视高清",
+    "isActive": true
+  },
+  {
+    "tid": 24,
+    "name": "湖南卫视高清",
+    "url": "http://ivi.bupt.edu.cn/hls/hunanhd.m3u8",
+    "group": "卫视高清",
+    "isActive": true
+  },
+  {
+    "tid": 25,
+    "name": "江苏卫视高清",
+    "url": "http://ivi.bupt.edu.cn/hls/jshd.m3u8",
+    "group": "卫视高清",
+    "isActive": true
+  },
+  {
+    "tid": 26,
+    "name": "东方卫视高清",
+    "url": "http://ivi.bupt.edu.cn/hls/dfhd.m3u8",
+    "group": "卫视高清",
+    "isActive": true
+  },
+  {
+    "tid": 27,
+    "name": "安徽卫视高清",
+    "url": "http://ivi.bupt.edu.cn/hls/ahhd.m3u8",
+    "group": "卫视高清",
+    "isActive": true
+  },
+  {
+    "tid": 28,
+    "name": "黑龙江卫视高清",
+    "url": "http://ivi.bupt.edu.cn/hls/hljhd.m3u8",
+    "group": "卫视高清",
+    "isActive": true
+  },
+  {
+    "tid": 29,
+    "name": "辽宁卫视高清",
+    "url": "http://ivi.bupt.edu.cn/hls/lnhd.m3u8",
+    "group": "卫视高清",
+    "isActive": true
+  },
+  {
+    "tid": 30,
+    "name": "深圳卫视高清",
+    "url": "http://ivi.bupt.edu.cn/hls/szhd.m3u8",
+    "group": "卫视高清",
+    "isActive": true
+  },
+  {
+    "tid": 31,
+    "name": "广东卫视高清",
+    "url": "http://ivi.bupt.edu.cn/hls/gdhd.m3u8",
+    "group": "卫视高清",
+    "isActive": true
+  },
+  {
+    "tid": 32,
+    "name": "天津卫视高清",
+    "url": "http://ivi.bupt.edu.cn/hls/tjhd.m3u8",
+    "group": "卫视高清",
+    "isActive": true
+  },
+  {
+    "tid": 33,
+    "name": "湖北卫视高清",
+    "url": "http://ivi.bupt.edu.cn/hls/hbhd.m3u8",
+    "group": "卫视高清",
+    "isActive": true
+  },
+  {
+    "tid": 34,
+    "name": "山东卫视高清",
+    "url": "http://ivi.bupt.edu.cn/hls/sdhd.m3u8",
+    "group": "卫视高清",
+    "isActive": true
+  },
+  {
+    "tid": 35,
+    "name": "重庆卫视高清",
+    "url": "http://ivi.bupt.edu.cn/hls/cqhd.m3u8",
+    "group": "卫视高清",
+    "isActive": true
+  },
+  {
+    "tid": 36,
+    "name": "上海纪实高清",
+    "url": "http://ivi.bupt.edu.cn/hls/docuchina.m3u8",
+    "group": "卫视高清",
+    "isActive": true
+  },
+  {
+    "tid": 37,
+    "name": "金鹰纪实高清",
+    "url": "http://ivi.bupt.edu.cn/hls/gedocu.m3u8",
+    "group": "卫视高清",
+    "isActive": true
+  },
+  {
+    "tid": 38,
+    "name": "福建东南卫视高清",
+    "url": "http://ivi.bupt.edu.cn/hls/dnhd.m3u8",
+    "group": "卫视高清",
+    "isActive": true
+  },
+  {
+    "tid": 39,
+    "name": "四川卫视高清",
+    "url": "http://ivi.bupt.edu.cn/hls/schd.m3u8",
+    "group": "卫视高清",
+    "isActive": true
+  },
+  {
+    "tid": 40,
+    "name": "河北卫视高清",
+    "url": "http://ivi.bupt.edu.cn/hls/hebhd.m3u8",
+    "group": "卫视高清",
+    "isActive": true
+  },
+  {
+    "tid": 41,
+    "name": "河南卫视高清",
+    "url": "http://ivi.bupt.edu.cn/hls/hnhd.m3u8",
+    "group": "卫视高清",
+    "isActive": true
+  },
+  {
+    "tid": 42,
+    "name": "江西卫视高清",
+    "url": "http://ivi.bupt.edu.cn/hls/jxhd.m3u8",
+    "group": "卫视高清",
+    "isActive": true
+  },
+  {
+    "tid": 43,
+    "name": "广西卫视高清",
+    "url": "http://ivi.bupt.edu.cn/hls/gxhd.m3u8",
+    "group": "卫视高清",
+    "isActive": true
+  },
+  {
+    "tid": 44,
+    "name": "吉林卫视高清",
+    "url": "http://ivi.bupt.edu.cn/hls/jlhd.m3u8",
+    "group": "卫视高清",
+    "isActive": true
+  },
+  {
+    "tid": 45,
+    "name": "CETV-1高清",
+    "url": "http://ivi.bupt.edu.cn/hls/cetv1hd.m3u8",
+    "group": "卫视高清",
+    "isActive": true
+  },
+  {
+    "tid": 46,
+    "name": "海南卫视高清",
+    "url": "http://ivi.bupt.edu.cn/hls/lyhd.m3u8",
+    "group": "卫视高清",
+    "isActive": true
+  },
+  {
+    "tid": 47,
+    "name": "贵州卫视高清",
+    "url": "http://ivi.bupt.edu.cn/hls/gzhd.m3u8",
+    "group": "卫视高清",
+    "isActive": true
+  },
+  {
+    "tid": 48,
+    "name": "CCTV-1综合",
+    "url": "http://ivi.bupt.edu.cn/hls/cctv1.m3u8",
+    "group": "央视",
+    "isActive": true
+  },
+  {
+    "tid": 49,
+    "name": "CCTV-2财经",
+    "url": "http://ivi.bupt.edu.cn/hls/cctv2.m3u8",
+    "group": "央视",
+    "isActive": true
+  },
+  {
+    "tid": 50,
+    "name": "CCTV-3综艺",
+    "url": "http://ivi.bupt.edu.cn/hls/cctv3.m3u8",
+    "group": "央视",
+    "isActive": true
+  },
+  {
+    "tid": 51,
+    "name": "CCTV-4中文国际",
+    "url": "http://ivi.bupt.edu.cn/hls/cctv4.m3u8",
+    "group": "央视",
+    "isActive": true
+  },
+  {
+    "tid": 52,
+    "name": "CCTV-6电影",
+    "url": "http://ivi.bupt.edu.cn/hls/cctv6.m3u8",
+    "group": "央视",
+    "isActive": true
+  },
+  {
+    "tid": 53,
+    "name": "CCTV-7国防军事",
+    "url": "http://ivi.bupt.edu.cn/hls/cctv7.m3u8",
+    "group": "央视",
+    "isActive": true
+  },
+  {
+    "tid": 54,
+    "name": "CCTV-8电视剧",
+    "url": "http://ivi.bupt.edu.cn/hls/cctv8.m3u8",
+    "group": "央视",
+    "isActive": true
+  },
+  {
+    "tid": 55,
+    "name": "CCTV-9纪录",
+    "url": "http://ivi.bupt.edu.cn/hls/cctv9.m3u8",
+    "group": "央视",
+    "isActive": true
+  },
+  {
+    "tid": 56,
+    "name": "CCTV-10科教",
+    "url": "http://ivi.bupt.edu.cn/hls/cctv10.m3u8",
+    "group": "央视",
+    "isActive": true
+  },
+  {
+    "tid": 57,
+    "name": "CCTV-11戏曲",
+    "url": "http://ivi.bupt.edu.cn/hls/cctv11.m3u8",
+    "group": "央视",
+    "isActive": true
+  },
+  {
+    "tid": 58,
+    "name": "CCTV-12社会与法",
+    "url": "http://ivi.bupt.edu.cn/hls/cctv12.m3u8",
+    "group": "央视",
+    "isActive": true
+  },
+  {
+    "tid": 59,
+    "name": "CCTV-13新闻",
+    "url": "http://ivi.bupt.edu.cn/hls/cctv13.m3u8",
+    "group": "央视",
+    "isActive": true
+  },
+  {
+    "tid": 60,
+    "name": "CCTV-14少儿",
+    "url": "http://ivi.bupt.edu.cn/hls/cctv14.m3u8",
+    "group": "央视",
+    "isActive": true
+  },
+  {
+    "tid": 61,
+    "name": "CCTV-15音乐",
+    "url": "http://ivi.bupt.edu.cn/hls/cctv15.m3u8",
+    "group": "央视",
+    "isActive": true
+  },
+  {
+    "tid": 62,
+    "name": "CCTV-16 CGTN",
+    "url": "http://ivi.bupt.edu.cn/hls/cctv16.m3u8",
+    "group": "央视",
+    "isActive": true
+  },
+  {
+    "tid": 63,
+    "name": "CCTV-17农业农村",
+    "url": "http://ivi.bupt.edu.cn/hls/cctv17.m3u8",
+    "group": "央视",
+    "isActive": true
+  },
+  {
+    "tid": 64,
+    "name": "北京卫视",
+    "url": "http://ivi.bupt.edu.cn/hls/btv1.m3u8",
+    "group": "卫视",
+    "isActive": true
+  },
+  {
+    "tid": 65,
+    "name": "北京文艺",
+    "url": "http://ivi.bupt.edu.cn/hls/btv2.m3u8",
+    "group": "卫视",
+    "isActive": true
+  },
+  {
+    "tid": 66,
+    "name": "北京科教",
+    "url": "http://ivi.bupt.edu.cn/hls/btv3.m3u8",
+    "group": "卫视",
+    "isActive": true
+  },
+  {
+    "tid": 67,
+    "name": "北京影视",
+    "url": "http://ivi.bupt.edu.cn/hls/btv4.m3u8",
+    "group": "卫视",
+    "isActive": true
+  },
+  {
+    "tid": 68,
+    "name": "北京财经",
+    "url": "http://ivi.bupt.edu.cn/hls/btv5.m3u8",
+    "group": "卫视",
+    "isActive": true
+  },
+  {
+    "tid": 69,
+    "name": "北京生活",
+    "url": "http://ivi.bupt.edu.cn/hls/btv7.m3u8",
+    "group": "卫视",
+    "isActive": true
+  },
+  {
+    "tid": 70,
+    "name": "北京青年",
+    "url": "http://ivi.bupt.edu.cn/hls/btv8.m3u8",
+    "group": "卫视",
+    "isActive": true
+  },
+  {
+    "tid": 71,
+    "name": "北京新闻",
+    "url": "http://ivi.bupt.edu.cn/hls/btv9.m3u8",
+    "group": "卫视",
+    "isActive": true
+  },
+  {
+    "tid": 72,
+    "name": "北京卡酷少儿",
+    "url": "http://ivi.bupt.edu.cn/hls/btv10.m3u8",
+    "group": "卫视",
+    "isActive": true
+  },
+  {
+    "tid": 73,
+    "name": "北京冬奥纪实",
+    "url": "http://ivi.bupt.edu.cn/hls/btv11.m3u8",
+    "group": "卫视",
+    "isActive": true
+  },
+  {
+    "tid": 74,
+    "name": "湖南卫视",
+    "url": "http://ivi.bupt.edu.cn/hls/hunantv.m3u8",
+    "group": "卫视",
+    "isActive": true
+  },
+  {
+    "tid": 75,
+    "name": "江苏卫视",
+    "url": "http://ivi.bupt.edu.cn/hls/jstv.m3u8",
+    "group": "卫视",
+    "isActive": true
+  },
+  {
+    "tid": 76,
+    "name": "东方卫视",
+    "url": "http://ivi.bupt.edu.cn/hls/dftv.m3u8",
+    "group": "卫视",
+    "isActive": true
+  },
+  {
+    "tid": 77,
+    "name": "深圳卫视",
+    "url": "http://ivi.bupt.edu.cn/hls/sztv.m3u8",
+    "group": "卫视",
+    "isActive": true
+  },
+  {
+    "tid": 78,
+    "name": "安徽卫视",
+    "url": "http://ivi.bupt.edu.cn/hls/ahtv.m3u8",
+    "group": "卫视",
+    "isActive": true
+  },
+  {
+    "tid": 79,
+    "name": "河南卫视",
+    "url": "http://ivi.bupt.edu.cn/hls/hntv.m3u8",
+    "group": "卫视",
+    "isActive": true
+  },
+  {
+    "tid": 80,
+    "name": "陕西卫视",
+    "url": "http://ivi.bupt.edu.cn/hls/sxtv.m3u8",
+    "group": "卫视",
+    "isActive": true
+  },
+  {
+    "tid": 81,
+    "name": "吉林卫视",
+    "url": "http://ivi.bupt.edu.cn/hls/jltv.m3u8",
+    "group": "卫视",
+    "isActive": true
+  },
+  {
+    "tid": 82,
+    "name": "广东卫视",
+    "url": "http://ivi.bupt.edu.cn/hls/gdtv.m3u8",
+    "group": "卫视",
+    "isActive": true
+  },
+  {
+    "tid": 83,
+    "name": "山东卫视",
+    "url": "http://ivi.bupt.edu.cn/hls/sdtv.m3u8",
+    "group": "卫视",
+    "isActive": true
+  },
+  {
+    "tid": 84,
+    "name": "湖北卫视",
+    "url": "http://ivi.bupt.edu.cn/hls/hbtv.m3u8",
+    "group": "卫视",
+    "isActive": true
+  },
+  {
+    "tid": 85,
+    "name": "广西卫视",
+    "url": "http://ivi.bupt.edu.cn/hls/gxtv.m3u8",
+    "group": "卫视",
+    "isActive": true
+  },
+  {
+    "tid": 86,
+    "name": "河北卫视",
+    "url": "http://ivi.bupt.edu.cn/hls/hebtv.m3u8",
+    "group": "卫视",
+    "isActive": true
+  },
+  {
+    "tid": 87,
+    "name": "西藏卫视",
+    "url": "http://ivi.bupt.edu.cn/hls/xztv.m3u8",
+    "group": "卫视",
+    "isActive": true
+  },
+  {
+    "tid": 88,
+    "name": "内蒙古卫视",
+    "url": "http://ivi.bupt.edu.cn/hls/nmtv.m3u8",
+    "group": "卫视",
+    "isActive": true
+  },
+  {
+    "tid": 89,
+    "name": "青海卫视",
+    "url": "http://ivi.bupt.edu.cn/hls/qhtv.m3u8",
+    "group": "卫视",
+    "isActive": true
+  },
+  {
+    "tid": 90,
+    "name": "四川卫视",
+    "url": "http://ivi.bupt.edu.cn/hls/sctv.m3u8",
+    "group": "卫视",
+    "isActive": true
+  },
+  {
+    "tid": 91,
+    "name": "天津卫视",
+    "url": "http://ivi.bupt.edu.cn/hls/tjtv.m3u8",
+    "group": "卫视",
+    "isActive": true
+  },
+  {
+    "tid": 92,
+    "name": "山西卫视",
+    "url": "http://ivi.bupt.edu.cn/hls/sxrtv.m3u8",
+    "group": "卫视",
+    "isActive": true
+  },
+  {
+    "tid": 93,
+    "name": "辽宁卫视",
+    "url": "http://ivi.bupt.edu.cn/hls/lntv.m3u8",
+    "group": "卫视",
+    "isActive": true
+  },
+  {
+    "tid": 94,
+    "name": "厦门卫视",
+    "url": "http://ivi.bupt.edu.cn/hls/xmtv.m3u8",
+    "group": "卫视",
+    "isActive": true
+  },
+  {
+    "tid": 95,
+    "name": "新疆卫视",
+    "url": "http://ivi.bupt.edu.cn/hls/xjtv.m3u8",
+    "group": "卫视",
+    "isActive": true
+  },
+  {
+    "tid": 96,
+    "name": "黑龙江卫视",
+    "url": "http://ivi.bupt.edu.cn/hls/hljtv.m3u8",
+    "group": "卫视",
+    "isActive": true
+  },
+  {
+    "tid": 97,
+    "name": "云南卫视",
+    "url": "http://ivi.bupt.edu.cn/hls/yntv.m3u8",
+    "group": "卫视",
+    "isActive": true
+  },
+  {
+    "tid": 98,
+    "name": "江西卫视",
+    "url": "http://ivi.bupt.edu.cn/hls/jxtv.m3u8",
+    "group": "卫视",
+    "isActive": true
+  },
+  {
+    "tid": 99,
+    "name": "福建东南卫视",
+    "url": "http://ivi.bupt.edu.cn/hls/dntv.m3u8",
+    "group": "卫视",
+    "isActive": true
+  },
+  {
+    "tid": 100,
+    "name": "贵州卫视",
+    "url": "http://ivi.bupt.edu.cn/hls/gztv.m3u8",
+    "group": "卫视",
+    "isActive": true
+  },
+  {
+    "tid": 101,
+    "name": "宁夏卫视",
+    "url": "http://ivi.bupt.edu.cn/hls/nxtv.m3u8",
+    "group": "卫视",
+    "isActive": true
+  },
+  {
+    "tid": 102,
+    "name": "甘肃卫视",
+    "url": "http://ivi.bupt.edu.cn/hls/gstv.m3u8",
+    "group": "卫视",
+    "isActive": true
+  },
+  {
+    "tid": 103,
+    "name": "重庆卫视",
+    "url": "http://ivi.bupt.edu.cn/hls/cqtv.m3u8",
+    "group": "卫视",
+    "isActive": true
+  },
+  {
+    "tid": 104,
+    "name": "兵团卫视",
+    "url": "http://ivi.bupt.edu.cn/hls/bttv.m3u8",
+    "group": "卫视",
+    "isActive": true
+  },
+  {
+    "tid": 105,
+    "name": "延边卫视",
+    "url": "http://ivi.bupt.edu.cn/hls/ybtv.m3u8",
+    "group": "卫视",
+    "isActive": true
+  },
+  {
+    "tid": 106,
+    "name": "三沙卫视",
+    "url": "http://ivi.bupt.edu.cn/hls/sstv.m3u8",
+    "group": "卫视",
+    "isActive": true
+  },
+  {
+    "tid": 107,
+    "name": "海南卫视",
+    "url": "http://ivi.bupt.edu.cn/hls/lytv.m3u8",
+    "group": "卫视",
+    "isActive": true
+  },
+  {
+    "tid": 108,
+    "name": "CETV-1",
+    "url": "http://ivi.bupt.edu.cn/hls/cetv1.m3u8",
+    "group": "教育",
+    "isActive": true
+  },
+  {
+    "tid": 109,
+    "name": "CETV-3",
+    "url": "http://ivi.bupt.edu.cn/hls/cetv3.m3u8",
+    "group": "教育",
+    "isActive": true
+  },
+  {
+    "tid": 110,
+    "name": "CETV-4",
+    "url": "http://ivi.bupt.edu.cn/hls/cetv4.m3u8",
+    "group": "教育",
+    "isActive": true
+  },
+  {
+    "tid": 111,
+    "name": "山东教育",
+    "url": "http://ivi.bupt.edu.cn/hls/sdetv.m3u8",
+    "group": "教育",
+    "isActive": true
+  }
+]
