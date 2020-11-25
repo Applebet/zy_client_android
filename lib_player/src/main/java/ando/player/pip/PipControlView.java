@@ -10,14 +10,13 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import com.dueeeke.videoplayer.controller.ControlWrapper;
 import com.dueeeke.videoplayer.controller.IControlComponent;
 import com.dueeeke.videoplayer.player.VideoView;
 
 import ando.player.R;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 public class PipControlView extends FrameLayout implements IControlComponent, View.OnClickListener {
 
@@ -55,6 +54,7 @@ public class PipControlView extends FrameLayout implements IControlComponent, Vi
         if (id == R.id.btn_close) {
             PIPManager.get().stopFloatWindow();
             PIPManager.get().release();
+            PIPManager.get().clearCacheData();
         } else if (id == R.id.start_play) {
             mControlWrapper.togglePlay();
         } else if (id == R.id.btn_skip) {

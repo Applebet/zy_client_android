@@ -67,6 +67,7 @@
             android:configChanges="keyboardHidden|orientation|screenSize|screenLayout"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
+            android:theme="@style/Theme.AlphaActivity"
             android:windowSoftInputMode="stateHidden" />
 
         <activity

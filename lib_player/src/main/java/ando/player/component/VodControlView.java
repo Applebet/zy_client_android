@@ -17,9 +17,6 @@ import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import com.dueeeke.videoplayer.controller.ControlWrapper;
 import com.dueeeke.videoplayer.controller.IControlComponent;
 import com.dueeeke.videoplayer.player.VideoView;
@@ -30,13 +27,15 @@ import java.util.Locale;
 
 import ando.player.R;
 import ando.player.dialog.IPlayerCallBack;
-import ando.player.dialog.PlayerDialogFactory;
+import ando.player.dialog.DialogFactory;
 import ando.player.dialog.SimplePlayerCallBack;
 import ando.player.dialog.SpeedDialog;
 import ando.player.dialog.VideoListDialog;
 import ando.player.setting.ITheme;
 import ando.player.setting.MediaConstants;
 import ando.player.setting.Theme;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import static com.dueeeke.videoplayer.util.PlayerUtils.stringForTime;
 
@@ -95,14 +94,14 @@ public class VodControlView extends FrameLayout implements IControlComponent, Vi
         LayoutInflater.from(getContext()).inflate(getLayoutId(), this, true);
         setTheme(Theme.DEFAULT);
         mFullScreen = findViewById(R.id.fullscreen);
-        mFullScreen.setOnClickListener(this);
         mBottomContainer = findViewById(R.id.bottom_container);
         mVideoProgress = findViewById(R.id.seekBar);
-        mVideoProgress.setOnSeekBarChangeListener(this);
         mTimePercent = findViewById(R.id.player_time_percent);
         mPlayButton = findViewById(R.id.iv_play);
-        mPlayButton.setOnClickListener(this);
         mBottomProgress = findViewById(R.id.bottom_progress);
+        mFullScreen.setOnClickListener(this);
+        mVideoProgress.setOnSeekBarChangeListener(this);
+        mPlayButton.setOnClickListener(this);
 
         mFullBottomContainer = findViewById(R.id.bottom_container_vod_full);
         mFullPlayButton = findViewById(R.id.iv_vod_full_play);
@@ -304,17 +303,8 @@ public class VodControlView extends FrameLayout implements IControlComponent, Vi
                 mBottomProgress.setSecondaryProgress(percent * 10);
             }
         }
-
-        final String t = String.format(Locale.getDefault(), getContext().getString(R.string.str_player_time_percent),
-                stringForTime(position), stringForTime(duration));
-        if (mTimePercent != null) {
-            mTimePercent.setText(t);
-        }
-        if (mFullTimePercent != null) {
-            mFullTimePercent.setText(t);
-        }
+        setRealTimePercent(position, duration);
     }
-
 
     @Override
     public void onLockStateChanged(boolean isLocked) {
@@ -334,12 +324,12 @@ public class VodControlView extends FrameLayout implements IControlComponent, Vi
             //隐藏掉其他所有遮盖物
             mControlWrapper.hide();
             //选集
-            mListDialog = PlayerDialogFactory.INSTANCE.createVideoListDialog(this, true, mVideoList,mCurrPosition, mCallBack);
+            mListDialog = DialogFactory.INSTANCE.createVideoListDialog(this, true, mVideoList, mCurrPosition, mCallBack);
         } else if (id == R.id.tv_vod_full_speed) {
             //隐藏掉其他所有遮盖物
             mControlWrapper.hide();
 
-            mSpeedDialog = PlayerDialogFactory.INSTANCE.createFullSpeedDialog(
+            mSpeedDialog = DialogFactory.INSTANCE.createFullSpeedDialog(
                     this, true, mSpeed,
                     mSpeedDialogTheme, new SimplePlayerCallBack() {
                         @Override
@@ -370,7 +360,7 @@ public class VodControlView extends FrameLayout implements IControlComponent, Vi
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
         long duration = mControlWrapper.getDuration();
-        long newPosition = (duration * seekBar.getProgress()) / getRealVideoProgress().getMax();
+        long newPosition = (duration * getRealVideoProgress().getProgress()) / getRealVideoProgress().getMax();
         mControlWrapper.seekTo((int) newPosition);
         mIsDragging = false;
         mControlWrapper.startProgress();
@@ -385,9 +375,7 @@ public class VodControlView extends FrameLayout implements IControlComponent, Vi
 
         long duration = mControlWrapper.getDuration();
         long newPosition = (duration * progress) / getRealVideoProgress().getMax();
-        if (getRealTimePercent() != null) {
-            getRealTimePercent().setText(stringForTime((int) newPosition));
-        }
+        setRealTimePercent((int) newPosition, (int) duration);
     }
 
     @Override
@@ -412,19 +400,23 @@ public class VodControlView extends FrameLayout implements IControlComponent, Vi
         return checkFullScreen() ? mFullVideoProgress : mVideoProgress;
     }
 
-    private TextView getRealTimePercent() {
-        return checkFullScreen() ? mFullTimePercent : mTimePercent;
-    }
-
     public void dismissDialogs() {
         if (mListDialog != null) {
             mListDialog.dismiss();
-            mListDialog=null;
+            mListDialog = null;
         }
         if (mSpeedDialog != null) {
             mSpeedDialog.dismiss();
-            mSpeedDialog=null;
+            mSpeedDialog = null;
         }
+    }
+
+    private void setRealTimePercent(int position, int duration) {
+        final TextView tvTimePercent = checkFullScreen() ? mFullTimePercent : mTimePercent;
+        tvTimePercent.setText(
+                String.format(Locale.getDefault(), getContext().
+                        getString(R.string.str_player_time_percent), stringForTime(position), stringForTime(duration))
+        );
     }
 
     public void setTheme(Theme theme) {

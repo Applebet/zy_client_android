@@ -22,7 +22,6 @@ class VideoTvActivity : BaseMediaActivity() {
     override fun initView() {
         super.initView()
         StatusBarUtils.setStatusBarColor(window, Color.BLACK, 0)
-        val sourceModel = intent.getSerializableExtra(TV_BEAN) as? SourceModel ?: SourceModel()
 
         videoContainer = findViewById(R.id.playerContainer)
         mTvName = findViewById(R.id.tv_name)
@@ -33,13 +32,16 @@ class VideoTvActivity : BaseMediaActivity() {
         videoController?.init(this, true)
 
         //小窗情况下 缓存请求数据 Bundle
-        if (mVideoSource == null) {
-            videoController?.getPipCacheData().let {
-                mVideoSource = it ?: VideoSource(name = sourceModel.name, tvUrl = sourceModel.url, group = sourceModel.group)
-            }
-        } else {//重置
-            videoController?.setPipCacheData(VideoSource(name = sourceModel.name, tvUrl = sourceModel.url, group = sourceModel.group))
+        val sourceModel = intent.getSerializableExtra(TV_BEAN) as? SourceModel
+        if (sourceModel != null) {
+            mVideoSource = VideoSource(name = sourceModel.name, tvUrl = sourceModel.url, group = sourceModel.group)
         }
+        if (mVideoSource == null) {
+            mVideoSource = videoController?.getPipCacheData()
+        } else {//重置
+            videoController?.setPipCacheData(mVideoSource)
+        }
+
         videoController?.setRecoverActivity(VideoTvActivity::class.java)
         videoContainer.addView(videoController?.getPlayer())
     }

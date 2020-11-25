@@ -197,7 +197,7 @@ class VideoController {
             overlay(context as Activity, onGranted = {
                 pipManager?.startFloatWindow()
                 pipManager?.resume()
-                (context as Activity).finish()
+                (context as? Activity)?.finish()
             })
         }
 
@@ -240,7 +240,6 @@ class VideoController {
 
     fun onBackPressed(): Boolean {
         if (pipManager != null && pipManager?.onBackPressed() == true) {
-            pipManager?.clearCacheData()
             return false
         }
         if (videoPlayer.isFullScreen) {
@@ -362,6 +361,8 @@ class VideoController {
 
     fun getPipCacheData(): VideoSource? =
         pipManager?.cacheData?.getSerializable("pipCache") as? VideoSource
+
+    fun clearPipCacheData() = pipManager?.clearCacheData()
 
     //History -> HistoryDBUtils
     //------------------------------------------------

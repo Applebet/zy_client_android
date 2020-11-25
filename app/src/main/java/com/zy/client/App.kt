@@ -80,7 +80,7 @@ class App : Application() {
     }
 
     fun exitSys() {
-        PIPManager.get()?.clearCacheData()
+        //PIPManager.get()?.clearCacheData()
     }
 
 }
