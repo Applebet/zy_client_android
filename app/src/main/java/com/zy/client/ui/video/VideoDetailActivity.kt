@@ -245,7 +245,10 @@ class VideoDetailActivity : BaseMediaActivity() {
                 //名字
                 tvName.text = name
                 //导演
-                tvActor.text = "导演: $actor"
+                tvDirector.text = "导演: $director"
+                tvDirector.visibleOrGone(director?.isNotBlank() == true)
+                //演员
+                tvActor.text = "演员: $actor"
                 tvActor.visibleOrGone(actor?.isNotBlank() == true)
                 //语言
                 tvLanguage.text = "语言: $lang"

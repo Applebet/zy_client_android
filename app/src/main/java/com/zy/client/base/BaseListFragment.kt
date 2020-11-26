@@ -25,6 +25,7 @@ abstract class BaseListFragment<T, H : BaseViewHolder> : BaseFragment() {
     private lateinit var mStatusView: LoaderLayout
     private lateinit var mSwipeRefresh: SwipeRefreshLayout
     protected lateinit var mRvList: RecyclerView
+
     //
     private var mCurrPage: Int = 1
 
@@ -33,6 +34,10 @@ abstract class BaseListFragment<T, H : BaseViewHolder> : BaseFragment() {
             loadMoreModule.run {
                 isAutoLoadMore = true
                 setOnLoadMoreListener {
+                    if (mSwipeRefresh.isRefreshing) {
+                        loadMoreComplete()
+                        return@setOnLoadMoreListener
+                    }
                     mCurrPage++
                     requestData()
                 }
@@ -54,7 +59,13 @@ abstract class BaseListFragment<T, H : BaseViewHolder> : BaseFragment() {
 
         mSwipeRefresh = rootView.findViewById(R.id.swipe_refresh)
         mSwipeRefresh.setColorSchemeResources(R.color.color_main_theme)
-        mSwipeRefresh.setOnRefreshListener { initData() }
+        mSwipeRefresh.setOnRefreshListener {
+            if (getListAdapter().loadMoreModule.isLoading) {
+                mSwipeRefresh.isRefreshing = false
+                return@setOnRefreshListener
+            }
+            initData()
+        }
 
         mRvList.run {
             adapter = mAdapter

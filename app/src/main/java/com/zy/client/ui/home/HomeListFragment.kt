@@ -85,14 +85,8 @@ class HomeListFragment : BaseLazyListFragment<VideoSource, BaseViewHolder>() {
     }
 
     override fun getListLayoutManager(): RecyclerView.LayoutManager {
-        return if (isNew())
-            LinearLayoutManager(requireActivity())
-        else GridLayoutManager(
-            requireActivity(),
-            HOME_SPAN_COUNT,
-            RecyclerView.VERTICAL,
-            false
-        )
+        return if (isNew()) LinearLayoutManager(requireActivity())
+        else GridLayoutManager(requireActivity(), HOME_SPAN_COUNT, RecyclerView.VERTICAL, false)
     }
 
     override fun loadData(page: Int, callback: (list: List<VideoSource>?) -> Unit) {
@@ -110,13 +104,16 @@ class HomeListFragment : BaseLazyListFragment<VideoSource, BaseViewHolder>() {
             else R.layout.item_home_channel_grid
         ) {
         override fun convert(holder: BaseViewHolder, item: VideoSource) {
-            if (!isNew()) {
+            holder.setText(R.id.tvTitle, item.name.noNull("--"))
+            if (isNew()) {
+                holder.setText(R.id.tvTime, item.updateTime.noNull())
+                holder.setText(R.id.tvProgressName, item.note.noNull("--"))
+                holder.setText(R.id.tvTypeName, item.type.noNull("其它影片"))
+
+            } else {
+                holder.setText(R.id.tvTitle, item.name.noNull("--"))
                 loadImage(holder.getView(R.id.ivPiv), item.pic)
             }
-            holder.setText(
-                R.id.tvTitle,
-                "${item.name.noNull("--")} \n ${item.type}  ${item.updateTime}"
-            )
         }
     }
 

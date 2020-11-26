@@ -23,6 +23,7 @@ import com.zy.client.bean.VideoSource
 import com.zy.client.common.getScreenShotPath
 import com.zy.client.database.HistoryDBUtils
 import com.zy.client.utils.PermissionManager.overlay
+import com.zy.client.utils.PermissionManager.proceedStoragePermission
 import com.zy.client.utils.ext.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -175,18 +176,20 @@ class VideoController {
 
         //截屏
         controller.setScreenShotListener {
-            val bitmap = videoPlayer.doScreenShot()
-            val timestamp = SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault()).format(Date())
-            insertBitmap(
-                context, bitmap,
-                createContentValues("screenshot_$timestamp", relativePath = getScreenShotPath())
-            ) {
-                context.toastShort("保存截图成功!")
+            proceedStoragePermission((context as Activity)) {
+                if (it) {
+                    val timestamp = SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault()).format(Date())
+                    insertBitmap(
+                        context, videoPlayer.doScreenShot(),
+                        createContentValues("screenshot_$timestamp", relativePath = getScreenShotPath())
+                    ) {
+                        context.toastShort("保存截图成功!")
+                    }
+                }
             }
         }
 
         initListeners()
-
         block.invoke()
     }
 

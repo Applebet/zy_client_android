@@ -49,10 +49,8 @@ class HomeFragment : BaseFragment() {
         //用户点了禁止获取权限，并勾选不再提示 , 建议做成弹窗提示并提供权限申请页面的跳转
         if (!shouldShow && !hasStoragePermission) {
             toastLong("""请到"设置"中开启"存储"权限! """)
-            rootView.postDelayed(Runnable {
-                val intent = PermissionManager.createAppDetailSettingIntent(baseActivity)
-                baseActivity.startActivity(intent)
-            }, 500)
+            val intent = PermissionManager.createAppDetailSettingIntent(baseActivity)
+            baseActivity.startActivity(intent)
             return
         }
 

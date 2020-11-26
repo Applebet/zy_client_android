@@ -75,14 +75,14 @@ public class IjkVideoView extends BaseIjkVideoView<BaseIjkPlayer> {
             mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "rtsp_transport", "tcp");//tcp传输数据
             mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "rtsp_flags", "prefer_tcp");
             mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "allowed_media_types", "video");//根据媒体类型来配置
-            mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "timeout", 20000);
-            mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "buffer_size", 2048);
+            mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "timeout", 30000);
+            mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "buffer_size", 2048L);
 
             //input buffer:don't limit the input buffer size (useful with realtime streams)
             mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "infbuf", 1);//无限读, 是否限制输入缓存数 30
             mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "analyzemaxduration", 100L);
             //播放前的探测Size，默认是1M, 改小一点会出画面更快  1024 * 10
-            mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "probesize", 10240L);//10240 200
+            mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "probesize", 10240L);//10240 20480
             mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "flush_packets", 1L);
             //关闭播放器缓冲，这个必须关闭，否则会出现播放一段时间后，一直卡主，控制台打印 FFP_MSG_BUFFERING_START
             //pause output until enough packets have been read after stalling
@@ -93,13 +93,13 @@ public class IjkVideoView extends BaseIjkVideoView<BaseIjkPlayer> {
             mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_CODEC, "skip_loop_filter", 48L);//默认值48
 
             //max buffer size should be pre-read：默认为15*1024*1024
-            mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "max-buffer-size", 45 * 1024 * 1024);//最大缓存数
-            mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "min-frames", 20);//默认最小帧数2
+            mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "max-buffer-size", 60 * 1024 * 1024);//最大缓存数
+            mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "min-frames", 60);//默认最小帧数2
             //设置seekTo能够快速seek到指定位置并播放
             //解决m3u8文件拖动问题 比如:一个3个多少小时的音频文件，开始播放几秒中，
             //然后拖动到2小时左右的时间，要loading 10分钟 fastseek , nobuffer
             mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "fflags", "fastseek");
-            //分析码流时长:默认1024*1000
+            //分析码流时长 默认 1024*1000
             mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "analyzedmaxduration", 100L);
             ///rtsp 问题 <<<<<<<<<<
         } else {
@@ -126,11 +126,11 @@ public class IjkVideoView extends BaseIjkVideoView<BaseIjkPlayer> {
         mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "mediacodec-hevc", 0);
 
         //设置丢帧 音视同步, 太卡可以尝试丢帧  drop frames when cpu is too slow：0-120
-        mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "framedrop", 3L);
+        mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "framedrop", 1L);
         //变速不变调 0 or 1
         mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "soundtouch", 1);
         //拖动seek问题稍微修复 但是不可避免seek不准确的问题 1开启;0关闭
-        // 某些视频在SeekTo的时候，会跳回到拖动前的位置，这是因为视频的关键帧的问题，
+        //某些视频在SeekTo的时候，会跳回到拖动前的位置，这是因为视频的关键帧的问题，
         //通俗一点就是 FFMPEG 不兼容，视频压缩过于厉害，seek只支持关键帧，出现这个情况就是原始的视频文件中i 帧比较少
         mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "enable-accurate-seek", 1);
         //加载本地 m3u8 问题修复

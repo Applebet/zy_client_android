@@ -159,6 +159,9 @@ fun createContentValues(
     }
 }
 
+/**
+ * android.permission.WRITE_EXTERNAL_STORAGE
+ */
 fun insertBitmap(
     context: Context,
     bitmap: Bitmap?,

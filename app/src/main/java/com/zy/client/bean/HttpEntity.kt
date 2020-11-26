@@ -26,6 +26,8 @@ data class VideoSource(
     val updateTime: String? = "",
     //图片
     val pic: String? = "",
+    //更新至08集
+    val note: String? = "",
     //Tv Url
     val tvUrl: String? = "",
     //Tv group

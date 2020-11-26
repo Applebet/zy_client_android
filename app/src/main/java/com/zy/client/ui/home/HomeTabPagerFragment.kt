@@ -26,14 +26,11 @@ class HomeTabPagerFragment : BaseTabPagerFragment() {
             //val openFL = SPUtils.get().getBoolean(SP_OPEN_FL)
             val openFL = OPEN_FL
             if (mClassifyList.isNotEmpty()) mClassifyList.clear()
-            //mClassifyList.add(Classify(HOME_LIST_TID_NEW, "最新"))
+            mClassifyList.add(Classify(HOME_LIST_TID_NEW, "最新"))
             mClassifyList.addAll(it.classifyList.filter { classify ->
                 !classify.id.isNullOrBlank() && !classify.name.isNullOrBlank()
-                        &&//筛去福利
-                        (if (openFL) true else (!classify.name.contains("福利") && !classify.name.contains(
-                            "伦理"
-                        )
-                                && !classify.name.contains("倫")))
+                        && (if (openFL) true else (!classify.name.contains("福利") && !classify.name.contains("伦理")
+                        && !classify.name.contains("倫")))
             } as ArrayList<Classify>)
             viewpager.adapter = ViewPageAdapter()
             viewpager.offscreenPageLimit = 100

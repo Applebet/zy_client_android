@@ -12,6 +12,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.zy.client.utils.ext.toastLong
 
 /**
  * <pre>
@@ -243,6 +244,31 @@ object PermissionManager {
             localIntent.putExtra("com.android.settings.ApplicationPkgName", context.packageName)
         }
         return localIntent
+    }
+
+    /////////////////////////
+
+     fun proceedStoragePermission(activity: Activity, block: (result: Boolean) -> Unit) {
+        val hasStoragePermission =
+            havePermissions(activity, *PERMISSIONS_STORAGE)
+
+        val shouldShow = checkShowRationale(
+            activity,
+            *PERMISSIONS_STORAGE
+        )
+
+        //用户点了禁止获取权限，并勾选不再提示 , 建议做成弹窗提示并提供权限申请页面的跳转
+        if (!shouldShow && !hasStoragePermission) {
+            activity.toastLong("""请到"设置"中开启"存储"权限! """)
+            val intent = createAppDetailSettingIntent(activity)
+            activity.startActivity(intent)
+            return
+        }
+
+        if (!hasStoragePermission) {
+            verifyStoragePermissions(activity)
+        }
+        block.invoke(true)
     }
 
 }

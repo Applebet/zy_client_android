@@ -21,11 +21,12 @@ object NetSourceParser {
                     if (video is JSONObject) {
                         videoList.add(
                             VideoSource(
-                                updateTime = video.getString("last"),
-                                id = video.getString("id"),
-                                tid = video.getString("tid"),
-                                name = video.getString("name"),
-                                type = video.getString("type")
+                                updateTime = video.optString("last"),
+                                id = video.optString("id"),
+                                tid = video.optString("tid"),
+                                name = video.optString("name"),
+                                note = video.optString("note"),
+                                type = video.optString("type")
                             )
                         )
                     } else if (video is JSONArray) {
@@ -33,11 +34,12 @@ object NetSourceParser {
                             val json = video.getJSONObject(i)
                             videoList.add(
                                 VideoSource(
-                                    updateTime = json.getString("last"),
-                                    id = json.getString("id"),
-                                    tid = json.getString("tid"),
-                                    name = json.getString("name"),
-                                    type = json.getString("type")
+                                    updateTime = json.optString("last"),
+                                    id = json.optString("id"),
+                                    tid = json.optString("tid"),
+                                    name = json.optString("name"),
+                                    note = json.optString("note"),
+                                    type = json.optString("type")
                                 )
                             )
                         }
@@ -49,12 +51,12 @@ object NetSourceParser {
                     val classList = getJSONObject("class").getJSONArray("ty")
                     for (i in 0 until classList.length()) {
                         val json = classList.getJSONObject(i)
-                        val content = json.getString("content")
+                        val content = json.optString("content")
                         if (!content.isNullOrBlank()) {
                             classifyList.add(
                                 Classify(
-                                    json.getString("id"),
-                                    json.getString("content")
+                                    json.optString("id"),
+                                    json.optString("content")
                                 )
                             )
                         }
@@ -77,12 +79,16 @@ object NetSourceParser {
                 jsonObject?.getJSONObject("rss")?.getJSONObject("list")?.optJSONArray("video")
                     ?: return arrayListOf()
             for (i in 0 until videos.length()) {
-                val json = videos.getJSONObject(i)
+                val video = videos.getJSONObject(i)
                 videoList.add(
                     VideoSource(
-                        id = json.optString("id"),
-                        name = json.optString("name"),
-                        pic = json.optString("pic")
+                        updateTime = video.optString("last"),
+                        id = video.optString("id"),
+                        tid = video.optString("tid"),
+                        name = video.optString("name"),
+                        type = video.optString("type"),
+                        note = video.optString("note"),
+                        pic = video.optString("pic")
                     )
                 )
             }
@@ -103,9 +109,13 @@ object NetSourceParser {
                 if (video is JSONObject) {
                     videoList.add(
                         VideoSource(
+                            updateTime = video.optString("last"),
                             id = video.optString("id"),
+                            tid = video.optString("tid"),
                             name = video.optString("name"),
-                            type = video.optString("type")
+                            type = video.optString("type"),
+                            note = video.optString("note"),
+                            pic = video.optString("pic")
                         )
                     )
                 } else if (video is JSONArray) {
@@ -113,9 +123,13 @@ object NetSourceParser {
                         val json = video.getJSONObject(i)
                         videoList.add(
                             VideoSource(
+                                updateTime = json.optString("last"),
                                 id = json.optString("id"),
+                                tid = json.optString("tid"),
                                 name = json.optString("name"),
-                                type = json.optString("type")
+                                type = json.optString("type"),
+                                note = json.optString("note"),
+                                pic = json.optString("pic")
                             )
                         )
                     }
