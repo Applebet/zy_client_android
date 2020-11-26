@@ -18,8 +18,9 @@ const val ID = "id"
 const val TV_BEAN = "tv"
 
 const val SP_OPEN_FL = "sp_open_fl"
-const val OPEN_FL = false
+const val OPEN_FL = true
 
+const val HOME_LIST_TID_NEW = "new"
 const val HOME_SPAN_COUNT = 3
 const val VIDEO_VIEW_HEIGHT = R.dimen.dp_210
 

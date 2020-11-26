@@ -3,6 +3,7 @@ package ando.player.service;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -83,6 +84,7 @@ public class DownloadService extends Service {
     }
 
     private void toastShort(String msg) {
+        Log.e("123", "Step -> " + msg);
         Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
     }
 

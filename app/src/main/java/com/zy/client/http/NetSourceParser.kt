@@ -10,12 +10,11 @@ import org.json.JSONObject
 
 object NetSourceParser {
 
-    //以下为解析数据
     fun parseHomeData(data: String?): HomeData? {
         try {
             if (data == null) return null
             val jsonObject = Utils.xmlToJson(data)?.toJson()
-            jsonObject?.getJSONObject("rss")?.run {
+            jsonObject?.optJSONObject("rss")?.run {
                 val videoList = ArrayList<VideoSource>()
                 val video = getJSONObject("list").get("video")
                 try {
@@ -74,14 +73,16 @@ object NetSourceParser {
             if (data == null) return arrayListOf()
             val jsonObject = Utils.xmlToJson(data)?.toJson()
             val videoList = ArrayList<VideoSource>()
-            val videos = jsonObject?.getJSONObject("rss")?.getJSONObject("list")?.optJSONArray("video") ?: return arrayListOf()
+            val videos =
+                jsonObject?.getJSONObject("rss")?.getJSONObject("list")?.optJSONArray("video")
+                    ?: return arrayListOf()
             for (i in 0 until videos.length()) {
                 val json = videos.getJSONObject(i)
                 videoList.add(
                     VideoSource(
-                        id = json.getString("id"),
-                        name = json.getString("name"),
-                        pic = json.getString("pic")
+                        id = json.optString("id"),
+                        name = json.optString("name"),
+                        pic = json.optString("pic")
                     )
                 )
             }
@@ -102,9 +103,9 @@ object NetSourceParser {
                 if (video is JSONObject) {
                     videoList.add(
                         VideoSource(
-                            id = video.getString("id"),
-                            name = video.getString("name"),
-                            type = video.getString("type")
+                            id = video.optString("id"),
+                            name = video.optString("name"),
+                            type = video.optString("type")
                         )
                     )
                 } else if (video is JSONArray) {
@@ -112,9 +113,9 @@ object NetSourceParser {
                         val json = video.getJSONObject(i)
                         videoList.add(
                             VideoSource(
-                                id = json.getString("id"),
-                                name = json.getString("name"),
-                                type = json.getString("type")
+                                id = json.optString("id"),
+                                name = json.optString("name"),
+                                type = json.optString("type")
                             )
                         )
                     }
@@ -133,7 +134,8 @@ object NetSourceParser {
             val jsonObject = Utils.xmlToJson(data)?.toJson()
             Log.e("123", "parseDetailData = ${jsonObject.toString()}")
             val videoInfo =
-                jsonObject?.optJSONObject("rss")?.optJSONObject("list")?.optJSONObject("video") ?: return null
+                jsonObject?.optJSONObject("rss")?.optJSONObject("list")?.optJSONObject("video")
+                    ?: return null
             val dd = videoInfo.getJSONObject("dl").get("dd")
             var videoList: ArrayList<Video>? = null
             if (dd is JSONObject) {
@@ -148,7 +150,7 @@ object NetSourceParser {
                     }.toMutableList() as ArrayList<Video>? ?: arrayListOf()
             } else if (dd is JSONArray) {
                 for (i in 0 until dd.length()) {
-                    val list = dd.optJSONObject(i)?.getString("content")?.split("#")
+                    val list = dd.optJSONObject(i)?.optString("content")?.split("#")
                         ?.map {
                             val split = it.split("$")
                             if (split.size >= 2) {
@@ -167,17 +169,17 @@ object NetSourceParser {
                 }
             }
             return VideoDetail(
-                videoInfo.getString("id"),
-                videoInfo.getString("tid"),
-                videoInfo.getString("name"),
-                videoInfo.getString("type"),
-                videoInfo.getString("lang"),
-                videoInfo.getString("area"),
-                videoInfo.getString("pic"),
-                videoInfo.getString("year"),
-                videoInfo.getString("actor"),
-                videoInfo.getString("director"),
-                videoInfo.getString("des"),
+                videoInfo.optString("id"),
+                videoInfo.optString("tid"),
+                videoInfo.optString("name"),
+                videoInfo.optString("type"),
+                videoInfo.optString("lang"),
+                videoInfo.optString("area"),
+                videoInfo.optString("pic"),
+                videoInfo.optString("year"),
+                videoInfo.optString("actor"),
+                videoInfo.optString("director"),
+                videoInfo.optString("des"),
                 videoList,
                 sourceKey
             )
@@ -196,7 +198,7 @@ object NetSourceParser {
                 jsonObject?.optJSONObject("rss")?.optJSONObject("list")?.optJSONObject("video")
 
             return video?.let { v ->
-                v.getJSONObject("dl").getJSONObject("dd").getString("content").split("#")
+                v.getJSONObject("dl").getJSONObject("dd").optString("content").split("#")
                     .map {
                         val split = it.split("$")
                         if (split.size >= 2) {

@@ -1,8 +1,11 @@
 package com.zy.client.ui.home
 
+import android.graphics.Rect
 import android.os.Bundle
+import android.view.View
 import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.zy.client.R
@@ -14,6 +17,7 @@ import com.zy.client.http.repo.CommonRepository
 import com.zy.client.base.BaseLazyListFragment
 import com.zy.client.bean.VideoSource
 import com.zy.client.common.AppRouter
+import com.zy.client.common.HOME_LIST_TID_NEW
 import com.zy.client.common.HOME_SPAN_COUNT
 import com.zy.client.utils.Utils
 import com.zy.client.utils.ext.loadImage
@@ -25,7 +29,6 @@ import com.zy.client.utils.ext.loadImage
  */
 class HomeListFragment : BaseLazyListFragment<VideoSource, BaseViewHolder>() {
 
-    private lateinit var mRvList: RecyclerView
     private lateinit var source: CommonRepository
     private lateinit var tid: String
 
@@ -43,15 +46,30 @@ class HomeListFragment : BaseLazyListFragment<VideoSource, BaseViewHolder>() {
         tid = arguments?.getString("tid").noNull()
     }
 
+
     override fun initView() {
         super.initView()
-        mRvList = rootView.findViewById(R.id.rv_list)
-        mRvList.addItemDecoration(
-            GridDividerItemDecoration(
-                Utils.dp2px(12.0f),
-                true
+
+        if (isNew()) {
+            mRvList.addItemDecoration(object : RecyclerView.ItemDecoration() {
+                override fun getItemOffsets(
+                    outRect: Rect,
+                    view: View,
+                    parent: RecyclerView,
+                    state: RecyclerView.State
+                ) {
+                    super.getItemOffsets(outRect, view, parent, state)
+                    outRect.set(10, 10, 10, 10)
+                }
+            })
+        } else {
+            mRvList.addItemDecoration(
+                GridDividerItemDecoration(
+                    Utils.dp2px(12.0f),
+                    true
+                )
             )
-        )
+        }
     }
 
     override fun getListAdapter(): BaseLoadMoreAdapter<VideoSource, BaseViewHolder> {
@@ -67,7 +85,14 @@ class HomeListFragment : BaseLazyListFragment<VideoSource, BaseViewHolder>() {
     }
 
     override fun getListLayoutManager(): RecyclerView.LayoutManager {
-        return GridLayoutManager(requireActivity(), HOME_SPAN_COUNT, RecyclerView.VERTICAL, false)
+        return if (isNew())
+            LinearLayoutManager(requireActivity())
+        else GridLayoutManager(
+            requireActivity(),
+            HOME_SPAN_COUNT,
+            RecyclerView.VERTICAL,
+            false
+        )
     }
 
     override fun loadData(page: Int, callback: (list: List<VideoSource>?) -> Unit) {
@@ -76,11 +101,22 @@ class HomeListFragment : BaseLazyListFragment<VideoSource, BaseViewHolder>() {
         }
     }
 
+    private fun isNew() = (tid == HOME_LIST_TID_NEW)
+
     //首页频道的适配器
-    inner class HomeChannelAdapter : BaseLoadMoreAdapter<VideoSource, BaseViewHolder>(R.layout.item_home_channel) {
+    inner class HomeChannelAdapter :
+        BaseLoadMoreAdapter<VideoSource, BaseViewHolder>(
+            if (isNew()) R.layout.item_home_channel
+            else R.layout.item_home_channel_grid
+        ) {
         override fun convert(holder: BaseViewHolder, item: VideoSource) {
-            holder.setText(R.id.tvTitle, item.name.noNull("--"))
-            loadImage(holder.getView(R.id.ivPiv), item.pic)
+            if (!isNew()) {
+                loadImage(holder.getView(R.id.ivPiv), item.pic)
+            }
+            holder.setText(
+                R.id.tvTitle,
+                "${item.name.noNull("--")} \n ${item.type}  ${item.updateTime}"
+            )
         }
     }
 

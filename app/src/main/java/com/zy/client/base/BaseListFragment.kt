@@ -23,9 +23,11 @@ abstract class BaseListFragment<T, H : BaseViewHolder> : BaseFragment() {
 
     private lateinit var mTvTitle: TextView
     private lateinit var mStatusView: LoaderLayout
-    private lateinit var mRvList: RecyclerView
     private lateinit var mSwipeRefresh: SwipeRefreshLayout
+    protected lateinit var mRvList: RecyclerView
+    //
     private var mCurrPage: Int = 1
+
     private val mAdapter: BaseQuickAdapter<T, H> by lazy {
         getListAdapter().apply {
             loadMoreModule.run {

@@ -4,6 +4,7 @@ import com.lzy.okgo.OkGo
 import com.lzy.okgo.callback.StringCallback
 import com.lzy.okgo.model.Response
 import com.zy.client.bean.*
+import com.zy.client.common.HOME_LIST_TID_NEW
 import com.zy.client.http.NetSourceParser.parseDetailData
 import com.zy.client.http.NetSourceParser.parseDownloadData
 import com.zy.client.http.NetSourceParser.parseHomeChannelData
@@ -47,7 +48,10 @@ class CommonRepository(val req: CommonRequest) : IRepository {
         tid: String,
         callback: (t: List<VideoSource>?) -> Unit
     ) {
-        OkGo.get<String>(if (tid == "new") "${req.baseUrl}?ac=videolist&pg=$page" else "${req.baseUrl}?ac=videolist&t=$tid&pg=$page")
+        OkGo.get<String>(
+            if (tid == HOME_LIST_TID_NEW) "${req.baseUrl}?pg=$page"
+            else "${req.baseUrl}?ac=videolist&t=$tid&pg=$page"
+        )
             .tag(req.key)
             .execute(object : StringCallback() {
                 override fun onSuccess(response: Response<String>?) {

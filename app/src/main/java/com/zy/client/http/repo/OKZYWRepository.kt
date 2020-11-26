@@ -7,6 +7,7 @@ import com.zy.client.bean.DownloadData
 import com.zy.client.bean.HomeData
 import com.zy.client.bean.VideoDetail
 import com.zy.client.bean.VideoSource
+import com.zy.client.common.HOME_LIST_TID_NEW
 import com.zy.client.http.NetSourceParser.parseDetailData
 import com.zy.client.http.NetSourceParser.parseDownloadData
 import com.zy.client.http.NetSourceParser.parseHomeChannelData
@@ -53,7 +54,7 @@ class OKZYWRepository(
         tid: String,
         callback: (t: List<VideoSource>?) -> Unit
     ) {
-        OkGo.get<String>(if (tid == "new") "$baseUrl?ac=videolist&pg=$page" else "$baseUrl?ac=videolist&t=$tid&pg=$page")
+        OkGo.get<String>(if (tid == HOME_LIST_TID_NEW) "$baseUrl?ac=videolist&pg=$page" else "$baseUrl?ac=videolist&t=$tid&pg=$page")
             .tag(key)
             .execute(object : StringCallback() {
                 override fun onSuccess(response: Response<String>?) {

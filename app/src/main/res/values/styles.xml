@@ -35,7 +35,7 @@
         <item name="itemTextAppearanceActive">@style/BottomNavigationItemViewText</item>
 
         <!--  阴影效果: https://developer.android.com/training/material/shadows-clipping -->
-        <item name="elevation">0dp</item>
+        <item name="elevation">@dimen/dp_5</item>
 
         <!-- 如果定义了不同图片进行切换,而不只是简单的改变颜色, 需要代码中设置: BottomNavigationItemView.itemIconTintList = null -->
 

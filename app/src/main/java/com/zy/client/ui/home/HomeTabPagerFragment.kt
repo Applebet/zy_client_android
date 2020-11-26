@@ -4,6 +4,7 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.tabs.TabLayout
 import com.zy.client.bean.Classify
 import com.zy.client.base.BaseTabPagerFragment
+import com.zy.client.common.HOME_LIST_TID_NEW
 import com.zy.client.common.OPEN_FL
 import com.zy.client.views.loader.LoadState
 import kotlinx.android.synthetic.main.fragment_tab_pager.*
@@ -24,13 +25,13 @@ class HomeTabPagerFragment : BaseTabPagerFragment() {
             }
             //val openFL = SPUtils.get().getBoolean(SP_OPEN_FL)
             val openFL = OPEN_FL
-            mClassifyList.clear()
-            mClassifyList.add(Classify("new", "最新"))
+            if (mClassifyList.isNotEmpty()) mClassifyList.clear()
+            //mClassifyList.add(Classify(HOME_LIST_TID_NEW, "最新"))
             mClassifyList.addAll(it.classifyList.filter { classify ->
-                !classify.id.isNullOrBlank() && !classify.name.isNullOrBlank() &&
-                        //筛去福利
+                !classify.id.isNullOrBlank() && !classify.name.isNullOrBlank()
+                        &&//筛去福利
                         (if (openFL) true else (!classify.name.contains("福利") && !classify.name.contains(
-                                "伦理"
+                            "伦理"
                         )
                                 && !classify.name.contains("倫")))
             } as ArrayList<Classify>)
