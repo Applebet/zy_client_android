@@ -16,6 +16,7 @@
             android:id="@+id/iv_play"
             android:layout_width="@dimen/dimen_player_controller_height"
             android:layout_height="@dimen/dimen_player_controller_height"
+            android:scaleType="centerInside"
             android:padding="@dimen/dimen_player_controller_icon_padding"
             android:src="@drawable/player_selector_play_button" />
 
@@ -24,6 +25,7 @@
             android:layout_width="@dimen/dimen_player_controller_height"
             android:layout_height="@dimen/dimen_player_controller_height"
             android:padding="@dimen/dimen_player_controller_icon_padding"
+            android:scaleType="centerCrop"
             android:src="@drawable/ic_player_live_reload" />
 
         <Space
@@ -34,6 +36,7 @@
         <ImageView
             android:id="@+id/fullscreen"
             android:layout_width="@dimen/dimen_player_controller_height"
+            android:scaleType="centerCrop"
             android:layout_height="@dimen/dimen_player_controller_height"
             android:padding="@dimen/dimen_player_controller_icon_padding"
             android:src="@drawable/ic_player_fullscreen" />

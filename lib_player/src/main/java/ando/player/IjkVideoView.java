@@ -76,7 +76,7 @@ public class IjkVideoView extends BaseIjkVideoView<BaseIjkPlayer> {
             mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "rtsp_flags", "prefer_tcp");
             mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "allowed_media_types", "video");//根据媒体类型来配置
             mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "timeout", 20000);
-            mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "buffer_size", 1024);
+            mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "buffer_size", 2048);
 
             //input buffer:don't limit the input buffer size (useful with realtime streams)
             mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "infbuf", 1);//无限读, 是否限制输入缓存数 30
@@ -93,7 +93,7 @@ public class IjkVideoView extends BaseIjkVideoView<BaseIjkPlayer> {
             mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_CODEC, "skip_loop_filter", 48L);//默认值48
 
             //max buffer size should be pre-read：默认为15*1024*1024
-            mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "max-buffer-size", 15 * 1024 * 1024);//最大缓存数
+            mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "max-buffer-size", 45 * 1024 * 1024);//最大缓存数
             mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "min-frames", 20);//默认最小帧数2
             //设置seekTo能够快速seek到指定位置并播放
             //解决m3u8文件拖动问题 比如:一个3个多少小时的音频文件，开始播放几秒中，

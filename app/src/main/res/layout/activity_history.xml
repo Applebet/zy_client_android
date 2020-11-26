@@ -52,7 +52,7 @@
             android:layout_height="wrap_content"
             android:padding="@dimen/dp_10"
             android:scaleType="centerInside"
-            android:src="@drawable/ic_history_delete"
+            android:src="@drawable/ic_delete"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintHorizontal_bias="1"
             app:layout_constraintLeft_toRightOf="@id/tv_history_title"

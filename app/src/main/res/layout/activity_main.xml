@@ -13,11 +13,9 @@
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/navView"
+        style="@style/BottomNavigationItemViewStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?android:attr/windowBackground"
-        app:itemIconTint="@drawable/sel_main_nav"
-        app:itemTextColor="@drawable/sel_main_nav"
         app:menu="@menu/menu_main_nav" />
 
 </LinearLayout>

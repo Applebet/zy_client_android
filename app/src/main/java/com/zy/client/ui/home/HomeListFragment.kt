@@ -17,7 +17,6 @@ import com.zy.client.common.AppRouter
 import com.zy.client.common.HOME_SPAN_COUNT
 import com.zy.client.utils.Utils
 import com.zy.client.utils.ext.loadImage
-import kotlinx.android.synthetic.main.layout_com_title_list.*
 
 /**
  * 频道列表
@@ -26,6 +25,7 @@ import kotlinx.android.synthetic.main.layout_com_title_list.*
  */
 class HomeListFragment : BaseLazyListFragment<VideoSource, BaseViewHolder>() {
 
+    private lateinit var mRvList: RecyclerView
     private lateinit var source: CommonRepository
     private lateinit var tid: String
 
@@ -45,7 +45,8 @@ class HomeListFragment : BaseLazyListFragment<VideoSource, BaseViewHolder>() {
 
     override fun initView() {
         super.initView()
-        rvList.addItemDecoration(
+        mRvList = rootView.findViewById(R.id.rv_list)
+        mRvList.addItemDecoration(
             GridDividerItemDecoration(
                 Utils.dp2px(12.0f),
                 true

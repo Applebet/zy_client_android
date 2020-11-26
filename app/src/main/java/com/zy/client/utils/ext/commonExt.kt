@@ -18,6 +18,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
 import com.zy.client.App
+import com.zy.client.R
 import com.zy.client.utils.NoShakeClickListener
 import java.io.OutputStream
 import java.util.*
@@ -231,7 +232,7 @@ fun noAnimate(placeholder: Int = -1, error: Int = -1): RequestOptions {
     return options
 }
 
-fun loadImage(imageView: ImageView, url: String?, placeholder: Int = -1) {
+fun loadImage(imageView: ImageView, url: String?, placeholder: Int = R.drawable.ic_placeholder) {
     if (url != null && url.startsWith("http")) {
         Glide.with(imageView.context)
             .load(url)

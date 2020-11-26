@@ -87,6 +87,7 @@ object PermissionManager {
         activity: Activity,
         vararg permissions: String
     ): Boolean {
+        //用户点了禁止获取权限，但没有勾选不再提示
         var showRationale = true
         if (permissions.isNotEmpty()) {
             for (permission in permissions) {
@@ -95,6 +96,7 @@ object PermissionManager {
                         permission
                     )
                 ) {
+                    //用户点了禁止获取权限，并勾选不再提示
                     showRationale = false
                     break
                 }
@@ -175,7 +177,7 @@ object PermissionManager {
         return true
     }
 
-    fun havePermissions(context: Context?, vararg permissions: String?): Boolean {
+    fun havePermissions(context: Context?, vararg permissions: String): Boolean {
         if (context != null && permissions.isNotEmpty()) {
             for (permission in permissions) {
                 if (ContextCompat.checkSelfPermission(
@@ -219,6 +221,28 @@ object PermissionManager {
         }.also { intent ->
             activity.startActivity(intent)
         }
+    }
+
+    /**
+     * 获取应用详情页面 Intent
+     *
+     * https://www.cnblogs.com/zhujiabin/p/9284835.html
+     */
+    fun createAppDetailSettingIntent(context: Context): Intent {
+        val localIntent = Intent()
+        localIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
+            localIntent.action = "android.settings.APPLICATION_DETAILS_SETTINGS"
+            localIntent.data = Uri.fromParts("package", context.packageName, null)
+        } else if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.FROYO) {
+            localIntent.action = Intent.ACTION_VIEW
+            localIntent.setClassName(
+                "com.android.settings",
+                "com.android.settings.InstalledAppDetails"
+            )
+            localIntent.putExtra("com.android.settings.ApplicationPkgName", context.packageName)
+        }
+        return localIntent
     }
 
 }

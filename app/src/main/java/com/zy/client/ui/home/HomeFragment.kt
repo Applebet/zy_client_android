@@ -11,7 +11,9 @@ import com.zy.client.http.ConfigManager
 import com.zy.client.http.repo.CommonRepository
 import com.zy.client.base.BaseFragment
 import com.zy.client.common.AppRouter
+import com.zy.client.utils.PermissionManager
 import com.zy.client.utils.ext.noNull
+import com.zy.client.utils.ext.toastLong
 import kotlinx.android.synthetic.main.fragment_home.*
 
 /**
@@ -35,13 +37,41 @@ class HomeFragment : BaseFragment() {
         tvSearch = rootView.findViewById(R.id.tv_home_search)
     }
 
+    private fun requestStoragePermission(block: (result: Boolean) -> Unit) {
+        val hasStoragePermission =
+            PermissionManager.havePermissions(baseActivity, *PermissionManager.PERMISSIONS_STORAGE)
+
+        val shouldShow = PermissionManager.checkShowRationale(
+            baseActivity,
+            *PermissionManager.PERMISSIONS_STORAGE
+        )
+
+        //用户点了禁止获取权限，并勾选不再提示 , 建议做成弹窗提示并提供权限申请页面的跳转
+        if (!shouldShow && !hasStoragePermission) {
+            toastLong("""请到"设置"中开启"存储"权限! """)
+            rootView.postDelayed(Runnable {
+                val intent = PermissionManager.createAppDetailSettingIntent(baseActivity)
+                baseActivity.startActivity(intent)
+            }, 500)
+            return
+        }
+
+        if (!hasStoragePermission) {
+            PermissionManager.verifyStoragePermissions(baseActivity)
+        }
+        block.invoke(true)
+    }
+
     override fun initListener() {
         super.initListener()
         ivHistory.setOnClickListener {
-            // AppRouter.toHistoryActivity(baseActivity)
-            val intent = Intent(baseActivity, DownloadService::class.java)
-            baseActivity.startService(intent)
-
+            AppRouter.toHistoryActivity(baseActivity)
+//            requestStoragePermission {
+//                if (it) {
+//                    val intent = Intent(baseActivity, DownloadService::class.java)
+//                    baseActivity.startService(intent)
+//                }
+//            }
         }
 
         tvSearch.setOnClickListener {

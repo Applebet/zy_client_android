@@ -17,7 +17,7 @@ import com.zy.client.database.CollectDBUtils
 import com.zy.client.common.AppRouter
 import com.zy.client.utils.ext.toastShort
 import com.zy.client.views.loader.LoadState
-import kotlinx.android.synthetic.main.layout_com_title_list.*
+import com.zy.client.views.loader.LoaderLayout
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -32,8 +32,11 @@ import org.greenrobot.eventbus.ThreadMode
  */
 class CollectFragment : BaseListFragment<CollectModel, BaseViewHolder>() {
 
+    private lateinit var mStatusView: LoaderLayout
+
     override fun initView() {
         super.initView()
+        mStatusView=rootView.findViewById<LoaderLayout>(R.id.statusView)
         val tvTitle=rootView.findViewById<TextView>(R.id.tv_title)
         tvTitle.visible()
         tvTitle.text="收藏"
@@ -64,7 +67,7 @@ class CollectFragment : BaseListFragment<CollectModel, BaseViewHolder>() {
                             if (delete) {
                                 setNewInstance(null)
                                 if (data.isEmpty()) {
-                                    statusView.setLoadState(LoadState.EMPTY)
+                                    mStatusView.setLoadState(LoadState.EMPTY)
                                 }
                             } else  toastShort("删除失败")
                         } catch (e: Exception) {
@@ -105,7 +108,7 @@ class CollectFragment : BaseListFragment<CollectModel, BaseViewHolder>() {
                             if (delete) {
                                 remove(item)
                                 if (data.isEmpty()) {
-                                    statusView.setLoadState(LoadState.EMPTY)
+                                    mStatusView.setLoadState(LoadState.EMPTY)
                                 }
                             } else toastShort("删除失败")
                         } catch (e: Exception) {

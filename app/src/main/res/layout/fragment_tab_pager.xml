@@ -12,7 +12,6 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-
         <TextView
             android:id="@+id/tv_title"
             android:layout_width="match_parent"
@@ -28,19 +27,19 @@
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabLayout"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_42"
+            android:layout_height="@dimen/dp_45"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:tabBackground="@color/white"
-            app:tabGravity="start"
+            app:tabGravity="center"
             app:tabIndicatorColor="@color/color_main_theme"
             app:tabIndicatorFullWidth="false"
-            app:tabIndicatorHeight="@dimen/dp_2"
+            app:tabIndicatorHeight="@dimen/dp_3"
             app:tabMode="scrollable"
             app:tabSelectedTextColor="@color/color_main_theme"
             app:tabTextAppearance="@style/TabLayoutTextStyle"
-            app:tabTextColor="@color/color_font_gray" />
+            app:tabTextColor="@color/color_font_black" />
 
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/viewpager"

@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
     android:orientation="vertical">
 
     <TextView
@@ -22,7 +21,8 @@
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipe_refresh"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/color_container_bg">
 
         <com.zy.client.views.loader.LoaderLayout
             android:id="@id/statusView"
@@ -31,7 +31,7 @@
             app:state="loading">
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvList"
+                android:id="@+id/rv_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:overScrollMode="never"
