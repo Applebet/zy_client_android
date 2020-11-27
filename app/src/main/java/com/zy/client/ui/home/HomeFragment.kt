@@ -1,7 +1,5 @@
 package com.zy.client.ui.home
 
-import ando.player.service.DownloadService
-import android.content.Intent
 import android.widget.ImageView
 import android.widget.TextView
 import com.lxj.xpopup.XPopup
@@ -13,9 +11,7 @@ import com.zy.client.base.BaseFragment
 import com.zy.client.common.AppRouter
 import com.zy.client.common.isHealthLife
 import com.zy.client.common.switchHealthLife
-import com.zy.client.utils.PermissionManager
 import com.zy.client.utils.ext.noNull
-import com.zy.client.utils.ext.toastLong
 import com.zy.client.utils.ext.toastShort
 import kotlinx.android.synthetic.main.fragment_home.*
 

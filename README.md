@@ -41,11 +41,10 @@ PreviewSeekBar 拖拽预览 -> https://github.com/rubensousa/PreviewSeekBar
 
 https://github.com/AriaLyy/Aria
 
-https://aria.laoyuyu.me/aria_doc/download/m3u8_vod.html
-
-
 https://github.com/huangdali/M3U8Manger
+https://github.com/sujudz/M3U8Manger/tree/master
 
+https://aria.laoyuyu.me/aria_doc/download/m3u8_vod.html
 
 ## 透明度
 

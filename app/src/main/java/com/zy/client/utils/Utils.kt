@@ -6,6 +6,7 @@ import fr.arnaudguyon.xmltojsonlib.XmlToJson
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -14,24 +15,115 @@ import java.util.*
  */
 object Utils {
 
+    private const val DATE_FORMAT = "yyyy-MM-dd HH:mm:ss"
+    private const val DATE_FORMAT1 = "yyyy-MM-dd HH:mm"
+    private const val DATE_FORMAT2 = "yyyy-MM-dd"
+
+    fun parseTimeLong(time: String?): Long {
+        if (time.isNullOrBlank()) return 0L
+        try {
+            val cal = Calendar.getInstance()
+            cal.time = SimpleDateFormat(DATE_FORMAT, Locale.getDefault()).parse(time) ?: return 0L
+            return cal.timeInMillis
+        } catch (e: Exception) {
+        }
+        return 0L
+    }
+
     /**
      * 2020-11-27 00:07:26  ->  格式化后的样式
      */
-    fun isToday(time: String?): Boolean {
-        return time?.run {
-            if (isBlank()) return false
-            try {
-                val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-                val cal = Calendar.getInstance()
-                cal.time = sdf.parse(this) ?: return false
-                val timeLong = cal.timeInMillis
+    fun isToday(timeLong: Long): Boolean {
+        val sdf = SimpleDateFormat(DATE_FORMAT2, Locale.getDefault())
+        return sdf.format(Date(timeLong)) == sdf.format(Date())
+    }
 
-                val sdf2 = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-                return sdf2.format(Date(timeLong)) == sdf2.format(Date())
-            } catch (e: Exception) {
+    /**
+     * 时间格式：
+     * 1小时内用，多少分钟前；
+     * 超过1小时，显示时间而无日期；
+     * 如果是昨天，则显示昨天
+     * 超过昨天再显示日期；
+     * 超过1年再显示年。
+     */
+    fun millisToLifeString(millis: Long): String {
+        val now = System.currentTimeMillis()
+        val todayStart = string2Millis(millisToStringDate(now, "yyyy-MM-dd"), "yyyy-MM-dd")
+        if (now - millis in 1..oneHourMillis) { // 一小时内
+            val m = millisToStringShort(now - millis, isWhole = false, isFormat = false)
+            return if ("" == m) "1分钟内" else m + "前"
+        }
+        if (millis >= todayStart && millis <= oneDayMillis + todayStart) { // 大于今天开始开始值，小于今天开始值加一天（即今天结束值）
+            return "今天 " + millisToStringDate(millis, "HH:mm")
+        }
+        if (millis > todayStart - oneDayMillis) { // 大于（今天开始值减一天，即昨天开始值）
+            return "昨天 " + millisToStringDate(millis, "HH:mm")
+        }
+        val thisYearStart = string2Millis(millisToStringDate(now, "yyyy"), "yyyy")
+        return if (millis > thisYearStart) { // 大于今天小于今年
+            millisToStringDate(millis, "MM月dd日 HH:mm")
+        } else millisToStringDate(
+            millis,
+            "yyyy年MM月dd日 HH:mm"
+        )
+    }
+
+    private const val oneHourMillis: Long = (60 * 60 * 1000).toLong()   // 一小时的毫秒数
+    private const val oneDayMillis: Long = (24 * oneHourMillis)         // 一天的毫秒数
+
+    private fun millisToStringDate(millis: Long, pattern: String?): String =
+        SimpleDateFormat(pattern, Locale.getDefault()).format(Date(millis))
+
+    /**
+     * 字符串解析成毫秒数
+     */
+    private fun string2Millis(str: String, pattern: String): Long {
+        val format = SimpleDateFormat(pattern, Locale.getDefault())
+        var millis: Long = 0
+        try {
+            millis = format.parse(str)?.time ?: 0
+        } catch (e: ParseException) {
+            e.printStackTrace()
+        }
+        return millis
+    }
+
+    /**
+     * 把一个毫秒数转化成时间字符串。格式为小时/分/秒/毫秒（如：24903600 --> 06小时55分钟）。
+     *
+     * @param millis   要转化的毫秒数。
+     * @param isWhole  是否强制全部显示小时/分。
+     * @param isFormat 时间数字是否要格式化，如果true：少位数前面补全；如果false：少位数前面不补全。
+     * @return 返回时间字符串：小时/分/秒/毫秒的格式（如：24903600 --> 06小时55分钟）。
+     */
+    private fun millisToStringShort(millis: Long, isWhole: Boolean, isFormat: Boolean): String {
+        var h = ""
+        var m = ""
+        if (isWhole) {
+            h = if (isFormat) "00小时" else "0小时"
+            m = if (isFormat) "00分钟" else "0分钟"
+        }
+        var temp = millis
+        val hper = 60 * 60 * 1000.toLong()
+        val mper = 60 * 1000.toLong()
+        if (temp / hper > 0) {
+            h = if (isFormat) {
+                if (temp / hper < 10) "0" + temp / hper else "${temp / hper}"
+            } else {
+                "${temp / hper}"
             }
-            false
-        } ?: false
+            h += "小时"
+        }
+        temp %= hper
+        if (temp / mper > 0) {
+            m = if (isFormat) {
+                if (temp / mper < 10) "0" + temp / mper else "${temp / mper}"
+            } else {
+                "${temp / mper}"
+            }
+            m += "分钟"
+        }
+        return h + m
     }
 
     /**

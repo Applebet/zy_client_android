@@ -108,8 +108,9 @@ class HomeListFragment : BaseLazyListFragment<VideoEntity, BaseViewHolder>() {
         override fun convert(holder: BaseViewHolder, item: VideoEntity) {
             holder.setText(R.id.tvTitle, item.name.noNull("--"))
             if (isNew()) {
-                holder.setVisible(R.id.iv_hot, Utils.isToday(item.updateTime))
-                holder.setText(R.id.tvTime, item.updateTime.noNull())
+                val timeLong = Utils.parseTimeLong(item.updateTime.noNull())
+                holder.setVisible(R.id.iv_hot, Utils.isToday(timeLong))
+                holder.setText(R.id.tvTime, Utils.millisToLifeString(timeLong))
                 holder.setText(R.id.tvProgressName, item.note.noNull("--"))
                 holder.setText(R.id.tvTypeName, item.type.noNull("其它影片"))
             } else {
