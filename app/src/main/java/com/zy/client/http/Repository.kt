@@ -1,4 +1,4 @@
-package com.zy.client.http.repo
+package com.zy.client.http
 
 import com.zy.client.bean.DownloadData
 import com.zy.client.bean.HomeData

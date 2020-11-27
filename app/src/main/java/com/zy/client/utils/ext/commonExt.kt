@@ -1,9 +1,7 @@
 package com.zy.client.utils.ext
 
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.ContentValues
-import android.content.Context
+import android.app.Activity
+import android.content.*
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.net.Uri
@@ -11,6 +9,7 @@ import android.os.Build
 import android.provider.MediaStore
 import android.util.Log
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
@@ -108,6 +107,33 @@ fun String.copyToClipBoard() {
         if (cm.hasPrimaryClip()) {
             cm.primaryClip?.getItemAt(0)?.text
         }
+    }
+}
+
+fun Context.hideSoftInput(activity: Activity) {
+    val view: View = activity.currentFocus ?: activity.window.decorView
+    (getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?)
+        ?.hideSoftInputFromWindow(view.windowToken, 0)
+}
+
+fun Context.browser(url: String, newTask: Boolean = false): Boolean {
+    return try {
+        val intent = Intent(Intent.ACTION_VIEW)
+        intent.data = Uri.parse(url)
+        if (newTask) {
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        }
+        //startActivity(intent)
+        //https://developer.android.com/about/versions/11/privacy/package-visibility
+        if (intent.resolveActivity(packageManager) != null) {
+            startActivity(Intent.createChooser(intent, "请选择浏览器"))
+        } else {
+            toastShort("没有可用浏览器")
+        }
+        true
+    } catch (e: ActivityNotFoundException) {
+        e.printStackTrace()
+        false
     }
 }
 

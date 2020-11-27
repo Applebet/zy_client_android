@@ -9,7 +9,7 @@ import com.zy.client.utils.status.StatusBarUtils
 /**
  * Title: BaseMediaActivity
  * <p>
- * Description:
+ * Description: 音视频播放
  * </p>
  * @author javakam
  * @date 2020/11/20  14:16
@@ -26,7 +26,7 @@ abstract class BaseMediaActivity : BaseActivity() {
         StatusBarUtils.transparentStatusBar(window)
         StatusBarUtils.setLightMode(window)
         StatusBarUtils.setStatusBarView(this, android.R.color.black)
-        //StatusBarUtils.setStatusBarColor(window, Color.BLACK, 0)
+        //or StatusBarUtils.setStatusBarColor(window, Color.BLACK, 0)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

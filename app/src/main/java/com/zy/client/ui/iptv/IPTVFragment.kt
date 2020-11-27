@@ -27,10 +27,6 @@ class IPTVFragment : BaseTabPagerFragment() {
         super.initData()
 
         ConfigManager.getIPTVGroups().apply {
-            if (this == null) {
-                statusView.setLoadState(LoadState.ERROR)
-                return
-            }
             mClassifyList.clear()
             mClassifyList.addAll(this)
             viewpager.adapter = ViewPageAdapter()

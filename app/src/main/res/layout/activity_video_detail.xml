@@ -156,11 +156,11 @@
                             android:layout_height="match_parent"
                             android:layout_weight="1"
                             android:ellipsize="marquee"
-                            android:focusableInTouchMode="true"
+                            android:marqueeRepeatLimit="marquee_forever"
                             android:gravity="top|end"
                             android:maxWidth="@dimen/dp_200"
+                            android:focusableInTouchMode="true"
                             android:textColor="@color/color_font_gray"
-                            android:textIsSelectable="true"
                             android:textSize="@dimen/font_14"
                             tools:text="大内密探" />
 
@@ -182,7 +182,6 @@
                     android:layout_marginBottom="@dimen/dp_8"
                     android:text="导演"
                     android:textColor="@color/color_font_black"
-                    android:textIsSelectable="true"
                     android:textSize="@dimen/font_15"
                     android:visibility="gone"
                     tools:visibility="visible" />
@@ -194,7 +193,6 @@
                     android:layout_marginBottom="@dimen/dp_8"
                     android:text="演员"
                     android:textColor="@color/color_font_gray"
-                    android:textIsSelectable="true"
                     android:textSize="@dimen/font_13"
                     android:visibility="gone"
                     tools:visibility="visible" />
@@ -205,7 +203,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/dp_8"
                     android:textColor="@color/color_font_gray"
-                    android:textIsSelectable="true"
                     android:textSize="@dimen/font_13"
                     android:visibility="gone"
                     tools:text="语言"
@@ -217,7 +214,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/dp_8"
                     android:textColor="@color/color_font_gray"
-                    android:textIsSelectable="true"
                     android:textSize="@dimen/font_13"
                     android:visibility="gone"
                     tools:text="影片类型"
@@ -229,7 +225,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/dp_8"
                     android:textColor="@color/color_font_gray"
-                    android:textIsSelectable="true"
                     android:textSize="@dimen/font_13"
                     android:visibility="gone"
                     tools:text="上映时间"
@@ -242,7 +237,6 @@
                     android:layout_marginBottom="@dimen/dp_5"
                     android:text="剧情简介"
                     android:textColor="@color/color_font_black"
-                    android:textIsSelectable="true"
                     android:textSize="@dimen/font_15"
                     android:visibility="gone"
                     tools:visibility="visible" />

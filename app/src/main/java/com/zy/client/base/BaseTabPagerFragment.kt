@@ -6,12 +6,14 @@ import androidx.fragment.app.FragmentPagerAdapter
 import com.zy.client.R
 import com.zy.client.bean.Classify
 import com.zy.client.http.ConfigManager
-import com.zy.client.http.repo.IRepository
+import com.zy.client.http.IRepository
 import com.zy.client.views.loader.Loader
+import com.zy.client.views.loader.LoaderLayout
 import kotlinx.android.synthetic.main.fragment_tab_pager.*
 
 abstract class BaseTabPagerFragment : BaseFragment() {
 
+    protected lateinit var mStatusView: LoaderLayout
     protected var mRepo: IRepository? = null
     protected var mClassifyList = ArrayList<Classify>()
 
@@ -22,9 +24,14 @@ abstract class BaseTabPagerFragment : BaseFragment() {
         mRepo = ConfigManager.curUseSourceConfig()
     }
 
+    override fun initView() {
+        super.initView()
+        mStatusView = rootView.findViewById(R.id.statusView)
+    }
+
     override fun initListener() {
         super.initListener()
-        statusView.setOnReloadListener(object : Loader.OnReloadListener {
+        mStatusView.setOnReloadListener(object : Loader.OnReloadListener {
             override fun onReload() {
                 initData()
             }

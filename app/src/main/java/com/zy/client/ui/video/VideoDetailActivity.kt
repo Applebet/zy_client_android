@@ -1,7 +1,6 @@
 package com.zy.client.ui.video
 
 import android.annotation.SuppressLint
-import android.graphics.Color
 import android.text.Html
 import android.util.Log
 import android.widget.FrameLayout
@@ -17,8 +16,7 @@ import com.zy.client.database.CollectDBUtils
 import com.zy.client.database.CollectModel
 import com.zy.client.database.SourceDBUtils
 import com.zy.client.http.ConfigManager
-import com.zy.client.http.repo.CommonRepository
-import com.zy.client.utils.ClipboardUtils
+import com.zy.client.http.NetRepository
 import com.zy.client.utils.NotchUtils
 import com.zy.client.utils.Utils
 import com.zy.client.utils.ext.*
@@ -38,7 +36,7 @@ class VideoDetailActivity : BaseMediaActivity() {
 
     private lateinit var id: String
     private lateinit var sourceKey: String
-    private lateinit var repo: CommonRepository
+    private lateinit var repo: NetRepository
 
     //
     private lateinit var playerWebContainer: FrameLayout
@@ -93,12 +91,9 @@ class VideoDetailActivity : BaseMediaActivity() {
                 ToastUtils.showShort("无法播放")
                 return@setOnClickListener
             }
-            Utils.openBrowser(
-                this,
-                if (mVideo?.playUrl.isVideoUrl()) {
-                    "http://zyplayer.fun/player/player.html?url=${mVideo?.playUrl?.noNull()}"
-                } else mVideo?.playUrl.noNull()
-            )
+            browser( if (mVideo?.playUrl.isVideoUrl()) {
+                "http://zyplayer.fun/player/player.html?url=${mVideo?.playUrl?.noNull()}"
+            } else mVideo?.playUrl.noNull())
         }
 
         //选集
@@ -113,6 +108,7 @@ class VideoDetailActivity : BaseMediaActivity() {
                 if (mSelectListDialog == null) {
                     // videoController?.currentListPosition = mVideoList?.lastIndex ?: 0
                     mSelectListDialog = XPopup.Builder(this)
+                        .hasShadowBg(false)
                         .maxHeight(dialogHeight)
                         .asBottomList(
                             "选集",
@@ -175,7 +171,7 @@ class VideoDetailActivity : BaseMediaActivity() {
 //                }
 //            }
             if (mVideo?.playUrl.isVideoUrl()) {
-                ClipboardUtils.copyText(mVideo?.playUrl)
+                mVideo?.playUrl?.copyToClipBoard()
                 toastLong("地址已复制，快去下载吧~\n${mVideo?.playUrl}")
             } else {
                 toastShort("该资源暂不支持下载哦~")

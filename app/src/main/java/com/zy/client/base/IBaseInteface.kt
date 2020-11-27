@@ -1,9 +1,10 @@
 package com.zy.client.base
 
 /**
- * @author javakam
- * @date 2020/6/9 23:17
+ *懒加载
  */
+interface ILazyLoad
+
 interface IBackPressed {
     fun onBackPressed(): Boolean
 }

@@ -259,7 +259,7 @@ object PermissionManager {
 
         //用户点了禁止获取权限，并勾选不再提示 , 建议做成弹窗提示并提供权限申请页面的跳转
         if (!shouldShow && !hasStoragePermission) {
-            activity.toastLong("""请到"设置"中开启"存储"权限! """)
+            activity.toastLong("""请开启"存储"权限! """)
             val intent = createAppDetailSettingIntent(activity)
             activity.startActivity(intent)
             return

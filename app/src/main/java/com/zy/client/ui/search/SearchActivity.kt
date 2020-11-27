@@ -12,11 +12,7 @@ import com.zy.client.R
 import com.zy.client.base.BaseActivity
 import com.zy.client.database.SearchHistoryDBUtils
 import com.zy.client.http.ConfigManager
-import com.zy.client.utils.KeyboardUtils
-import com.zy.client.utils.ext.gone
-import com.zy.client.utils.ext.noNull
-import com.zy.client.utils.ext.visible
-import com.zy.client.utils.ext.visibleOrGone
+import com.zy.client.utils.ext.*
 import kotlinx.android.synthetic.main.activity_search.*
 import kotlinx.android.synthetic.main.layout_search_history.view.*
 
@@ -66,7 +62,7 @@ class SearchActivity : BaseActivity() {
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 //按下键盘搜索按钮
                 initData()
-                KeyboardUtils.hideSoftInput(this)
+                hideSoftInput(this)
                 true
             } else false
         }
@@ -77,7 +73,7 @@ class SearchActivity : BaseActivity() {
 
         mTvCancel = findViewById(R.id.tv_search_action)
         mTvCancel.setOnClickListener {
-            KeyboardUtils.hideSoftInput(this)
+            hideSoftInput(this)
             finish()
         }
     }

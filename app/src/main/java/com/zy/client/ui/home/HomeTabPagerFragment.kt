@@ -1,11 +1,11 @@
 package com.zy.client.ui.home
 
 import androidx.fragment.app.Fragment
-import com.google.android.material.tabs.TabLayout
 import com.zy.client.bean.Classify
 import com.zy.client.base.BaseTabPagerFragment
 import com.zy.client.common.HOME_LIST_TID_NEW
-import com.zy.client.common.OPEN_FL
+import com.zy.client.common.filterHealthyLife
+import com.zy.client.common.isHealthLife
 import com.zy.client.views.loader.LoadState
 import kotlinx.android.synthetic.main.fragment_tab_pager.*
 
@@ -23,14 +23,12 @@ class HomeTabPagerFragment : BaseTabPagerFragment() {
                 statusView.setLoadState(LoadState.ERROR)
                 return@requestHomeData
             }
-            //val openFL = SPUtils.get().getBoolean(SP_OPEN_FL)
-            val openFL = OPEN_FL
+
             if (mClassifyList.isNotEmpty()) mClassifyList.clear()
             mClassifyList.add(Classify(HOME_LIST_TID_NEW, "最新"))
             mClassifyList.addAll(it.classifyList.filter { classify ->
                 !classify.id.isNullOrBlank() && !classify.name.isNullOrBlank()
-                        && (if (openFL) true else (!classify.name.contains("福利") && !classify.name.contains("伦理")
-                        && !classify.name.contains("倫")))
+                        && (if (isHealthLife()) true else (!filterHealthyLife(classify.name)))
             } as ArrayList<Classify>)
             viewpager.adapter = ViewPageAdapter()
             viewpager.offscreenPageLimit = 100

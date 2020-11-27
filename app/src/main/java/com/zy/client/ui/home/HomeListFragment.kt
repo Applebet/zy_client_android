@@ -13,7 +13,7 @@ import com.zy.client.base.BaseLoadMoreAdapter
 import com.zy.client.http.ConfigManager
 import com.zy.client.views.GridDividerItemDecoration
 import com.zy.client.utils.ext.noNull
-import com.zy.client.http.repo.CommonRepository
+import com.zy.client.http.NetRepository
 import com.zy.client.base.BaseLazyListFragment
 import com.zy.client.bean.VideoSource
 import com.zy.client.common.AppRouter
@@ -29,7 +29,7 @@ import com.zy.client.utils.ext.loadImage
  */
 class HomeListFragment : BaseLazyListFragment<VideoSource, BaseViewHolder>() {
 
-    private lateinit var source: CommonRepository
+    private lateinit var source: NetRepository
     private lateinit var tid: String
 
     companion object {

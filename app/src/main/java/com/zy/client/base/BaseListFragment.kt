@@ -5,11 +5,20 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.chad.library.adapter.base.BaseQuickAdapter
+import com.chad.library.adapter.base.module.LoadMoreModule
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.zy.client.R
 import com.zy.client.views.loader.LoadState
 import com.zy.client.views.loader.Loader
 import com.zy.client.views.loader.LoaderLayout
+
+/**
+ * 加载更多
+ */
+abstract class BaseLoadMoreAdapter<T, H : BaseViewHolder>(
+    layoutResId: Int,
+    data: MutableList<T>? = null
+) : BaseQuickAdapter<T, H>(layoutResId, data), LoadMoreModule
 
 /**
  * 懒加载

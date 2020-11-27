@@ -44,21 +44,6 @@ object Utils {
     }
 
     /**
-     * 打开外部浏览器
-     */
-    fun openBrowser(context: Context, url: String) {
-        val intent = Intent().apply {
-            action = Intent.ACTION_VIEW
-            data = Uri.parse(url)
-        }
-        if (intent.resolveActivity(context.packageManager) != null) {
-            context.startActivity(Intent.createChooser(intent, "请选择浏览器"))
-        } else {
-            context.toastShort("没有可用浏览器")
-        }
-    }
-
-    /**
      * xml转json
      */
     fun xmlToJson(xmlString: String?): XmlToJson? {
