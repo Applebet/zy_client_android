@@ -3,6 +3,7 @@ package com.zy.client.ui.home
 import android.graphics.Rect
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageView
 import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,19 +16,20 @@ import com.zy.client.views.GridDividerItemDecoration
 import com.zy.client.utils.ext.noNull
 import com.zy.client.http.NetRepository
 import com.zy.client.base.BaseLazyListFragment
-import com.zy.client.bean.VideoSource
+import com.zy.client.bean.VideoEntity
 import com.zy.client.common.AppRouter
 import com.zy.client.common.HOME_LIST_TID_NEW
 import com.zy.client.common.HOME_SPAN_COUNT
 import com.zy.client.utils.Utils
 import com.zy.client.utils.ext.loadImage
+import com.zy.client.utils.ext.visibleOrGone
 
 /**
  * 频道列表
  *
  * @author javakam
  */
-class HomeListFragment : BaseLazyListFragment<VideoSource, BaseViewHolder>() {
+class HomeListFragment : BaseLazyListFragment<VideoEntity, BaseViewHolder>() {
 
     private lateinit var source: NetRepository
     private lateinit var tid: String
@@ -72,7 +74,7 @@ class HomeListFragment : BaseLazyListFragment<VideoSource, BaseViewHolder>() {
         }
     }
 
-    override fun getListAdapter(): BaseLoadMoreAdapter<VideoSource, BaseViewHolder> {
+    override fun getListAdapter(): BaseLoadMoreAdapter<VideoEntity, BaseViewHolder> {
         return HomeChannelAdapter().apply {
             setOnItemClickListener { _, _, position ->
                 AppRouter.toVideoDetailActivity(
@@ -89,8 +91,8 @@ class HomeListFragment : BaseLazyListFragment<VideoSource, BaseViewHolder>() {
         else GridLayoutManager(requireActivity(), HOME_SPAN_COUNT, RecyclerView.VERTICAL, false)
     }
 
-    override fun loadData(page: Int, callback: (list: List<VideoSource>?) -> Unit) {
-        source.requestHomeChannelData(page, tid) {
+    override fun loadData(page: Int, callback: (list: List<VideoEntity>?) -> Unit) {
+        source.getChannelList(page, tid) {
             callback.invoke(it)
         }
     }
@@ -99,19 +101,18 @@ class HomeListFragment : BaseLazyListFragment<VideoSource, BaseViewHolder>() {
 
     //首页频道的适配器
     inner class HomeChannelAdapter :
-        BaseLoadMoreAdapter<VideoSource, BaseViewHolder>(
+        BaseLoadMoreAdapter<VideoEntity, BaseViewHolder>(
             if (isNew()) R.layout.item_home_channel
             else R.layout.item_home_channel_grid
         ) {
-        override fun convert(holder: BaseViewHolder, item: VideoSource) {
+        override fun convert(holder: BaseViewHolder, item: VideoEntity) {
             holder.setText(R.id.tvTitle, item.name.noNull("--"))
             if (isNew()) {
+                holder.setVisible(R.id.iv_hot, Utils.isToday(item.updateTime))
                 holder.setText(R.id.tvTime, item.updateTime.noNull())
                 holder.setText(R.id.tvProgressName, item.note.noNull("--"))
                 holder.setText(R.id.tvTypeName, item.type.noNull("其它影片"))
-
             } else {
-                holder.setText(R.id.tvTitle, item.name.noNull("--"))
                 loadImage(holder.getView(R.id.ivPiv), item.pic)
             }
         }

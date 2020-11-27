@@ -1,12 +1,8 @@
 package com.zy.client.http
 
-import com.zy.client.bean.DownloadData
 import com.zy.client.bean.HomeData
 import com.zy.client.bean.VideoDetail
-import com.zy.client.bean.VideoSource
-import org.litepal.annotation.Column
-import org.litepal.crud.LitePalSupport
-import java.io.Serializable
+import com.zy.client.bean.VideoEntity
 
 data class CommonRequest(
     val key: String = "",
@@ -20,26 +16,21 @@ interface IRepository {
     /**
      * 首页
      */
-    fun requestHomeData(callback: (t: HomeData?) -> Unit)
+    fun getHomeData(callback: (t: HomeData?) -> Unit)
 
     /**
-     * 频道列表
+     * 分类对应视频列表
      */
-    fun requestHomeChannelData(page: Int, tid: String, callback: (t: List<VideoSource>?) -> Unit)
+    fun getChannelList(page: Int, tid: String, callback: (t: List<VideoEntity>?) -> Unit)
 
     /**
      * 搜索
      */
-    fun requestSearchData(searchWord: String, page: Int, callback: (t: List<VideoSource>?) -> Unit)
+    fun search(searchWord: String, page: Int, callback: (t: List<VideoEntity>?) -> Unit)
 
     /**
      * 视频详情
      */
-    fun requestDetailData(id: String, callback: (t: VideoDetail?) -> Unit)
-
-    /**
-     * 下载列表
-     */
-    fun requestDownloadData(id: String, callback: (t: ArrayList<DownloadData>?) -> Unit)
+    fun getVideoDetail(id: String, callback: (t: VideoDetail?) -> Unit)
 
 }

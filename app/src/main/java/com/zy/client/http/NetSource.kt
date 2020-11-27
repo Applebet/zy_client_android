@@ -45,14 +45,13 @@ object ConfigManager {
         val configJson = Utils.readAssetsData(DATA_VIDEO)
         val configArray = JSONArray(configJson)
         val configMap = LinkedHashMap<String, SourceConfig>()
-        //val sourceModelMap = LinkedHashMap<String, MutableList<SourceModel>>()
         for (i in 0 until configArray.length()) {
             val config = configArray.optJSONObject(i)
-            val sid = config.getInt("sid")
-            val key = config.getString("key")
-            val name = config.getString("name")
-            val api = config.getString("api")
-            val download = config.getString("download")
+            val sid = config.optInt("sid")
+            val key = config.optString("key")
+            val name = config.optString("name")
+            val api = config.optString("api")
+            val download = config.optString("download")
             if (config != null && !key.isNullOrBlank() && !name.isNullOrBlank() && !api.isNullOrBlank()) {
                 configMap[key] = SourceConfig(key, name) {
                     NetRepository(CommonRequest(key, name, api, download))
@@ -84,10 +83,10 @@ object ConfigManager {
         val configMapTv = LinkedHashMap<String, MutableList<SourceModel>>()
         for (i in 0 until configArrayTv.length()) {
             val config = configArrayTv.optJSONObject(i)
-            val tid = config.getInt("tid")
-            val name = config.getString("name")
-            val url = config.getString("url")
-            val group = config.getString("group").noNull("其他")
+            val tid = config.optInt("tid")
+            val name = config.optString("name")
+            val url = config.optString("url")
+            val group = config.optString("group").noNull("其他")
             val isActive = config.getBoolean("isActive")
             if (config != null && group.isNotBlank() && !name.isNullOrBlank() && !url.isNullOrBlank()) {
                 if (configMapTv[group] == null) {

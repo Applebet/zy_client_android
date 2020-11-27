@@ -9,11 +9,10 @@ import java.io.Serializable
  * @date 2020/6/10 10:47
  */
 
-data class HomeData(val videoList: ArrayList<VideoSource>, val classifyList: ArrayList<Classify>)
-data class DownloadData(val name: String, val downloadUrl: String)
+data class HomeData(val videoList: ArrayList<VideoEntity>, val classifyList: ArrayList<Classify>)
 
 //Channel Item
-data class VideoSource(
+data class VideoEntity(
     //视频id
     val id: String? = "",
     //视频类型，国产剧，战争片
@@ -45,9 +44,7 @@ data class Classify(
     val name: String?
 )
 
-////////////详情
-
-//联合主键
+//详情
 data class VideoDetail(
     //视频id
     var id: String? = "",
@@ -84,10 +81,11 @@ data class Video(
 )
 
 data class VideoHistory(
+    //避免和 id 字段冲突
     @Column(unique = true)
-    var _id: Long = 0L,//避免和 id 字段冲突
-    //
-    //uniqueId = sourceKey + tid + id
+    var _id: Long = 0L,
+
+    //注: uniqueId = sourceKey + tid + id
     var uniqueId: String? = "",
     var vid: String? = "",
     var tid: String? = "",       //分类id
@@ -97,9 +95,9 @@ data class VideoHistory(
     var position: Int = 0,  //第n集
     var progress: Long = 0, //进度
     var timePercent: String? = "", // eg: 12:32/1:22:32
-    //
+
     var name: String? = "",
-    var playUrl: String? = "",
+    var playUrl: String? = ""
 ) : LitePalSupport() {
     override fun toString(): String {
         return "$name \n $sourceKey \n $playUrl"

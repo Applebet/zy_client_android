@@ -10,38 +10,30 @@ import org.json.JSONObject
 
 object NetSourceParser {
 
+    private fun createVideoEntity(video: JSONObject): VideoEntity {
+        return VideoEntity(
+            updateTime = video.optString("last"),
+            id = video.optString("id"),
+            tid = video.optString("tid"),
+            name = video.optString("name"),
+            type = video.optString("type"),
+            note = video.optString("note"),
+            pic = video.optString("pic")
+        )
+    }
+
     fun parseHomeData(data: String?): HomeData? {
         try {
             if (data == null) return null
             val jsonObject = Utils.xmlToJson(data)?.toJson()
             jsonObject?.optJSONObject("rss")?.run {
-                val videoList = ArrayList<VideoSource>()
+                val videoList = ArrayList<VideoEntity>()
                 val video = getJSONObject("list").get("video")
                 try {
-                    if (video is JSONObject) {
-                        videoList.add(
-                            VideoSource(
-                                updateTime = video.optString("last"),
-                                id = video.optString("id"),
-                                tid = video.optString("tid"),
-                                name = video.optString("name"),
-                                note = video.optString("note"),
-                                type = video.optString("type")
-                            )
-                        )
-                    } else if (video is JSONArray) {
+                    if (video is JSONObject) videoList.add(createVideoEntity(video))
+                    else if (video is JSONArray) {
                         for (i in 0 until video.length()) {
-                            val json = video.getJSONObject(i)
-                            videoList.add(
-                                VideoSource(
-                                    updateTime = json.optString("last"),
-                                    id = json.optString("id"),
-                                    tid = json.optString("tid"),
-                                    name = json.optString("name"),
-                                    note = json.optString("note"),
-                                    type = json.optString("type")
-                                )
-                            )
+                            videoList.add(createVideoEntity(video.getJSONObject(i)))
                         }
                     }
                 } catch (e: Exception) {
@@ -70,68 +62,35 @@ object NetSourceParser {
         return null
     }
 
-    fun parseHomeChannelData(data: String?): ArrayList<VideoSource>? {
+    fun parseChannelList(data: String?): ArrayList<VideoEntity>? {
         try {
-            if (data == null) return arrayListOf()
+            if (data?.isBlank() == true) return null
             val jsonObject = Utils.xmlToJson(data)?.toJson()
-            val videoList = ArrayList<VideoSource>()
+            val videoList = ArrayList<VideoEntity>()
             val videos =
                 jsonObject?.getJSONObject("rss")?.getJSONObject("list")?.optJSONArray("video")
                     ?: return arrayListOf()
             for (i in 0 until videos.length()) {
-                val video = videos.getJSONObject(i)
-                videoList.add(
-                    VideoSource(
-                        updateTime = video.optString("last"),
-                        id = video.optString("id"),
-                        tid = video.optString("tid"),
-                        name = video.optString("name"),
-                        type = video.optString("type"),
-                        note = video.optString("note"),
-                        pic = video.optString("pic")
-                    )
-                )
+                videoList.add(createVideoEntity(videos.getJSONObject(i)))
             }
             return videoList
         } catch (e: Exception) {
             e.printStackTrace()
         }
-        return arrayListOf()
+        return null
     }
 
-    fun parseNewVideo(data: String?): ArrayList<VideoSource>? {
+    fun parseSearch(data: String?): ArrayList<VideoEntity>? {
         try {
-            if (data == null) return arrayListOf()
+            if (data?.isBlank() == true) return null
             val jsonObject = Utils.xmlToJson(data)?.toJson()
-            val videoList = ArrayList<VideoSource>()
+            val videoList = ArrayList<VideoEntity>()
             val video = jsonObject?.getJSONObject("rss")?.getJSONObject("list")?.opt("video")
             video?.apply {
-                if (video is JSONObject) {
-                    videoList.add(
-                        VideoSource(
-                            updateTime = video.optString("last"),
-                            id = video.optString("id"),
-                            tid = video.optString("tid"),
-                            name = video.optString("name"),
-                            type = video.optString("type"),
-                            note = video.optString("note"),
-                            pic = video.optString("pic")
-                        )
-                    )
-                } else if (video is JSONArray) {
+                if (video is JSONObject) videoList.add(createVideoEntity(video))
+                else if (video is JSONArray) {
                     for (i in 0 until video.length()) {
-                        val json = video.getJSONObject(i)
-                        videoList.add(
-                            VideoSource(
-                                updateTime = json.optString("last"),
-                                id = json.optString("id"),
-                                tid = json.optString("tid"),
-                                name = json.optString("name"),
-                                type = json.optString("type"),
-                                note = json.optString("note"),
-                                pic = json.optString("pic")
-                            )
-                        )
+                        videoList.add(createVideoEntity(video.getJSONObject(i)))
                     }
                 }
             }
@@ -139,10 +98,10 @@ object NetSourceParser {
         } catch (e: Exception) {
             e.printStackTrace()
         }
-        return arrayListOf()
+        return null
     }
 
-    fun parseDetailData(sourceKey: String, data: String?): VideoDetail? {
+    fun parseVideoDetail(sourceKey: String, data: String?): VideoDetail? {
         try {
             if (data == null) return null
             val jsonObject = Utils.xmlToJson(data)?.toJson()
@@ -183,49 +142,25 @@ object NetSourceParser {
                 }
             }
             return VideoDetail(
-                videoInfo.optString("id"),
-                videoInfo.optString("tid"),
-                videoInfo.optString("name"),
-                videoInfo.optString("type"),
-                videoInfo.optString("lang"),
-                videoInfo.optString("area"),
-                videoInfo.optString("pic"),
-                videoInfo.optString("year"),
-                videoInfo.optString("actor"),
-                videoInfo.optString("director"),
-                videoInfo.optString("des"),
-                videoList,
-                sourceKey
+                id = videoInfo.optString("id"),
+                tid = videoInfo.optString("tid"),
+                name = videoInfo.optString("name"),
+                type = videoInfo.optString("type"),
+                lang = videoInfo.optString("lang"),
+                area = videoInfo.optString("area"),
+                pic = videoInfo.optString("pic"),
+                year = videoInfo.optString("year"),
+                actor = videoInfo.optString("actor"),
+                director = videoInfo.optString("director"),
+                des = videoInfo.optString("des"),
+                videoList = videoList,
+                sourceKey = sourceKey
             )
 
         } catch (e: Exception) {
             e.printStackTrace()
         }
         return null
-    }
-
-    fun parseDownloadData(data: String?): ArrayList<DownloadData>? {
-        try {
-            if (data == null) return null
-            val jsonObject = Utils.xmlToJson(data)?.toJson()
-            val video =
-                jsonObject?.optJSONObject("rss")?.optJSONObject("list")?.optJSONObject("video")
-
-            return video?.let { v ->
-                v.getJSONObject("dl").getJSONObject("dd").optString("content").split("#")
-                    .map {
-                        val split = it.split("$")
-                        if (split.size >= 2) {
-                            DownloadData(split[0], split[1])
-                        } else {
-                            DownloadData(split[0], split[0])
-                        }
-                    }.toMutableList() as ArrayList<DownloadData>? ?: arrayListOf()
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        return arrayListOf()
     }
 
     fun cancelAll(key: Any) {

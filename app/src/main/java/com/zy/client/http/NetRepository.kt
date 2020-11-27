@@ -5,11 +5,10 @@ import com.lzy.okgo.callback.StringCallback
 import com.lzy.okgo.model.Response
 import com.zy.client.bean.*
 import com.zy.client.common.HOME_LIST_TID_NEW
-import com.zy.client.http.NetSourceParser.parseDetailData
-import com.zy.client.http.NetSourceParser.parseDownloadData
-import com.zy.client.http.NetSourceParser.parseHomeChannelData
+import com.zy.client.http.NetSourceParser.parseVideoDetail
+import com.zy.client.http.NetSourceParser.parseChannelList
 import com.zy.client.http.NetSourceParser.parseHomeData
-import com.zy.client.http.NetSourceParser.parseNewVideo
+import com.zy.client.http.NetSourceParser.parseSearch
 
 /**
  * 通用的解析视频源
@@ -20,7 +19,7 @@ import com.zy.client.http.NetSourceParser.parseNewVideo
  */
 class NetRepository(val req: CommonRequest) : IRepository {
 
-    override fun requestHomeData(callback: (t: HomeData?) -> Unit) {
+    override fun getHomeData(callback: (t: HomeData?) -> Unit) {
         OkGo.get<String>(req.baseUrl)
             .tag(req.key)
             .execute(object : StringCallback() {
@@ -43,10 +42,10 @@ class NetRepository(val req: CommonRequest) : IRepository {
             })
     }
 
-    override fun requestHomeChannelData(
+    override fun getChannelList(
         page: Int,
         tid: String,
-        callback: (t: List<VideoSource>?) -> Unit
+        callback: (t: List<VideoEntity>?) -> Unit
     ) {
         OkGo.get<String>(
             if (tid == HOME_LIST_TID_NEW) "${req.baseUrl}?pg=$page"
@@ -56,7 +55,7 @@ class NetRepository(val req: CommonRequest) : IRepository {
             .execute(object : StringCallback() {
                 override fun onSuccess(response: Response<String>?) {
                     try {
-                        callback.invoke(parseHomeChannelData(response?.body()))
+                        callback.invoke(parseChannelList(response?.body()))
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
@@ -73,17 +72,17 @@ class NetRepository(val req: CommonRequest) : IRepository {
             })
     }
 
-    override fun requestSearchData(
+    override fun search(
         searchWord: String,
         page: Int,
-        callback: (t: List<VideoSource>?) -> Unit
+        callback: (t: List<VideoEntity>?) -> Unit
     ) {
         OkGo.get<String>("${req.baseUrl}?wd=$searchWord&pg=$page")
             .tag(req.key)
             .execute(object : StringCallback() {
                 override fun onSuccess(response: Response<String>?) {
                     try {
-                        callback.invoke(parseNewVideo(response?.body()))
+                        callback.invoke(parseSearch(response?.body()))
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
@@ -100,36 +99,13 @@ class NetRepository(val req: CommonRequest) : IRepository {
             })
     }
 
-    override fun requestDetailData(id: String, callback: (t: VideoDetail?) -> Unit) {
+    override fun getVideoDetail(id: String, callback: (t: VideoDetail?) -> Unit) {
         OkGo.get<String>("${req.baseUrl}?ac=videolist&ids=$id")
             .tag(req.key)
             .execute(object : StringCallback() {
                 override fun onSuccess(response: Response<String>?) {
                     try {
-                        callback.invoke(parseDetailData(req.key, response?.body()))
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
-                }
-
-                override fun onError(response: Response<String>?) {
-                    super.onError(response)
-                    try {
-                        callback.invoke(null)
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
-                }
-            })
-    }
-
-    override fun requestDownloadData(id: String, callback: (t: ArrayList<DownloadData>?) -> Unit) {
-        OkGo.get<String>("${req.downloadBaseUrl}?ac=videolist&ids=$id")
-            .tag(req.key)
-            .execute(object : StringCallback() {
-                override fun onSuccess(response: Response<String>?) {
-                    try {
-                        callback.invoke(parseDownloadData(response?.body()))
+                        callback.invoke(parseVideoDetail(req.key, response?.body()))
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }

@@ -18,10 +18,10 @@ class HomeTabPagerFragment : BaseTabPagerFragment() {
     override fun initData() {
         super.initData()
 
-        mRepo?.requestHomeData {
+        mRepo?.getHomeData {
             if (it == null) {
                 statusView.setLoadState(LoadState.ERROR)
-                return@requestHomeData
+                return@getHomeData
             }
 
             if (mClassifyList.isNotEmpty()) mClassifyList.clear()

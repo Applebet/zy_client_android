@@ -36,7 +36,7 @@ class VideoDetailActivity : BaseMediaActivity() {
 
     private lateinit var id: String
     private lateinit var sourceKey: String
-    private lateinit var repo: NetRepository
+    private lateinit var mRepo: NetRepository
 
     //
     private lateinit var playerWebContainer: FrameLayout
@@ -56,7 +56,7 @@ class VideoDetailActivity : BaseMediaActivity() {
 
         id = intent?.getStringExtra(ID).noNull()
         sourceKey = intent?.getStringExtra(SOURCE_KEY).noNull()
-        repo = ConfigManager.generateSource(sourceKey)
+        mRepo = ConfigManager.generateSource(sourceKey)
 
         statusView = findViewById(R.id.statusView)
         statusView.setLoadState(LoadState.LOADING)
@@ -74,10 +74,10 @@ class VideoDetailActivity : BaseMediaActivity() {
             videoController?.getPipCacheData()?.let {
                 id = it.id.noNull()
                 sourceKey = it.sourceKey.noNull()
-                repo = ConfigManager.generateSource(sourceKey.noNull())
+                mRepo = ConfigManager.generateSource(sourceKey.noNull())
             }
         } else {
-            videoController?.setPipCacheData(VideoSource(id = id, sourceKey = sourceKey))
+            videoController?.setPipCacheData(VideoEntity(id = id, sourceKey = sourceKey))
         }
 
         videoContainer.addView(videoController?.getPlayer())
@@ -91,9 +91,11 @@ class VideoDetailActivity : BaseMediaActivity() {
                 ToastUtils.showShort("无法播放")
                 return@setOnClickListener
             }
-            browser( if (mVideo?.playUrl.isVideoUrl()) {
-                "http://zyplayer.fun/player/player.html?url=${mVideo?.playUrl?.noNull()}"
-            } else mVideo?.playUrl.noNull())
+            browser(
+                if (mVideo?.playUrl.isVideoUrl()) {
+                    "http://zyplayer.fun/player/player.html?url=${mVideo?.playUrl?.noNull()}"
+                } else mVideo?.playUrl.noNull()
+            )
         }
 
         //选集
@@ -129,18 +131,18 @@ class VideoDetailActivity : BaseMediaActivity() {
         //收藏
         ivCollect.setOnClickListener {
             if (ivCollect.isSelected) {
-                val delete = CollectDBUtils.delete(id + repo.req.key)
+                val delete = CollectDBUtils.delete(id + mRepo.req.key)
                 if (delete) {
                     ivCollect.isSelected = false
                     EventBus.getDefault().postSticky(CollectEvent())
                 } else toastShort("取消收藏失败")
             } else {
                 val collectModel = CollectModel()
-                collectModel.uniqueKey = id + repo.req.key
+                collectModel.uniqueKey = id + mRepo.req.key
                 collectModel.videoId = id
                 collectModel.name = mVideoDetail?.name
-                collectModel.sourceKey = repo.req.key
-                collectModel.sourceName = repo.req.name
+                collectModel.sourceKey = mRepo.req.key
+                collectModel.sourceName = mRepo.req.name
                 CollectDBUtils.saveAsync(collectModel) {
                     if (it) {
                         ivCollect.isSelected = true
@@ -152,11 +154,7 @@ class VideoDetailActivity : BaseMediaActivity() {
 
         //下载
         ivDownload.setOnClickListener {
-//            if (source?.downloadBaseUrl.isNullOrBlank()) {
-//                ToastUtils.showShort("该资源暂不支持下载哦~")
-//                return@setOnClickListener
-//            }
-//            source?.requestDownloadData(id) {
+//            mRepo.requestDownloadData(id) {
 //                if (it.isNullOrEmpty()) {
 //                    ToastUtils.showShort("该资源暂不支持下载哦~")
 //                    return@requestDownloadData
@@ -171,6 +169,7 @@ class VideoDetailActivity : BaseMediaActivity() {
 //                }
 //            }
             if (mVideo?.playUrl.isVideoUrl()) {
+
                 mVideo?.playUrl?.copyToClipBoard()
                 toastLong("地址已复制，快去下载吧~\n${mVideo?.playUrl}")
             } else {
@@ -181,13 +180,13 @@ class VideoDetailActivity : BaseMediaActivity() {
 
     override fun initData() {
         super.initData()
-        CollectDBUtils.searchAsync(id + repo.req.key) {
+        CollectDBUtils.searchAsync(id + mRepo.req.key) {
             if (it != null && it.isSaved) {
                 ivCollect.isSelected = true
             }
         }
 
-        repo.requestDetailData(id) {
+        mRepo.getVideoDetail(id) {
             if (it?.videoList == null) statusView.setLoadState(LoadState.ERROR) else refreshUI(it)
         }
     }
@@ -213,7 +212,7 @@ class VideoDetailActivity : BaseMediaActivity() {
                 mVideoList = this.videoList?.reversed()
                 //状态视图
                 if (mVideoList?.isNullOrEmpty() == true) {
-                    //TODO 传入默认数据
+                    //td 可先传入默认数据
                     statusView.setLoadState(LoadState.EMPTY)
                 } else {
                     statusView.setLoadState(LoadState.SUCCESS)
@@ -272,11 +271,11 @@ class VideoDetailActivity : BaseMediaActivity() {
     private fun playVideo(video: Video?) {
         if (video == null) return
         this.mVideo = video
-        if (video.playUrl.isVideoUrl()) {
+        if (mVideo?.playUrl.isVideoUrl()) {
             videoController?.setRecoverActivity(VideoDetailActivity::class.java)
             videoController?.startPlay(
-                video.playUrl,
-                "${mVideoDetail?.name.noNull()}  ${video.name.noNull()}"
+                mVideo?.playUrl,
+                "${mVideoDetail?.name.noNull()}  ${mVideo?.name.noNull()}"
             )
 
             videoContainer.visible()
@@ -288,10 +287,10 @@ class VideoDetailActivity : BaseMediaActivity() {
             if (webController == null) {
                 webController = WebController()
             }
-            webController?.loadUrl(this, video.playUrl, playerWebContainer)
+            webController?.loadUrl(this, mVideo?.playUrl, playerWebContainer)
         }
         //正在播放
-        video.name.noNull().let {
+        mVideo?.name.noNull().let {
             tvCurPlayName.text = it
             ivPlayMore.visibleOrGone(it.isNotBlank() && (mVideoDetail?.videoList?.size ?: 0 > 1))
         }

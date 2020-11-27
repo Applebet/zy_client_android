@@ -10,7 +10,7 @@ import com.zy.client.base.BaseLoadMoreAdapter
 import com.zy.client.http.ConfigManager
 import com.zy.client.utils.ext.noNull
 import com.zy.client.http.NetRepository
-import com.zy.client.bean.VideoSource
+import com.zy.client.bean.VideoEntity
 import com.zy.client.base.BaseListFragment
 import com.zy.client.common.AppRouter
 
@@ -20,7 +20,7 @@ import com.zy.client.common.AppRouter
  * @date 2020/9/7 21:19
  * @desc 搜索结果页
  */
-class SearchResultFragment : BaseListFragment<VideoSource, BaseViewHolder>() {
+class SearchResultFragment : BaseListFragment<VideoEntity, BaseViewHolder>() {
 
     private lateinit var source: NetRepository
     private lateinit var searchWord: String
@@ -39,7 +39,7 @@ class SearchResultFragment : BaseListFragment<VideoSource, BaseViewHolder>() {
         searchWord = arguments?.getString("search_word").noNull()
     }
 
-    override fun getListAdapter(): BaseLoadMoreAdapter<VideoSource, BaseViewHolder> {
+    override fun getListAdapter(): BaseLoadMoreAdapter<VideoEntity, BaseViewHolder> {
         return SearchResultAdapter().apply {
             setOnItemClickListener { _, _, position ->
                 AppRouter.toVideoDetailActivity(
@@ -55,19 +55,19 @@ class SearchResultFragment : BaseListFragment<VideoSource, BaseViewHolder>() {
         return LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
     }
 
-    override fun loadData(page: Int, callback: (list: List<VideoSource>?) -> Unit) {
+    override fun loadData(page: Int, callback: (list: List<VideoEntity>?) -> Unit) {
         if (searchWord.isBlank()) {
             callback.invoke(arrayListOf())
         } else {
-            source.requestSearchData(searchWord, page) {
+            source.search(searchWord, page) {
                 callback.invoke(it)
             }
         }
     }
 
     //搜索结果适配器
-    inner class SearchResultAdapter : BaseLoadMoreAdapter<VideoSource, BaseViewHolder>(R.layout.item_search_result) {
-        override fun convert(holder: BaseViewHolder, item: VideoSource) {
+    inner class SearchResultAdapter : BaseLoadMoreAdapter<VideoEntity, BaseViewHolder>(R.layout.item_search_result) {
+        override fun convert(holder: BaseViewHolder, item: VideoEntity) {
             holder.setText(R.id.tvName, item.name.noNull("--"))
             holder.setText(R.id.tvType, item.type.noNull("--"))
         }

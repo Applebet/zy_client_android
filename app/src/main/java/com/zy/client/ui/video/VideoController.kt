@@ -19,7 +19,7 @@ import com.dueeeke.videoplayer.util.L
 import com.lxj.xpopup.XPopup
 import com.zy.client.bean.Video
 import com.zy.client.bean.VideoHistory
-import com.zy.client.bean.VideoSource
+import com.zy.client.bean.VideoEntity
 import com.zy.client.common.getScreenShotPath
 import com.zy.client.database.HistoryDBUtils
 import com.zy.client.utils.PermissionManager.overlay
@@ -356,14 +356,14 @@ class VideoController {
         pipManager?.actClass = clz
     }
 
-    fun setPipCacheData(data: VideoSource?) {
+    fun setPipCacheData(data: VideoEntity?) {
         data?.apply {
             pipManager?.cacheData?.putSerializable("pipCache", data)
         }
     }
 
-    fun getPipCacheData(): VideoSource? =
-        pipManager?.cacheData?.getSerializable("pipCache") as? VideoSource
+    fun getPipCacheData(): VideoEntity? =
+        pipManager?.cacheData?.getSerializable("pipCache") as? VideoEntity
 
     fun clearPipCacheData() = pipManager?.clearCacheData()
 

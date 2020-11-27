@@ -1,24 +1,39 @@
 package com.zy.client.utils
 
-import android.content.Context
-import android.content.Intent
 import android.content.res.Resources
-import android.net.Uri
-import android.view.View
-import android.view.ViewGroup
 import com.zy.client.App
-import com.zy.client.utils.ext.ToastUtils
-import com.zy.client.utils.ext.toastShort
 import fr.arnaudguyon.xmltojsonlib.XmlToJson
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
+import java.text.SimpleDateFormat
+import java.util.*
 
 /**
  * @author javakam
- * @date 2020/6/10 22:37
  */
 object Utils {
+
+    /**
+     * 2020-11-27 00:07:26  ->  格式化后的样式
+     */
+    fun isToday(time: String?): Boolean {
+        return time?.run {
+            if (isBlank()) return false
+            try {
+                val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+                val cal = Calendar.getInstance()
+                cal.time = sdf.parse(this) ?: return false
+                val timeLong = cal.timeInMillis
+
+                val sdf2 = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                return sdf2.format(Date(timeLong)) == sdf2.format(Date())
+            } catch (e: Exception) {
+            }
+            false
+        } ?: false
+    }
+
     /**
      * 将json数据变成字符串
      */

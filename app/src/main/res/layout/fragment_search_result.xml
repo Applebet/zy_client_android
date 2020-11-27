@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="50dp"
-    android:layout_marginBottom="50dp"
+    android:layout_marginTop="@dimen/dp_50"
+    android:layout_marginBottom="@dimen/dp_50"
     android:background="@color/white"
     android:orientation="vertical">
 
@@ -17,11 +18,12 @@
         android:gravity="center"
         android:maxLines="1"
         android:paddingStart="@dimen/dp_15"
-        android:paddingTop="10dp"
+        android:paddingTop="@dimen/dp_10"
         android:paddingEnd="@dimen/dp_15"
-        android:paddingBottom="14dp"
-        android:textColor="@color/_xpopup_title_color"
-        android:textSize="@dimen/font_16" />
+        android:paddingBottom="@dimen/dp_14"
+        android:textColor="@color/color_font_black"
+        android:textSize="@dimen/font_16"
+        tools:text="Hello" />
 
     <include layout="@layout/_xpopup_divider" />
 
