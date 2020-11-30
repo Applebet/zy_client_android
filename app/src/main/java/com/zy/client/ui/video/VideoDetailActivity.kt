@@ -9,6 +9,7 @@ import com.lxj.xpopup.XPopup
 import com.zy.client.R
 import com.zy.client.base.BaseMediaActivity
 import com.zy.client.bean.*
+import com.zy.client.common.BROWSER_URL
 import com.zy.client.common.ID
 import com.zy.client.common.SOURCE_KEY
 import com.zy.client.common.VIDEO_VIEW_HEIGHT
@@ -52,8 +53,6 @@ class VideoDetailActivity : BaseMediaActivity() {
     override fun getLayoutId() = R.layout.activity_video_detail
 
     override fun initView() {
-        //PermissionManager.verifyStoragePermissions(this)
-
         id = intent?.getStringExtra(ID).noNull()
         sourceKey = intent?.getStringExtra(SOURCE_KEY).noNull()
         mRepo = ConfigManager.generateSource(sourceKey)
@@ -68,6 +67,12 @@ class VideoDetailActivity : BaseMediaActivity() {
         //IjkPlayer
         videoController = VideoController()
         videoController?.init(this, false)
+        videoController?.callBack = object : VideoController.CallBack {
+            override fun onListVideoSelected(video: Video) {
+                tvCurPlayName.text = video.name.noNull()
+                ivPlayMore.visibleOrGone((video.name?.isNotBlank() == true) && (mVideoDetail?.videoList?.size ?: 0 > 1))
+            }
+        }
 
         //小窗情况下 缓存请求数据 Bundle
         if (id.isBlank() || sourceKey.isBlank()) {
@@ -91,10 +96,10 @@ class VideoDetailActivity : BaseMediaActivity() {
                 ToastUtils.showShort("无法播放")
                 return@setOnClickListener
             }
+
             browser(
-                if (mVideo?.playUrl.isVideoUrl()) {
-                    "http://zyplayer.fun/player/player.html?url=${mVideo?.playUrl?.noNull()}"
-                } else mVideo?.playUrl.noNull()
+                if (mVideo?.playUrl.isVideoUrl()) "${BROWSER_URL}${mVideo?.playUrl?.noNull()}"
+                else mVideo?.playUrl.noNull()
             )
         }
 
@@ -107,23 +112,24 @@ class VideoDetailActivity : BaseMediaActivity() {
 
         llAnthology.setOnClickListener {
             if (mVideoList?.size ?: 0 > 1) {
-                if (mSelectListDialog == null) {
-                    // videoController?.currentListPosition = mVideoList?.lastIndex ?: 0
-                    mSelectListDialog = XPopup.Builder(this)
-                        .hasShadowBg(false)
-                        .maxHeight(dialogHeight)
-                        .asBottomList(
-                            "选集",
-                            mVideoList?.map { it.name }?.toTypedArray(),
-                            null,
-                            videoController?.currentListPosition ?: 0 //传0会显示选中的✔号
-                        ) { position, _ ->
-                            videoController?.currentListPosition = position
-                            playVideo(mVideoList?.get(position))
-                        }
-                        .bindLayout(R.layout.fragment_search_result)
-                    mSelectListDialog?.popupInfo
-                }
+                mSelectListDialog?.dismiss()
+                mSelectListDialog = null
+
+                mSelectListDialog = XPopup.Builder(this)
+                    .hasShadowBg(false)
+                    .maxHeight(dialogHeight)
+                    .asBottomList(
+                        "选集",
+                        mVideoList?.map { it.name }?.toTypedArray(),
+                        null,
+                        videoController?.currentListPosition ?: 0 //传0会显示选中的✔号
+                    ) { position, _ ->
+                        videoController?.currentListPosition = position
+                        videoController?.updateVodViewPosition()
+                        playVideo(mVideoList?.get(position))
+                    }
+                    .bindLayout(R.layout.fragment_search_result)
+                mSelectListDialog?.popupInfo
                 mSelectListDialog?.show()
             }
         }
@@ -224,15 +230,13 @@ class VideoDetailActivity : BaseMediaActivity() {
                     ivPlayMore.invisible()
                 }
 
-                videoController?.currentListPosition = mVideoList?.lastIndex ?: 0
-
+                //videoController?.currentListPosition = mVideoList?.lastIndex ?: 0
                 val pos = if (mHistory != null) {
                     mHistory?.position ?: 0
                 } else {
                     videoController?.currentListPosition ?: 0
                 }
                 playVideo(mVideoList?.get(pos))
-                //playVideo(mVideoList?.get(0))
 
                 videoController?.currentListPosition = pos
                 videoController?.setVideoList(mVideoList)

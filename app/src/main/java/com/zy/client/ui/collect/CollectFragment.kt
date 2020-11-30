@@ -1,7 +1,6 @@
 package com.zy.client.ui.collect
 
 import android.view.View
-import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
@@ -17,7 +16,6 @@ import com.zy.client.database.CollectDBUtils
 import com.zy.client.common.AppRouter
 import com.zy.client.utils.ext.toastShort
 import com.zy.client.views.loader.LoadState
-import com.zy.client.views.loader.LoaderLayout
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -32,14 +30,11 @@ import org.greenrobot.eventbus.ThreadMode
  */
 class CollectFragment : BaseListFragment<CollectModel, BaseViewHolder>() {
 
-    private lateinit var mStatusView: LoaderLayout
-
     override fun initView() {
         super.initView()
-        mStatusView=rootView.findViewById<LoaderLayout>(R.id.statusView)
-        val tvTitle=rootView.findViewById<TextView>(R.id.tv_title)
-        tvTitle.visible()
-        tvTitle.text="收藏"
+        mStatusView.setLoadState(LoadState.UNLOADED)
+        mTitle.visible()
+        mTitle.text = "收藏"
     }
 
     override fun getListAdapter(): BaseLoadMoreAdapter<CollectModel, BaseViewHolder> {
@@ -69,7 +64,7 @@ class CollectFragment : BaseListFragment<CollectModel, BaseViewHolder>() {
                                 if (data.isEmpty()) {
                                     mStatusView.setLoadState(LoadState.EMPTY)
                                 }
-                            } else  toastShort("删除失败")
+                            } else toastShort("删除失败")
                         } catch (e: Exception) {
                             toastShort("删除失败")
                         }

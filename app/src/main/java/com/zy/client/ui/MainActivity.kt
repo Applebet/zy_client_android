@@ -3,21 +3,27 @@ package com.zy.client.ui
 import android.content.Intent
 import android.os.Bundle
 import android.os.SystemClock
+import android.util.Log
 import android.util.SparseArray
+import android.view.MenuItem
+import android.view.ViewGroup
 import androidx.core.util.forEach
+import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import com.zy.client.App
 import com.zy.client.R
 import com.zy.client.base.BaseActivity
+import com.zy.client.base.BaseFragment
 import com.zy.client.ui.collect.CollectFragment
 import com.zy.client.ui.home.HomeFragment
 import com.zy.client.ui.iptv.IPTVFragment
+import com.zy.client.utils.NoShakeClickListener2
 import com.zy.client.utils.ext.ToastUtils
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : BaseActivity() {
 
-    private val fragmentArray = SparseArray<Fragment>(3)
+    private val fragmentArray = SparseArray<BaseFragment>(3)
 
     var mHits = LongArray(2)
 
@@ -58,8 +64,24 @@ class MainActivity : BaseActivity() {
 
     override fun initListener() {
         super.initListener()
+        //屏蔽长按吐司
+        (navView.getChildAt(0) as? ViewGroup)?.children?.forEach { it.setOnLongClickListener { true } }
+
+        //快速点击事件
+        val fastClick = object : NoShakeClickListener2() {
+            override fun onFastClick(item: Any?) {
+                super.onFastClick(item)
+                //Log.e("123", "onFastClick Click")
+                (item as? MenuItem?)?.apply {
+                    val fg = fragmentArray.get(itemId)
+                    if (fg.isAdded) fg.refreshData()
+                }
+            }
+        }
+
         navView.setOnNavigationItemSelectedListener {
             switchPage(it.itemId)
+            fastClick.proceedClick(it)
             true
         }
     }

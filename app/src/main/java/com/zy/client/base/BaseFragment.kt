@@ -23,9 +23,9 @@ abstract class BaseFragment : Fragment(), IBackPressed {
     }
 
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         rootView = inflater.inflate(getLayoutId(), container, false)
         return rootView
@@ -53,6 +53,7 @@ abstract class BaseFragment : Fragment(), IBackPressed {
     open fun initView() {}
     open fun initListener() {}
     open fun initData() {}
+    open fun refreshData() {}
 
     override fun onBackPressed(): Boolean = false
 }

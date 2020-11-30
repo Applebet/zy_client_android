@@ -18,7 +18,10 @@ const val SOURCE_KEY = "source_key"
 const val ID = "id"
 const val TV_BEAN = "tv"
 
-const val SP_NET_SOURCE_KEY= "ShareConfig"
+//eg: "${BROWSER_URL}${mVideo?.playUrl?.noNull()}"
+const val BROWSER_URL = "http://zyplayer.fun/player/player.html?url="
+
+const val SP_NET_SOURCE_KEY = "ShareConfig"
 const val SP_HEALTHY_LIFE = "HealthyLife"
 
 const val HOME_LIST_TID_NEW = "new"
@@ -35,7 +38,7 @@ fun filterHealthyLife(s: String): Boolean {
             || s.contains("伦理")
             || s.contains("倫")
             || s.contains("写真")
-            || s.contains("VIP",true)
+            || s.contains("VIP", true)
             || s.contains("街拍"))
 }
 

@@ -34,6 +34,7 @@ import ando.player.dialog.VideoListDialog;
 import ando.player.setting.ITheme;
 import ando.player.setting.MediaConstants;
 import ando.player.setting.Theme;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -439,6 +440,10 @@ public class VodControlView extends FrameLayout implements IControlComponent, Vi
         } else {
             mFullTvSelectList.setVisibility(GONE);
         }
+    }
+
+    public IPlayerCallBack getCallBack() {
+        return mCallBack;
     }
 
     public void setCallBack(SimplePlayerCallBack callBack) {

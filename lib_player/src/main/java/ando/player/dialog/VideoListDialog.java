@@ -149,7 +149,7 @@ public class VideoListDialog {
         @Override
         public VideoListHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             return new VideoListHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.player_dialog_video_list_item,
-                    null, false));
+                    parent, false));
         }
 
         @Override

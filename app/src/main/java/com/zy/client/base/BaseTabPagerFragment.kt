@@ -1,8 +1,10 @@
 package com.zy.client.base
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.view.ViewGroup
 import androidx.fragment.app.FragmentPagerAdapter
+import androidx.viewpager.widget.ViewPager
+import com.google.android.material.tabs.TabLayout
 import com.zy.client.R
 import com.zy.client.bean.Classify
 import com.zy.client.http.ConfigManager
@@ -13,6 +15,11 @@ import com.zy.client.views.loader.LoaderLayout
 abstract class BaseTabPagerFragment : BaseFragment() {
 
     protected lateinit var mStatusView: LoaderLayout
+    protected lateinit var mTabLayout: TabLayout
+    protected lateinit var mViewPager: ViewPager
+    protected lateinit var mViewPagerAdapter: ViewPageAdapter
+
+    //
     protected var mRepo: IRepository? = null
     protected var mClassifyList = ArrayList<Classify>()
 
@@ -26,6 +33,13 @@ abstract class BaseTabPagerFragment : BaseFragment() {
     override fun initView() {
         super.initView()
         mStatusView = rootView.findViewById(R.id.statusView)
+        mTabLayout = rootView.findViewById(R.id.tabLayout)
+        mViewPager = rootView.findViewById(R.id.viewpager)
+
+        mViewPagerAdapter = ViewPageAdapter()
+        mViewPager.adapter = mViewPagerAdapter
+        mViewPager.offscreenPageLimit = 100
+        mTabLayout.setupWithViewPager(mViewPager)
     }
 
     override fun initListener() {
@@ -37,12 +51,21 @@ abstract class BaseTabPagerFragment : BaseFragment() {
         })
     }
 
+    override fun refreshData() {
+        super.refreshData()
+        if (!isAdded) return
+        mViewPagerAdapter.mCurrFragment.refreshData()
+    }
+
     inner class ViewPageAdapter : FragmentPagerAdapter(
         childFragmentManager,
         BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
     ) {
-        override fun getItem(position: Int): Fragment {
-            return getItemFragment(mClassifyList[position])
+        lateinit var mCurrFragment: BaseFragment
+
+        override fun getItem(position: Int): BaseFragment {
+            mCurrFragment = getItemFragment(mClassifyList[position])
+            return mCurrFragment
         }
 
         override fun getCount(): Int = mClassifyList.size
@@ -52,6 +75,6 @@ abstract class BaseTabPagerFragment : BaseFragment() {
         }
     }
 
-    abstract fun getItemFragment(classify: Classify): Fragment
+    abstract fun getItemFragment(classify: Classify): BaseFragment
 
 }

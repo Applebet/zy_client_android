@@ -25,13 +25,13 @@ internal class BaseDialog(context: Context, themeResId: Int) : Dialog(context, t
     private fun initDefaultDialogListener() {
         setOnShowListener { }
         setOnDismissListener {
-            Log.w("123","Dismiss....................")
+            //Log.w("123","Dismiss....................")
         }
     }
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
-        Log.w("123","onDetachedFromWindow....................")
+        //Log.w("123","onDetachedFromWindow....................")
     }
 
     init {

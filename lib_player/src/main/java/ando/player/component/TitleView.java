@@ -8,7 +8,6 @@ import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
@@ -124,7 +123,7 @@ public class TitleView extends FrameLayout implements IControlComponent {
 
     @Override
     public void onVisibilityChanged(boolean isVisible, Animation anim) {
-        Log.e("123", "onVisibilityChanged title = " + isVisible);
+        //Log.e("123", "onVisibilityChanged title = " + isVisible);
         final boolean isFullScreen = mControlWrapper.isFullScreen();
         //竖屏播放暂停时,Title不隐藏
         if (!isVisible && !isUserPaused && isShowWhenPortrait && !mControlWrapper.isPlaying() && !isFullScreen) {

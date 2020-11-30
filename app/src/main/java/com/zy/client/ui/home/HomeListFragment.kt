@@ -3,7 +3,6 @@ package com.zy.client.ui.home
 import android.graphics.Rect
 import android.os.Bundle
 import android.view.View
-import android.widget.ImageView
 import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -22,7 +21,6 @@ import com.zy.client.common.HOME_LIST_TID_NEW
 import com.zy.client.common.HOME_SPAN_COUNT
 import com.zy.client.utils.Utils
 import com.zy.client.utils.ext.loadImage
-import com.zy.client.utils.ext.visibleOrGone
 
 /**
  * 频道列表
@@ -48,12 +46,11 @@ class HomeListFragment : BaseLazyListFragment<VideoEntity, BaseViewHolder>() {
         tid = arguments?.getString("tid").noNull()
     }
 
-
-    override fun initView() {
-        super.initView()
+    override fun initRecycler(recyclerView: RecyclerView) {
+        super.initRecycler(recyclerView)
 
         if (isNew()) {
-            mRvList.addItemDecoration(object : RecyclerView.ItemDecoration() {
+            recyclerView.addItemDecoration(object : RecyclerView.ItemDecoration() {
                 override fun getItemOffsets(
                     outRect: Rect,
                     view: View,
@@ -65,7 +62,7 @@ class HomeListFragment : BaseLazyListFragment<VideoEntity, BaseViewHolder>() {
                 }
             })
         } else {
-            mRvList.addItemDecoration(
+            recyclerView.addItemDecoration(
                 GridDividerItemDecoration(
                     Utils.dp2px(12.0f),
                     true

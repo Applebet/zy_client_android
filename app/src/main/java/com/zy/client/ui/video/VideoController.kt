@@ -28,12 +28,15 @@ import com.zy.client.utils.ext.*
 import java.text.SimpleDateFormat
 import java.util.*
 
-
 /**
  * @author javakam
  * @date 2020/6/10 12:40
  */
 class VideoController {
+
+    interface CallBack {
+        fun onListVideoSelected(video: Video)
+    }
 
     companion object {
         //private const val THUMB = "https://cdn.pixabay.com/photo/2017/07/10/23/35/globe-2491989_960_720.jpg"
@@ -56,6 +59,7 @@ class VideoController {
     private var videoList: List<Video>? = null
     var currentUrl: String? = null
     var currentListPosition: Int = 0
+    var callBack: CallBack? = null
 
     fun init(context: Context, isLive: Boolean) {
         this.pipManager = PIPManager.get()
@@ -122,9 +126,10 @@ class VideoController {
                                 vodControlView.dismissDialogs()
                                 startPlay(videoUrl = playUrl, title = name)
                                 updateVodViewPosition()
+                                callBack?.onListVideoSelected(this)
                             }
                         }
-                    }, 300)
+                    }, 200)
                 }
             })
             controller.addControlComponent(vodControlView)
@@ -178,10 +183,14 @@ class VideoController {
         controller.setScreenShotListener {
             proceedStoragePermission((context as Activity)) {
                 if (it) {
-                    val timestamp = SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault()).format(Date())
+                    val timestamp =
+                        SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault()).format(Date())
                     insertBitmap(
                         context, videoPlayer.doScreenShot(),
-                        createContentValues("screenshot_$timestamp", relativePath = getScreenShotPath())
+                        createContentValues(
+                            "screenshot_$timestamp",
+                            relativePath = getScreenShotPath()
+                        )
                     ) {
                         context.toastShort("保存截图成功!")
                     }
@@ -334,13 +343,14 @@ class VideoController {
         updateVodViewPosition()
     }
 
-    private fun updateVodViewPosition() {
+    fun updateVodViewPosition() {
         videoList?.apply {
             if (size > 1) {
                 val list = mutableListOf<String>()
                 this.forEachIndexed { i: Int, _: Video ->
                     list.add((size - i).toString())
                 }
+                Log.w("123", "updateVodViewPosition setVideoList $currentListPosition")
                 vodControlView.setVideoList(list, currentListPosition)
             }
         }

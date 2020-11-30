@@ -24,6 +24,7 @@ class HomeFragment : BaseFragment() {
 
     private lateinit var ivHistory: ImageView
     private lateinit var tvSearch: TextView
+    private var mContainer: HomeTabPagerFragment? = null
     private var mRepo: NetRepository? = null
     private var mSourceDialog: BasePopupView? = null
 
@@ -83,9 +84,16 @@ class HomeFragment : BaseFragment() {
     override fun initData() {
         super.initData()
         tvSearch.hint = mRepo?.req?.name.noNull("搜索")
+        mContainer = HomeTabPagerFragment()
         childFragmentManager
             .beginTransaction()
-            .replace(R.id.container, HomeTabPagerFragment())
+            .replace(R.id.container, mContainer ?: return)
             .commitNowAllowingStateLoss()
     }
+
+    override fun refreshData() {
+        super.refreshData()
+        if (isAdded) mContainer?.refreshData()
+    }
+
 }

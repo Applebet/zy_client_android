@@ -1,14 +1,13 @@
 package com.zy.client.ui.iptv
 
 import android.widget.TextView
-import androidx.fragment.app.Fragment
 import com.zy.client.R
+import com.zy.client.base.BaseFragment
 import com.zy.client.base.BaseTabPagerFragment
 import com.zy.client.bean.Classify
 import com.zy.client.http.ConfigManager
 import com.zy.client.utils.ext.visible
 import com.zy.client.views.loader.LoadState
-import kotlinx.android.synthetic.main.fragment_tab_pager.*
 
 class IPTVFragment : BaseTabPagerFragment() {
 
@@ -19,7 +18,7 @@ class IPTVFragment : BaseTabPagerFragment() {
         tvTitle.text = "电视"
     }
 
-    override fun getItemFragment(classify: Classify): Fragment {
+    override fun getItemFragment(classify: Classify): BaseFragment {
         return IPTVListFragment.instance(classify.name.toString())
     }
 
@@ -29,10 +28,9 @@ class IPTVFragment : BaseTabPagerFragment() {
         ConfigManager.getIPTVGroups().apply {
             mClassifyList.clear()
             mClassifyList.addAll(this)
-            viewpager.adapter = ViewPageAdapter()
-            viewpager.offscreenPageLimit = 100
-            tabLayout.setupWithViewPager(viewpager)
-            statusView.setLoadState(LoadState.SUCCESS)
+
+            mViewPagerAdapter.notifyDataSetChanged()
+            mStatusView.setLoadState(LoadState.SUCCESS)
         }
     }
 

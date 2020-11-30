@@ -3,6 +3,7 @@ package com.zy.client
 import ando.player.pip.PIPManager
 import ando.player.utils.ProgressManagerImpl
 import android.app.Application
+import androidx.appcompat.app.AppCompatDelegate
 import com.dueeeke.videoplayer.BuildConfig
 import com.dueeeke.videoplayer.ijk.IjkPlayerFactory
 import com.dueeeke.videoplayer.player.VideoViewConfig
@@ -10,6 +11,8 @@ import com.dueeeke.videoplayer.player.VideoViewManager
 import com.lzy.okgo.OkGo
 import com.lzy.okgo.cache.CacheEntity
 import com.lzy.okgo.cache.CacheMode
+import com.scwang.smart.refresh.header.MaterialHeader
+import com.scwang.smart.refresh.layout.SmartRefreshLayout
 import com.zy.client.database.SourceDBUtils
 import com.zy.client.database.SourceModel
 import com.zy.client.http.ConfigManager
@@ -23,8 +26,25 @@ class App : Application() {
 
     companion object {
         lateinit var instance: App
-        var hasInApp: Boolean = false
     }
+
+    init {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
+        SmartRefreshLayout.setDefaultRefreshInitializer { _, l ->
+            l.setEnableLoadMore(false)
+            l.setEnableAutoLoadMore(false)
+            l.setEnableOverScrollDrag(false)
+            l.setEnableOverScrollBounce(false)
+            l.setEnableLoadMoreWhenContentNotFull(false)
+            l.setEnableScrollContentWhenRefreshed(true)
+            l.setPrimaryColorsId(android.R.color.transparent, R.color.color_main_theme)
+        }
+        SmartRefreshLayout.setDefaultRefreshHeaderCreator { c, _ ->
+            MaterialHeader(c).setColorSchemeResources(R.color.color_main_theme)
+        }
+        //SmartRefreshLayout.setDefaultRefreshFooterCreator(null)
+    }
+
 
     override fun onCreate() {
         super.onCreate()

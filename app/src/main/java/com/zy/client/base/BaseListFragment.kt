@@ -1,16 +1,22 @@
 package com.zy.client.base
 
+import android.util.Log
+import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.module.LoadMoreModule
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
+import com.scwang.smart.refresh.layout.SmartRefreshLayout
+import com.scwang.smart.refresh.layout.api.RefreshLayout
+import com.scwang.smart.refresh.layout.listener.OnRefreshListener
 import com.zy.client.R
+import com.zy.client.utils.ext.toastShort
 import com.zy.client.views.loader.LoadState
 import com.zy.client.views.loader.Loader
 import com.zy.client.views.loader.LoaderLayout
+
 
 /**
  * 加载更多
@@ -30,14 +36,13 @@ abstract class BaseLazyListFragment<T, H : BaseViewHolder> : BaseListFragment<T,
  */
 abstract class BaseListFragment<T, H : BaseViewHolder> : BaseFragment() {
 
-    private lateinit var mTvTitle: TextView
-    private lateinit var mStatusView: LoaderLayout
-    private lateinit var mSwipeRefresh: SwipeRefreshLayout
-    protected lateinit var mRvList: RecyclerView
+    private lateinit var mRvList: RecyclerView
+    protected lateinit var mTitle: TextView
+    protected lateinit var mStatusView: LoaderLayout
+    protected lateinit var mSwipeRefresh: SmartRefreshLayout
 
     //
     private var mCurrPage: Int = 1
-
     private val mAdapter: BaseQuickAdapter<T, H> by lazy {
         getListAdapter().apply {
             loadMoreModule.run {
@@ -62,19 +67,20 @@ abstract class BaseListFragment<T, H : BaseViewHolder> : BaseFragment() {
 
     override fun initView() {
         super.initView()
-        mTvTitle = rootView.findViewById(R.id.tv_title)
+        mTitle = rootView.findViewById(R.id.tv_title)
         mStatusView = rootView.findViewById(R.id.statusView)
         mRvList = rootView.findViewById(R.id.rv_list)
 
         mSwipeRefresh = rootView.findViewById(R.id.swipe_refresh)
-        mSwipeRefresh.setColorSchemeResources(R.color.color_main_theme)
-        mSwipeRefresh.setOnRefreshListener {
-            if (getListAdapter().loadMoreModule.isLoading) {
-                mSwipeRefresh.isRefreshing = false
-                return@setOnRefreshListener
+        mSwipeRefresh.setOnRefreshListener(object : OnRefreshListener {
+            override fun onRefresh(refreshLayout: RefreshLayout) {
+                if (getListAdapter().loadMoreModule.isLoading) {
+                    mSwipeRefresh.finishRefresh()
+                    return
+                }
+                initData()
             }
-            initData()
-        }
+        })
 
         mRvList.run {
             adapter = mAdapter
@@ -95,6 +101,8 @@ abstract class BaseListFragment<T, H : BaseViewHolder> : BaseFragment() {
                 initData()
             }
         })
+
+        initRecycler(mRvList)
     }
 
     override fun initData() {
@@ -106,7 +114,7 @@ abstract class BaseListFragment<T, H : BaseViewHolder> : BaseFragment() {
 
     private fun requestData() {
         loadData(mCurrPage) {
-            if (mSwipeRefresh.isRefreshing) mSwipeRefresh.isRefreshing = false
+            if (mSwipeRefresh.isRefreshing) mSwipeRefresh.finishRefresh()
             try {
                 if (!isAdded) return@loadData
                 if (it != null) {
@@ -137,6 +145,24 @@ abstract class BaseListFragment<T, H : BaseViewHolder> : BaseFragment() {
             }
         }
     }
+
+    override fun refreshData() {
+        super.refreshData()
+        if (!isVisible || mSwipeRefresh.isRefreshing) {
+            return
+        }
+
+        val adapter = getListAdapter()
+        if (adapter.loadMoreModule.isLoading) {
+            adapter.loadMoreModule.loadMoreEnd(true)
+        }
+
+        mSwipeRefresh.autoRefresh()
+        //Log.w("123", "双击刷新 111 ${mSwipeRefresh.isRefreshing}")
+        //toastShort("更新最新数据中...")
+    }
+
+    open fun initRecycler(recyclerView: RecyclerView) {}
 
     abstract fun loadData(page: Int, callback: (list: List<T>?) -> Unit)
 }
