@@ -14,6 +14,7 @@ import com.zy.client.base.BaseListFragment
 import com.zy.client.database.CollectModel
 import com.zy.client.database.CollectDBUtils
 import com.zy.client.common.AppRouter
+import com.zy.client.utils.ext.gone
 import com.zy.client.utils.ext.toastShort
 import com.zy.client.views.loader.LoadState
 import org.greenrobot.eventbus.EventBus
@@ -33,8 +34,9 @@ class CollectFragment : BaseListFragment<CollectModel, BaseViewHolder>() {
     override fun initView() {
         super.initView()
         mStatusView.setLoadState(LoadState.UNLOADED)
-        mTitle.visible()
-        mTitle.text = "收藏"
+        mTitleView.visible()
+        mTitleView.getLeftView().gone()
+        mTitleView.setTitle("收藏")
     }
 
     override fun getListAdapter(): BaseLoadMoreAdapter<CollectModel, BaseViewHolder> {

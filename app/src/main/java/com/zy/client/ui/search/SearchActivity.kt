@@ -1,11 +1,13 @@
 package com.zy.client.ui.search
 
+import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.AppCompatImageView
+import co.lujun.androidtagview.TagView
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BasePopupView
 import com.zy.client.R
@@ -33,7 +35,7 @@ class SearchActivity : BaseActivity() {
 
     override fun getLayoutId() = R.layout.activity_search
 
-    override fun initView() {
+    override fun initView(savedInstanceState: Bundle?) {
         initSearchView()
         sourceKey = ConfigManager.curUseSourceConfig().req.key
         changeEditHint()
@@ -102,11 +104,24 @@ class SearchActivity : BaseActivity() {
         }
 
         //历史记录 Item点击监听
-        viewHistory.tagGroup.setOnTagClickListener {
-            searchWord = it
-            mEditSearch.setText(it)
-            initData()
-        }
+        viewHistory.tagGroup.setOnTagClickListener(object : TagView.OnTagClickListener {
+            override fun onTagClick(position: Int, text: String?) {
+                if (!text.isNullOrBlank()) {
+                    searchWord = text
+                    mEditSearch.setText(text)
+                    initData()
+                }
+            }
+
+            override fun onTagLongClick(position: Int, text: String?) {
+            }
+
+            override fun onSelectedTagDrag(position: Int, text: String?) {
+            }
+
+            override fun onTagCrossClick(position: Int) {
+            }
+        })
     }
 
     override fun initData() {

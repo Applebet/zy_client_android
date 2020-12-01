@@ -106,6 +106,15 @@
             android:configChanges="keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name=".download.ui.DownloadActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize"
+            android:screenOrientation="portrait" />
+
+        <service android:label="@string/service_download"
+            android:name=".download.DownloadService"
+            android:exported="false" />
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileProvider"

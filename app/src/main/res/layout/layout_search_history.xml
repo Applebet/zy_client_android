@@ -33,13 +33,33 @@
         style="@style/DivideLine"
         android:layout_marginTop="@dimen/dp_10" />
 
-    <me.gujun.android.taggroup.TagGroup
+    <co.lujun.androidtagview.TagContainerLayout
         android:id="@+id/tagGroup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_10"
-        app:atg_backgroundColor="@color/white"
-        app:atg_borderColor="@color/black"
-        app:atg_textColor="@color/black" />
+        app:container_background_color="@android:color/white"
+        app:container_border_color="@android:color/transparent"
+        app:container_border_radius="0dp"
+        app:container_border_width="0dp"
+        app:container_enable_drag="false"
+        app:container_gravity="left"
+        app:horizontal_interval="0dp"
+        app:tag_background_color="@color/white"
+        app:tag_border_color="@color/black"
+        app:tag_border_width="@dimen/dp_1"
+        app:tag_clickable="true"
+        app:tag_corner_radius="@dimen/dp_10"
+        app:tag_horizontal_padding="@dimen/dp_10"
+        app:tag_max_length="20"
+        app:tag_ripple_alpha="50"
+        app:tag_ripple_color="#000000"
+        app:tag_ripple_duration="2000"
+        app:tag_text_color="@color/color_font_black"
+        app:tag_text_direction="ltr"
+        app:tag_text_size="@dimen/font_13"
+        app:tag_theme="none"
+        app:tag_vertical_padding="@dimen/dp_5"
+        app:vertical_interval="0dp" />
 
 </LinearLayout>

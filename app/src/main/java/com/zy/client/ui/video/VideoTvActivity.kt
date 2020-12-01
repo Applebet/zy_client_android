@@ -1,5 +1,6 @@
 package com.zy.client.ui.video
 
+import android.os.Bundle
 import android.widget.FrameLayout
 import android.widget.TextView
 import com.zy.client.R
@@ -17,8 +18,8 @@ class VideoTvActivity : BaseMediaActivity() {
 
     override fun getLayoutId(): Int = R.layout.activity_video_tv
 
-    override fun initView() {
-        super.initView()
+    override fun initView(savedInstanceState: Bundle?) {
+        super.initView(savedInstanceState)
 
         videoContainer = findViewById(R.id.playerContainer)
         mTvName = findViewById(R.id.tv_name)

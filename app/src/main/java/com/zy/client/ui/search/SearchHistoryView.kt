@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
+import co.lujun.androidtagview.TagView
 import com.zy.client.R
 import com.zy.client.database.SearchHistoryDBUtils
 import kotlinx.android.synthetic.main.layout_search_history.view.*
@@ -28,13 +29,26 @@ class SearchHistoryView @JvmOverloads constructor(
         ivDelete.setOnClickListener {
             //清除全部记录
             if (SearchHistoryDBUtils.deleteAll()) {
-                tagGroup.setTags(arrayListOf())
+                tagGroup.tags = emptyList()
             }
         }
 
-        tagGroup.setOnTagClickListener {
-            onSelectListener?.invoke(it)
-        }
+        tagGroup.setOnTagClickListener(object : TagView.OnTagClickListener {
+            override fun onTagClick(position: Int, text: String?) {
+                if (!text.isNullOrBlank()) {
+                    onSelectListener?.invoke(text)
+                }
+            }
+
+            override fun onTagLongClick(position: Int, text: String?) {
+            }
+
+            override fun onSelectedTagDrag(position: Int, text: String?) {
+            }
+
+            override fun onTagCrossClick(position: Int) {
+            }
+        })
 
         contentView.alpha = 1f
     }
@@ -44,7 +58,7 @@ class SearchHistoryView @JvmOverloads constructor(
     fun updateHistory() {
         SearchHistoryDBUtils.searchAllAsync {
             if (!it.isNullOrEmpty()) {
-                tagGroup.setTags(it.map { model -> model.searchWord })
+                tagGroup.tags = it.map { model -> model.searchWord }
             }
         }
     }

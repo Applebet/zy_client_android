@@ -4,6 +4,7 @@ import ando.player.pip.PIPManager
 import ando.player.utils.ProgressManagerImpl
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
+import com.arialyy.aria.core.Aria
 import com.dueeeke.videoplayer.BuildConfig
 import com.dueeeke.videoplayer.ijk.IjkPlayerFactory
 import com.dueeeke.videoplayer.player.VideoViewConfig
@@ -54,6 +55,7 @@ class App : Application() {
 
         initSourceConfig()
 
+        Aria.init(this);
         OkGo.getInstance().init(this)
             //建议设置OkHttpClient，不设置将使用默认的
             //.setOkHttpClient( OkHttpClient.Builder().build())

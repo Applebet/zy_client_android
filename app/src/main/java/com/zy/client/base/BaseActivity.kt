@@ -18,7 +18,7 @@ abstract class BaseActivity : AppCompatActivity() {
         setContentView(getLayoutId())
         mView = findViewById(android.R.id.content)
         initStyle()
-        initView()
+        initView(savedInstanceState)
         initListener()
         initData()
     }
@@ -29,7 +29,7 @@ abstract class BaseActivity : AppCompatActivity() {
         StatusBarUtils.setStatusBarView(this, android.R.color.white)
     }
 
-    open fun initView() {
+    open fun initView(savedInstanceState: Bundle?) {
     }
 
     open fun initListener() {

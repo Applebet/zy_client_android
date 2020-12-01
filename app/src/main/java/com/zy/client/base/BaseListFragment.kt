@@ -1,8 +1,5 @@
 package com.zy.client.base
 
-import android.util.Log
-import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.chad.library.adapter.base.BaseQuickAdapter
@@ -12,7 +9,7 @@ import com.scwang.smart.refresh.layout.SmartRefreshLayout
 import com.scwang.smart.refresh.layout.api.RefreshLayout
 import com.scwang.smart.refresh.layout.listener.OnRefreshListener
 import com.zy.client.R
-import com.zy.client.utils.ext.toastShort
+import com.zy.client.views.TitleView
 import com.zy.client.views.loader.LoadState
 import com.zy.client.views.loader.Loader
 import com.zy.client.views.loader.LoaderLayout
@@ -37,7 +34,7 @@ abstract class BaseLazyListFragment<T, H : BaseViewHolder> : BaseListFragment<T,
 abstract class BaseListFragment<T, H : BaseViewHolder> : BaseFragment() {
 
     private lateinit var mRvList: RecyclerView
-    protected lateinit var mTitle: TextView
+    protected lateinit var mTitleView: TitleView
     protected lateinit var mStatusView: LoaderLayout
     protected lateinit var mSwipeRefresh: SmartRefreshLayout
 
@@ -67,7 +64,7 @@ abstract class BaseListFragment<T, H : BaseViewHolder> : BaseFragment() {
 
     override fun initView() {
         super.initView()
-        mTitle = rootView.findViewById(R.id.tv_title)
+        mTitleView = rootView.findViewById(R.id.titleView)
         mStatusView = rootView.findViewById(R.id.statusView)
         mRvList = rootView.findViewById(R.id.rv_list)
 

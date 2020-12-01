@@ -1,6 +1,7 @@
 package com.zy.client.ui
 
 import android.graphics.Rect
+import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -47,8 +48,8 @@ class HistoryActivity : BaseActivity() {
         return R.layout.activity_history
     }
 
-    override fun initView() {
-        super.initView()
+    override fun initView(savedInstanceState: Bundle?) {
+        super.initView(savedInstanceState)
         ivBack = findViewById(R.id.iv_history_back)
         tvTitle = findViewById(R.id.tv_history_title)
         ivDelete = findViewById(R.id.iv_history_delete)

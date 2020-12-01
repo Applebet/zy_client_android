@@ -13,12 +13,8 @@ object HistoryDBUtils {
         }
 
         //if (history.isSaved) return true
-        LitePal.where(" uniqueId = ? ", history.uniqueId).findFirst(VideoHistory::class.java)
-            ?.apply {
-                if (position == history.position && (progress == history.progress)) return false else delete(
-                    uniqueId
-                )
-            }
+        LitePal.where(" uniqueId = ? ", history.uniqueId)
+            .findFirst(VideoHistory::class.java)?.delete()
         return history.save()
     }
 
@@ -46,6 +42,9 @@ object HistoryDBUtils {
         }))
     }
 
+    /**
+     *  val uniqueId = "${mVideoDetail?.sourceKey}${mVideoDetail?.tid}${mVideoDetail?.id}"
+     */
     fun saveAsync(history: VideoHistory, callback: ((Boolean) -> Unit)? = null) {
         ThreadUtils.executeByCached(CustomTask({
             save(history)

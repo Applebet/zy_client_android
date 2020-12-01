@@ -1,11 +1,14 @@
 package com.zy.client.ui.video
 
 import android.annotation.SuppressLint
+import android.os.Bundle
 import android.text.Html
 import android.util.Log
 import android.widget.FrameLayout
 import com.dueeeke.videoplayer.util.PlayerUtils
 import com.lxj.xpopup.XPopup
+import com.zy.client.App
+import com.zy.client.BuildConfig
 import com.zy.client.R
 import com.zy.client.base.BaseMediaActivity
 import com.zy.client.bean.*
@@ -18,7 +21,9 @@ import com.zy.client.database.CollectModel
 import com.zy.client.database.SourceDBUtils
 import com.zy.client.http.ConfigManager
 import com.zy.client.http.NetRepository
+import com.zy.client.download.ui.DownloadActivity
 import com.zy.client.utils.NotchUtils
+import com.zy.client.utils.PermissionManager
 import com.zy.client.utils.Utils
 import com.zy.client.utils.ext.*
 import com.zy.client.views.loader.LoadState
@@ -52,7 +57,7 @@ class VideoDetailActivity : BaseMediaActivity() {
 
     override fun getLayoutId() = R.layout.activity_video_detail
 
-    override fun initView() {
+    override fun initView(savedInstanceState: Bundle?) {
         id = intent?.getStringExtra(ID).noNull()
         sourceKey = intent?.getStringExtra(SOURCE_KEY).noNull()
         mRepo = ConfigManager.generateSource(sourceKey)
@@ -160,27 +165,31 @@ class VideoDetailActivity : BaseMediaActivity() {
 
         //下载
         ivDownload.setOnClickListener {
-//            mRepo.requestDownloadData(id) {
-//                if (it.isNullOrEmpty()) {
-//                    ToastUtils.showShort("该资源暂不支持下载哦~")
-//                    return@requestDownloadData
-//                } else {
-//                    DetailFilmDownloadDialog().show(it.map { data ->
-//                        FilmItemInfo(
-//                            playVideo?.name.textOrDefault(),
-//                            data.name,
-//                            data.downloadUrl
-//                        )
-//                    } as ArrayList<FilmItemInfo>, childFragmentManager)
-//                }
-//            }
-            if (mVideo?.playUrl.isVideoUrl()) {
 
-                mVideo?.playUrl?.copyToClipBoard()
-                toastLong("地址已复制，快去下载吧~\n${mVideo?.playUrl}")
-            } else {
-                toastShort("该资源暂不支持下载哦~")
+            val currUrl = mVideo?.playUrl
+            //mRepo.requestDownloadData(id)
+            PermissionManager.proceedStoragePermission(this) {
+                if (it) {
+                    if (currUrl.isVideoUrl()) {
+                        //todo 2020年12月1日17:17:04
+                        if (!BuildConfig.DEBUG) {
+                            currUrl?.copyToClipBoard()
+                            toastLong("地址已复制，快去下载吧~\n${currUrl}")
+                            return@proceedStoragePermission
+                        }
+
+                        if (mVideoList?.size ?: 0 <= 1) {
+                            //toastLong("该资源已开始下载~\n${currUrl}")
+                            DownloadActivity.openThis(this, true, currUrl)
+                        }
+
+                    } else {
+                        toastShort("该资源暂不支持下载哦~")
+                    }
+
+                }
             }
+
         }
     }
 
@@ -230,11 +239,10 @@ class VideoDetailActivity : BaseMediaActivity() {
                     ivPlayMore.invisible()
                 }
 
-                //videoController?.currentListPosition = mVideoList?.lastIndex ?: 0
                 val pos = if (mHistory != null) {
                     mHistory?.position ?: 0
                 } else {
-                    videoController?.currentListPosition ?: 0
+                    mVideoList?.lastIndex ?: 0
                 }
                 playVideo(mVideoList?.get(pos))
 
@@ -305,7 +313,7 @@ class VideoDetailActivity : BaseMediaActivity() {
         if (mVideoDetail == null) return
         videoController?.apply {
             val uniqueId = "${mVideoDetail?.sourceKey}${mVideoDetail?.tid}${mVideoDetail?.id}"
-            Log.e("123", "uniqueId === $uniqueId  ${mVideoDetail?.id}")
+            Log.e("123", "saveHistory uniqueId === $uniqueId")
 
             val currPosition = getPlayer()?.currentPosition ?: 0L
             val currTimePercent = String.format(
