@@ -25,7 +25,7 @@ import java.math.BigDecimal;
  * 统一的进度布局
  */
 public class ProgressLayout extends RelativeLayout implements View.OnClickListener {
-    private final String TAG = "ProgressLayout";
+    private static final String TAG = "ProgressLayout";
     private TextView speedOrState, fileName, leftTime, fileSize;
     private HorizontalProgressBarWithNumber pb;
     private Button handleBt;
@@ -60,7 +60,7 @@ public class ProgressLayout extends RelativeLayout implements View.OnClickListen
     }
 
     public ProgressLayout(Context context, AttributeSet attrs) {
-        this(context, attrs, -1);
+        this(context, attrs, 0);
     }
 
     public ProgressLayout(Context context, AttributeSet attrs, int defStyleAttr) {
@@ -81,7 +81,7 @@ public class ProgressLayout extends RelativeLayout implements View.OnClickListen
         handleBt.setOnClickListener(this);
     }
 
-    public void setBtListener(OnProgressLayoutBtListener listener) {
+    public void setProgressControlListener(OnProgressLayoutBtListener listener) {
         this.listener = listener;
     }
 
@@ -237,19 +237,19 @@ public class ProgressLayout extends RelativeLayout implements View.OnClickListen
 
         double megaByte = kiloByte / 1024;
         if (megaByte < 1) {
-            BigDecimal result1 = new BigDecimal(Double.toString(kiloByte));
+            BigDecimal result1 = BigDecimal.valueOf(kiloByte);
             return result1.setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString() + "k";
         }
 
         double gigaByte = megaByte / 1024;
         if (gigaByte < 1) {
-            BigDecimal result2 = new BigDecimal(Double.toString(megaByte));
+            BigDecimal result2 = BigDecimal.valueOf(megaByte);
             return result2.setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString() + "m";
         }
 
         double teraBytes = gigaByte / 1024;
         if (teraBytes < 1) {
-            BigDecimal result3 = new BigDecimal(Double.toString(gigaByte));
+            BigDecimal result3 = BigDecimal.valueOf(gigaByte);
             return result3.setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString() + "g";
         }
         BigDecimal result4 = new BigDecimal(teraBytes);

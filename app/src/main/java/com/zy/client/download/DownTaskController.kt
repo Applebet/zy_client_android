@@ -1,8 +1,6 @@
 package com.zy.client.download
 
-import android.content.Context
 import android.util.Log
-import android.widget.Toast
 import com.arialyy.annotations.Download
 import com.arialyy.annotations.M3U8.*
 import com.arialyy.aria.core.Aria
@@ -11,6 +9,8 @@ import com.arialyy.aria.core.task.DownloadTask
 import com.arialyy.aria.util.CommonUtil
 import com.zy.client.App
 import com.zy.client.R
+import com.zy.client.download.DownTaskManager.DOWN_PATH_DEFAULT
+import com.zy.client.utils.ext.toastLong
 import java.io.File
 
 /**
@@ -23,26 +23,30 @@ import java.io.File
  */
 class DownTaskController(val url: String, private val progressLayout: ProgressLayout? = null) {
 
-    private var mContext: Context = App.instance
     private var mCurrDownloadEntity: DownloadEntity? = null
     private var mUrl: String? = null
     private var mFilePath: String? = null
-    var mTaskId: Long = 0
+    var mTaskId: Long = -1L
 
     init {
-        mCurrDownloadEntity = Aria.download(App.instance).getFirstDownloadEntity(url)?.apply {
-            getView()?.setInfo(this)
+        Aria.download(this).register()
+
+        mCurrDownloadEntity = Aria.download(this).getFirstDownloadEntity(url)
+        if (mCurrDownloadEntity == null) {
+            mCurrDownloadEntity = DownloadEntity()
+            mCurrDownloadEntity?.url = url
+            val temp = File(DOWN_PATH_DEFAULT)
+            mCurrDownloadEntity?.filePath = DOWN_PATH_DEFAULT
+            mCurrDownloadEntity?.fileName = temp.name
         }
+
+        getView()?.setInfo(mCurrDownloadEntity)
         mTaskId = mCurrDownloadEntity?.id ?: 0L
         mUrl = mCurrDownloadEntity?.url
         mFilePath = mCurrDownloadEntity?.filePath
     }
 
     private fun getView(): ProgressLayout? = progressLayout
-
-    fun register() {
-        Aria.download(this).register()
-    }
 
     fun unRegister() {
         Aria.download(this).unRegister()
@@ -88,13 +92,23 @@ class DownTaskController(val url: String, private val progressLayout: ProgressLa
         }
     }
 
+    @Download.onTaskPre
+    fun onTaskPre(task: DownloadTask) {
+        if (task.key == mUrl) {
+            Log.d("123", "pre")
+            getView()?.setInfo(task.entity)
+        }
+    }
+
     @Download.onTaskRunning
-    fun running(task: DownloadTask) {
+    fun onTaskRunning(task: DownloadTask) {
         if (task.key == mUrl) {
             Log.d(
                 "123",
-                "m3u8 void running, p = " + task.percent + ", speed  = " + task.convertSpeed
+                "onTaskRunning m3u8 void running, p = " + task.percent + ", speed  = " + task.convertSpeed
             )
+            //如果你打开了速度单位转换配置，将可以通过以下方法获取带单位的下载速度，如：1 mb/s   task.convertSpeed
+            //如果你有自己的单位格式，可以通过以下方法获取原始byte长度  val speed = task.speed
             getView()?.setInfo(task.entity)
         }
     }
@@ -126,11 +140,8 @@ class DownTaskController(val url: String, private val progressLayout: ProgressLa
     @Download.onTaskFail
     fun taskFail(task: DownloadTask?, e: Exception?) {
         if (task != null && task.key == mUrl) {
-            Toast.makeText(
-                mContext, mContext.getString(R.string.download_fail),
-                Toast.LENGTH_SHORT
-            )
-                .show()
+            App.instance.toastLong(R.string.download_fail)
+
             Log.d("123", "fail")
             getView()?.setInfo(task.entity)
         }
@@ -139,10 +150,8 @@ class DownTaskController(val url: String, private val progressLayout: ProgressLa
     @Download.onTaskComplete
     fun taskComplete(task: DownloadTask) {
         if (task.key == mUrl) {
-            Toast.makeText(
-                mContext, mContext.getString(R.string.download_success),
-                Toast.LENGTH_SHORT
-            ).show()
+            App.instance.toastLong(R.string.download_success)
+
             Log.d("123", "md5: " + CommonUtil.getFileMD5(File(task.filePath)))
             getView()?.setInfo(task.entity)
         }

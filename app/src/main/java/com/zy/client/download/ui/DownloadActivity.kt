@@ -7,15 +7,20 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import com.arialyy.annotations.Download
+import com.arialyy.aria.core.Aria
 import com.arialyy.aria.core.common.AbsEntity
 import com.arialyy.aria.core.task.DownloadTask
 import com.zy.client.R
 import com.zy.client.base.BaseActivity
 import com.zy.client.download.DownTaskController
 import com.zy.client.download.DownTaskManager
+import com.zy.client.download.PeerIndex
 import com.zy.client.download.ProgressLayout
 import com.zy.client.utils.ext.visible
 import com.zy.client.views.TitleView
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 
 /**
@@ -58,8 +63,8 @@ class DownloadActivity : BaseActivity() {
 
         if (!isOnlyOneUrl.isNullOrBlank()) {
             taskController = DownTaskController(isOnlyOneUrl ?: "", mProgressLayout)
+            DownTaskManager.setMaxSpeed(0)
         }
-        taskController?.register()
 
         if (isOnlyOne) {
             findViewById<LinearLayout>(R.id.ll_progress_container).visible()
@@ -73,7 +78,8 @@ class DownloadActivity : BaseActivity() {
     }
 
     private fun proceedOnlyOne() {
-        mProgressLayout.setBtListener(object : ProgressLayout.OnProgressLayoutBtListener {
+        mProgressLayout.setProgressControlListener(object :
+            ProgressLayout.OnProgressLayoutBtListener {
             override fun create(v: View?, entity: AbsEntity?) {
                 Log.d("123", "setBtListener create")
                 taskController?.mTaskId = DownTaskManager.startTask(isOnlyOneUrl, null)
@@ -103,11 +109,10 @@ class DownloadActivity : BaseActivity() {
      * https://aria.laoyuyu.me/aria_doc/other/annotaion_invalid.html
      *
      * 如果当前类中没有方法被`@Download`或`@Upload`或`@DownloadGroup`注解，那么就会提示没有Aria的注解方法
-     *
      */
     @Download.onTaskComplete
     fun onComplete(task: DownloadTask?) {
-        Log.d("123", "complete")
+        Log.d("123", "DownloadActivity complete")
     }
 
     override fun onDestroy() {

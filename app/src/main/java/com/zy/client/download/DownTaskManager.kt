@@ -13,6 +13,8 @@ import com.arialyy.aria.core.processor.IVodTsUrlConverter
 import com.zy.client.App
 import com.zy.client.utils.ext.isVideoUrl
 import java.io.File
+import java.net.MalformedURLException
+import java.net.URL
 
 /**
  * Title: DownTaskManager
@@ -26,7 +28,7 @@ object DownTaskManager {
     const val M3U8_URL_KEY = "M3U8_URL_KEY"
     const val M3U8_PATH_KEY = "M3U8_PATH_KEY"
 
-    private val defFilePath = "${App.instance.filesDir}/aria1.ts"
+    val DOWN_PATH_DEFAULT = "${App.instance.filesDir.absolutePath}/video.ts"
 
     /**
      * 更新文件保存路径
@@ -56,30 +58,19 @@ object DownTaskManager {
         downloadEntity.url = url
     }
 
-    fun register() {
-        Aria.download(this).register()
-    }
-
-    fun unRegister() {
-        Aria.download(this).unRegister()
-    }
-
     /**
      * https://aria.laoyuyu.me/aria_doc/api/m3u8_params.html
      */
     private fun getM3U8Option(): M3U8VodOption {
         val option = M3U8VodOption()
         //option.setBandWidth(200000)
-        //.generateIndexFile()
+        //option.generateIndexFile()
         option.merge(true)
-        //.setVodTsUrlConvert(new VodTsUrlConverter());
-        option.setMergeHandler(TsMergeHandler())
-        option.setUseDefConvert(true)
-        option.generateIndexFile()
+        //option.setMergeHandler(TsMergeHandler())
+        option.setUseDefConvert(false)
         //option.setKeyUrlConverter(new KeyUrlConverter());
-        //option.setVodTsUrlConvert(new VodTsUrlConverter());
+        //option.setVodTsUrlConvert(VodTsUrlConverter())
         option.setBandWidthUrlConverter(BandWidthUrlConverter())
-        //option.setUseDefConvert(true);
         return option
     }
 
@@ -99,7 +90,7 @@ object DownTaskManager {
         if (url.isNullOrBlank() || !url.isVideoUrl()) return -1
         return Aria.download(this)
             .load(url)
-            .setFilePath(if (filePath.isNullOrBlank()) defFilePath else filePath)
+            .setFilePath(if (filePath.isNullOrBlank()) DOWN_PATH_DEFAULT else filePath)
             .ignoreFilePathOccupy()
             .m3u8VodOption(getM3U8Option())
             .create()
@@ -134,7 +125,7 @@ object DownTaskManager {
 
     internal class VodTsUrlConverter : IVodTsUrlConverter {
         override fun convert(m3u8Url: String, tsUrls: List<String>): List<String> {
-            val uri = Uri.parse(m3u8Url)
+            //val uri = Uri.parse(m3u8Url)
             //String parentUrl = "http://devimages.apple.com/iphone/samples/bipbop/gear1/";
             //String parentUrl = "http://youku.cdn7-okzy.com/20200123/16815_fbe419ed/1000k/hls/";
             //String parentUrl = "http://" + uri.getHost() + "/gear1/";
@@ -142,13 +133,13 @@ object DownTaskManager {
             //String parentUrl = m3u8Url.substring(0, index + 1);
             //String parentUrl = "https://v1.szjal.cn/20190819/Ql6UD1od/";
             //String parentUrl = "http://" + uri.getHost() + "/";
-            //List<String> newUrls = new ArrayList<>();
-            //for (String url : tsUrls) {
-            //  newUrls.add(parentUrl + url);
-            //}
 
-            //return newUrls;
-            return tsUrls
+            val newUrls = ArrayList<String>()
+            val parentUrl = m3u8Url.replace(URL(m3u8Url).path, "")
+            tsUrls.forEach { newUrls.add(parentUrl + it)
+                Log.w("123","VodTsUrlConverter ${parentUrl + it}")
+            }
+            return newUrls
         }
     }
 
@@ -160,9 +151,18 @@ object DownTaskManager {
     }
 
     internal class BandWidthUrlConverter : IBandWidthUrlConverter {
-        override fun convert(m3u8Url: String, bandWidthUrl: String): String? {
-            val index = m3u8Url.lastIndexOf("/")
-            return m3u8Url.substring(0, index + 1) + bandWidthUrl
+        override fun convert(m3u8Url: String, bandWidthUrl: String): String {
+            Log.d("123", "BandWidthUrlConverter .... " + m3u8Url + "  " + (m3u8Url + bandWidthUrl))
+            return try {
+                m3u8Url.replace(URL(m3u8Url).path, "")
+            } catch (e: MalformedURLException) {
+                e.printStackTrace()
+                val index = m3u8Url.lastIndexOf("/")
+                return m3u8Url.substring(0, index + 1)
+            }.plus(bandWidthUrl)
+
+//            val index = m3u8Url.lastIndexOf("/")
+//            return m3u8Url.substring(0, index + 1) + bandWidthUrl
         }
     }
 

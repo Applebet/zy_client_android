@@ -7,8 +7,6 @@ import android.util.Log
 import android.widget.FrameLayout
 import com.dueeeke.videoplayer.util.PlayerUtils
 import com.lxj.xpopup.XPopup
-import com.zy.client.App
-import com.zy.client.BuildConfig
 import com.zy.client.R
 import com.zy.client.base.BaseMediaActivity
 import com.zy.client.bean.*
@@ -66,8 +64,8 @@ class VideoDetailActivity : BaseMediaActivity() {
         statusView.setLoadState(LoadState.LOADING)
 
         //Player Container
-        playerWebContainer = findViewById<FrameLayout>(R.id.playerWebContainer)
-        videoContainer = findViewById<FrameLayout>(R.id.playerContainer)
+        playerWebContainer = findViewById(R.id.playerWebContainer)
+        videoContainer = findViewById(R.id.playerContainer)
 
         //IjkPlayer
         videoController = VideoController()
@@ -171,17 +169,19 @@ class VideoDetailActivity : BaseMediaActivity() {
             PermissionManager.proceedStoragePermission(this) {
                 if (it) {
                     if (currUrl.isVideoUrl()) {
-                        //todo 2020年12月1日17:17:04
-                        if (!BuildConfig.DEBUG) {
-                            currUrl?.copyToClipBoard()
-                            toastLong("地址已复制，快去下载吧~\n${currUrl}")
-                            return@proceedStoragePermission
-                        }
 
-                        if (mVideoList?.size ?: 0 <= 1) {
+//                        if (!BuildConfig.DEBUG) {
+//                            currUrl?.copyToClipBoard()
+//                            toastLong("地址已复制，快去下载吧~\n${currUrl}")
+//                            return@proceedStoragePermission
+//                        }
+
+                        val testUrl = "https://vod3.buycar5.cn/20201118/ttum6IRH/index.m3u8"
+                        Log.i("123","currUrl = $currUrl")
+//                        if (mVideoList?.size ?: 0 <= 1) {
                             //toastLong("该资源已开始下载~\n${currUrl}")
-                            DownloadActivity.openThis(this, true, currUrl)
-                        }
+                            DownloadActivity.openThis(this, true, testUrl)
+//                        }
 
                     } else {
                         toastShort("该资源暂不支持下载哦~")
@@ -264,8 +264,9 @@ class VideoDetailActivity : BaseMediaActivity() {
                 tvType.text = "影片类型: $type"
                 tvType.visibleOrGone(type?.isNotBlank() == true)
                 //上映年份
-                tvYear.text = "上映年份: $year"
-                tvYear.visibleOrGone(year?.isNotBlank() == true)
+                val realYear = if (year.noNull() == "0") "" else year
+                tvYear.text = "上映年份: $realYear"
+                tvYear.visibleOrGone(realYear?.isNotBlank() == true)
 
                 //剧情简介 & 简介内容
                 des.noNull().let {

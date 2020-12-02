@@ -3,6 +3,8 @@ package com.zy.client
 import ando.player.pip.PIPManager
 import ando.player.utils.ProgressManagerImpl
 import android.app.Application
+import android.os.Environment
+import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
 import com.arialyy.aria.core.Aria
 import com.dueeeke.videoplayer.BuildConfig
@@ -16,7 +18,9 @@ import com.scwang.smart.refresh.header.MaterialHeader
 import com.scwang.smart.refresh.layout.SmartRefreshLayout
 import com.zy.client.database.SourceDBUtils
 import com.zy.client.database.SourceModel
+import com.zy.client.download.DownTaskManager
 import com.zy.client.http.ConfigManager
+import com.zy.client.utils.CrashHandler
 import org.litepal.LitePal
 
 /**
@@ -50,12 +54,16 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
         instance = this
+        CrashHandler.init(
+            this,
+            "${getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)?.absolutePath}/HealthCrash/"
+        )
 
         LitePal.initialize(this)
 
         initSourceConfig()
+        initDownLoad()
 
-        Aria.init(this);
         OkGo.getInstance().init(this)
             //建议设置OkHttpClient，不设置将使用默认的
             //.setOkHttpClient( OkHttpClient.Builder().build())
@@ -89,6 +97,20 @@ class App : Application() {
         PIPManager.init(this)
     }
 
+    private fun initDownLoad() {
+        Aria.init(this)
+        //Aria.download(this).resumeAllTask()
+        Aria.download(this)?.allNotCompleteTask?.forEach {
+            DownTaskManager.resumeTask(it?.m3U8Entity?.rowID)
+        }
+
+        Log.w(
+            "123",
+            "initDownload allNotCompleteTask = ${Aria.download(this)?.allNotCompleteTask?.size}  " +
+                    "allCompleteTask=${Aria.download(this)?.allCompleteTask}"
+        )
+    }
+
     private fun initSourceConfig() {
         SourceDBUtils.isIPTVExit().apply {
             if (!this) {
@@ -103,6 +125,7 @@ class App : Application() {
 
     fun exitSys() {
         //PIPManager.get()?.clearCacheData()
+        Aria.download(this).stopAllTask()
     }
 
 }
