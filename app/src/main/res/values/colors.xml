@@ -2,11 +2,8 @@
 <resources>
     <color name="colorPrimary">#FB7299</color>
     <color name="colorPrimaryDark">#CCFB7299</color>
-    <color name="colorAccent">#000000</color>
+    <color name="colorAccent">#FF000000</color>
 
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
@@ -16,6 +13,7 @@
     <color name="color_font_gray">#A2A2A2</color>
     <color name="color_font_gray_light">#C0C0C0</color>
     <color name="color_container_bg">#F4F4F4</color>
+    <color name="color_container_bg2">#FAFAFA</color>
     <color name="dividerColor">#E8E8E8</color>
 
     <color name="transparent">#00000000</color>
@@ -25,4 +23,8 @@
     <color name="color_player_theme_translucent">#FFFB7299</color>
     <color name="color_player_background">#4D000000</color>
 
+    <color name="permissionx_default_dialog_bg">#fff</color>
+    <color name="permissionx_split_line">#e0e0e0</color>
+    <color name="permissionx_tint_color">#1972e8</color>
+    <color name="permissionx_text_color">#212121</color>
 </resources>

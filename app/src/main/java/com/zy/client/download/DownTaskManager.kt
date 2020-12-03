@@ -1,9 +1,9 @@
 package com.zy.client.download
 
-import android.net.Uri
 import android.util.Log
 import com.arialyy.aria.core.Aria
 import com.arialyy.aria.core.download.DownloadEntity
+import com.arialyy.aria.core.download.DownloadReceiver
 import com.arialyy.aria.core.download.M3U8Entity
 import com.arialyy.aria.core.download.m3u8.M3U8VodOption
 import com.arialyy.aria.core.processor.IBandWidthUrlConverter
@@ -81,6 +81,8 @@ object DownTaskManager {
         Aria.get(App.instance).downloadConfig.maxSpeed = maxSpeed
     }
 
+    fun getAria(): DownloadReceiver = Aria.download(this)
+
     /**
      * 开始
      *
@@ -88,7 +90,7 @@ object DownTaskManager {
      */
     fun startTask(url: String?, filePath: String?): Long {
         if (url.isNullOrBlank() || !url.isVideoUrl()) return -1
-        return Aria.download(this)
+        return getAria()
             .load(url)
             .setFilePath(if (filePath.isNullOrBlank()) DOWN_PATH_DEFAULT else filePath)
             .ignoreFilePathOccupy()
@@ -100,14 +102,14 @@ object DownTaskManager {
      * 暂停
      */
     fun stopTask(taskId: Long?) {
-        Aria.download(this).load(taskId ?: -1).stop()
+        getAria().load(taskId ?: -1).stop()
     }
 
     /**
      * 继续
      */
     fun resumeTask(taskId: Long?) {
-        Aria.download(this)
+        getAria()
             .load(taskId ?: -1)
             .m3u8VodOption(getM3U8Option())
             .resume()
@@ -120,7 +122,7 @@ object DownTaskManager {
      * {@code false}如果任务已经完成，只删除任务数据库记录，
      */
     fun cancelTask(taskId: Long?, removeFile: Boolean) {
-        Aria.download(this).load(taskId ?: -1).cancel(removeFile)
+        getAria().load(taskId ?: -1).cancel(removeFile)
     }
 
     internal class VodTsUrlConverter : IVodTsUrlConverter {
@@ -134,12 +136,11 @@ object DownTaskManager {
             //String parentUrl = "https://v1.szjal.cn/20190819/Ql6UD1od/";
             //String parentUrl = "http://" + uri.getHost() + "/";
 
-            val newUrls = ArrayList<String>()
             val parentUrl = m3u8Url.replace(URL(m3u8Url).path, "")
-            tsUrls.forEach { newUrls.add(parentUrl + it)
-                Log.w("123","VodTsUrlConverter ${parentUrl + it}")
+            return tsUrls.map {
+                Log.w("123", "VodTsUrlConverter ${parentUrl + it}")
+                parentUrl + it
             }
-            return newUrls
         }
     }
 
@@ -152,7 +153,7 @@ object DownTaskManager {
 
     internal class BandWidthUrlConverter : IBandWidthUrlConverter {
         override fun convert(m3u8Url: String, bandWidthUrl: String): String {
-            Log.d("123", "BandWidthUrlConverter .... " + m3u8Url + "  " + (m3u8Url + bandWidthUrl))
+            Log.d("123", "BandWidthUrlConverter .... $m3u8Url")
             return try {
                 m3u8Url.replace(URL(m3u8Url).path, "")
             } catch (e: MalformedURLException) {

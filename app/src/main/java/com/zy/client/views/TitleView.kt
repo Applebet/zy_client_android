@@ -24,12 +24,14 @@ class TitleView @JvmOverloads constructor(
     private var mIvLeft: ImageView
     private var mIvRight: ImageView
     private var mTvTitle: TextView
+    private var mTvRight: TextView
 
     init {
         val view = inflate(context, R.layout.layout_title_view, null)
         mIvLeft = view.findViewById(R.id.iv_title_back) as ImageView
         mIvRight = view.findViewById(R.id.iv_title_right) as ImageView
         mTvTitle = view.findViewById<View>(R.id.tv_title) as TextView
+        mTvRight = view.findViewById<View>(R.id.tv_title_right) as TextView
 
         mIvLeft.setOnClickListener {
             val activity = context as Activity?
@@ -52,6 +54,10 @@ class TitleView @JvmOverloads constructor(
     fun getLeftView(): ImageView {
         mIvLeft.visibility = VISIBLE
         return mIvLeft
+    }
+
+    fun getRightText(): TextView {
+        return mTvRight
     }
 
 }

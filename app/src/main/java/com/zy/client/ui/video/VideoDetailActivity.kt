@@ -1,12 +1,16 @@
 package com.zy.client.ui.video
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.text.Html
 import android.util.Log
 import android.widget.FrameLayout
+import com.arialyy.aria.core.Aria
+import com.arialyy.aria.core.download.DownloadEntity
 import com.dueeeke.videoplayer.util.PlayerUtils
 import com.lxj.xpopup.XPopup
+import com.permissionx.guolindev.PermissionX
 import com.zy.client.R
 import com.zy.client.base.BaseMediaActivity
 import com.zy.client.bean.*
@@ -17,13 +21,17 @@ import com.zy.client.common.VIDEO_VIEW_HEIGHT
 import com.zy.client.database.CollectDBUtils
 import com.zy.client.database.CollectModel
 import com.zy.client.database.SourceDBUtils
+import com.zy.client.download.DownTaskManager
+import com.zy.client.download.db.DownRecordDBUtils
+import com.zy.client.download.db.DownRecordModel
+import com.zy.client.download.db.RecordVideoModel
 import com.zy.client.http.ConfigManager
 import com.zy.client.http.NetRepository
 import com.zy.client.download.ui.DownloadActivity
 import com.zy.client.utils.NotchUtils
-import com.zy.client.utils.PermissionManager
 import com.zy.client.utils.Utils
 import com.zy.client.utils.ext.*
+import com.zy.client.utils.permission.PermissionDialogFragment
 import com.zy.client.views.loader.LoadState
 import com.zy.client.views.loader.LoaderLayout
 import kotlinx.android.synthetic.main.activity_video_detail.*
@@ -101,8 +109,8 @@ class VideoDetailActivity : BaseMediaActivity() {
             }
 
             browser(
-                if (mVideo?.playUrl.isVideoUrl()) "${BROWSER_URL}${mVideo?.playUrl?.noNull()}"
-                else mVideo?.playUrl.noNull()
+                    if (mVideo?.playUrl.isVideoUrl()) "${BROWSER_URL}${mVideo?.playUrl?.noNull()}"
+                    else mVideo?.playUrl.noNull()
             )
         }
 
@@ -111,7 +119,7 @@ class VideoDetailActivity : BaseMediaActivity() {
         val isNotchScreen = NotchUtils.hasNotchScreen(this)
         val dialogHeight =
             (screenHeight - resources.getDimensionPixelSize(VIDEO_VIEW_HEIGHT))
-                .minus(if (isNotchScreen) 0 else Utils.getStatusBarHeight())
+                    .minus(if (isNotchScreen) 0 else Utils.getStatusBarHeight())
 
         llAnthology.setOnClickListener {
             if (mVideoList?.size ?: 0 > 1) {
@@ -119,19 +127,19 @@ class VideoDetailActivity : BaseMediaActivity() {
                 mSelectListDialog = null
 
                 mSelectListDialog = XPopup.Builder(this)
-                    .hasShadowBg(false)
-                    .maxHeight(dialogHeight)
-                    .asBottomList(
-                        "选集",
-                        mVideoList?.map { it.name }?.toTypedArray(),
-                        null,
-                        videoController?.currentListPosition ?: 0 //传0会显示选中的✔号
-                    ) { position, _ ->
-                        videoController?.currentListPosition = position
-                        videoController?.updateVodViewPosition()
-                        playVideo(mVideoList?.get(position))
-                    }
-                    .bindLayout(R.layout.fragment_search_result)
+                        .hasShadowBg(false)
+                        .maxHeight(dialogHeight)
+                        .asBottomList(
+                                "选集",
+                                mVideoList?.map { it.name }?.toTypedArray(),
+                                null,
+                                videoController?.currentListPosition ?: 0 //传0会显示选中的✔号
+                        ) { position, _ ->
+                            videoController?.currentListPosition = position
+                            videoController?.updateVodViewPosition()
+                            playVideo(mVideoList?.get(position))
+                        }
+                        .bindLayout(R.layout.fragment_search_result)
                 mSelectListDialog?.popupInfo
                 mSelectListDialog?.show()
             }
@@ -163,34 +171,156 @@ class VideoDetailActivity : BaseMediaActivity() {
 
         //下载
         ivDownload.setOnClickListener {
+            requestStoragePermission()
+        }
+    }
 
-            val currUrl = mVideo?.playUrl
-            //mRepo.requestDownloadData(id)
-            PermissionManager.proceedStoragePermission(this) {
-                if (it) {
-                    if (currUrl.isVideoUrl()) {
+    private fun requestStoragePermission() {
 
-//                        if (!BuildConfig.DEBUG) {
-//                            currUrl?.copyToClipBoard()
-//                            toastLong("地址已复制，快去下载吧~\n${currUrl}")
-//                            return@proceedStoragePermission
-//                        }
+        PermissionX.init(this)
+                .permissions(
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+
+//                Manifest.permission.CAMERA,
+//                Manifest.permission.ACCESS_FINE_LOCATION,
+//                Manifest.permission.RECORD_AUDIO,
+
+//                    Manifest.permission.READ_CALENDAR,
+//                    Manifest.permission.READ_CALL_LOG,
+//                    Manifest.permission.READ_CONTACTS,
+//                    Manifest.permission.READ_PHONE_STATE,
+//                    Manifest.permission.BODY_SENSORS,
+//                    Manifest.permission.ACTIVITY_RECOGNITION,
+//                    Manifest.permission.SEND_SMS,
+//                    Manifest.permission.READ_EXTERNAL_STORAGE
+                )
+//            .onExplainRequestReason { scope, deniedList, beforeRequest ->
+////                val message = "需要以下权限才能继续"
+////                scope.showRequestReasonDialog(deniedList, message, "允许", "拒绝")
+//                val message = "请在设置中允许下列权限"
+//                val dialog = PermissionDialogFragment(message, deniedList)
+//                scope.showRequestReasonDialog(dialog)
+//            }
+                .onForwardToSettings { scope, deniedList ->
+                    val message = "请在设置中手动开启以下权限"
+                    // val dialog = PermissionDialog(this, message, deniedList)
+                    val dialog = PermissionDialogFragment(message, deniedList)
+                    scope.showForwardToSettingsDialog(dialog)
+                    //scope.showForwardToSettingsDialog(deniedList, "请在设置中手动开启以下权限", "允许", "取消")
+                }
+                .request { allGranted, grantedList, deniedList ->
+                    if (allGranted) {
+                        toastLong("已授予所有权限")
+                        val currUrl = mVideo?.playUrl
+                        //mRepo.requestDownloadData(id)
+                        if (!currUrl.isVideoUrl()) {
+                            toastShort("该资源暂不支持下载哦~")
+                            return@request
+                        }
+
+//                   if (!BuildConfig.DEBUG) {
+//                       currUrl?.copyToClipBoard()
+//                       toastLong("地址已复制，快去下载吧~\n${currUrl}")
+//                       return@proceedStoragePermission
+//                   }
+
+                        if (mVideoDetail == null) {
+                            toastShort("数据正在缓冲...")
+                            return@request
+                        }
 
                         val testUrl = "https://vod3.buycar5.cn/20201118/ttum6IRH/index.m3u8"
-                        Log.i("123","currUrl = $currUrl")
-//                        if (mVideoList?.size ?: 0 <= 1) {
-                            //toastLong("该资源已开始下载~\n${currUrl}")
-                            DownloadActivity.openThis(this, true, testUrl)
+                        Log.i("123", "currUrl = $currUrl")
+
+                        //单文件处理
+//                  if (mVideoList?.size ?: 0 <= 1) {
+                        //toastLong("该资源已开始下载~\n${currUrl}")
+//                  }
+
+                        val uniqueId =
+                            "${mVideoDetail?.sourceKey}${mVideoDetail?.tid}${mVideoDetail?.id}"
+                        val isInTask = DownTaskManager.getAria().taskExists(testUrl)
+                        val downEntity = DownTaskManager.getAria().getFirstDownloadEntity(testUrl)
+//                        val downEntityDone = DownTaskManager.getAria().taskList.find {
+//                            (it.id == downEntity?.id) && (it.key == downEntity.key)
 //                        }
+                        //已经下载完了
+                        if (downEntity != null && downEntity.isComplete) {
+                            DownRecordDBUtils.searchAsync(uniqueId) {
+                                if (it != null) {
+                                    it.downTaskId = downEntity.id
+                                    it.downTaskKey = downEntity.key
+                                    DownRecordDBUtils.saveAsync(it) {
+                                    }
+                                }
+                            }
+                            toastShort("已下载完成")
+                            DownloadActivity.openThis(this, true, uniqueId = uniqueId,
+                                    isOnlyOneUrl = testUrl, isOnlyOneName = mVideoDetail?.name)
+                            return@request
+                        }
+
+                        Log.e(
+                                "123",
+                                "测试 : $isInTask  $downEntity ${downEntity?.key} ${downEntity?.id}"
+                        )
+                        /*
+                         测试 : true  DownloadEntity{downloadPath='/data/user/0/com.zy.client/files/video.ts',
+                         groupHash='null', fileName='video.ts', md5Code='null', disposition='null', serverFileName='null'}
+                         https://vod3.buycar5.cn/20201118/ttum6IRH/index.m3u8 1
+                         */
+                        DownRecordDBUtils.searchAsync(uniqueId) { model ->
+                            //本地记录和Aria下载记录不同步,两边全删重下
+                            if ((isInTask && model == null) || (!isInTask && model != null)) {
+                                DownTaskManager.cancelTask(downEntity?.id, true)
+                                DownRecordDBUtils.delete(uniqueId)
+                            }
+
+                            if (!isInTask && model == null) {
+                                val videos = mVideoDetail?.videoList?.map {
+                                    RecordVideoModel(name = it.name, playUrl = it.playUrl)
+                                }
+
+                                val record = DownRecordModel(
+                                        //注: uniqueId = sourceKey + tid + id
+                                        uniqueId = uniqueId,
+                                        sourceKey = mVideoDetail?.sourceKey,
+                                        tid = mVideoDetail?.tid,
+                                        vid = mVideoDetail?.id,
+                                        name = mVideoDetail?.name,
+                                        type = mVideoDetail?.type,
+                                        lang = mVideoDetail?.lang,
+                                        area = mVideoDetail?.area,
+                                        pic = mVideoDetail?.pic,
+                                        year = mVideoDetail?.year,
+                                        actor = mVideoDetail?.actor,
+                                        director = mVideoDetail?.director,
+                                        des = mVideoDetail?.des,
+                                        videoList = videos,
+                                        //
+                                        downTime = System.currentTimeMillis()
+                                )
+                                DownRecordDBUtils.saveAsync(record) {
+                                }
+                            }
+                            DownloadActivity.openThis(this, true, uniqueId = uniqueId, isOnlyOneUrl = testUrl)
+                        }
 
                     } else {
-                        toastShort("该资源暂不支持下载哦~")
+                        toastLong("以下权限被拒绝：$deniedList")
                     }
-
                 }
-            }
+    }
 
-        }
+    override fun onRequestPermissionsResult(
+            requestCode: Int,
+            permissions: Array<out String>,
+            grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        //REQUEST_EXTERNAL_STORAGE
+        Log.i("123", "permission result = $requestCode ${permissions?.size} ${grantResults?.size}")
     }
 
     override fun initData() {
@@ -287,8 +417,8 @@ class VideoDetailActivity : BaseMediaActivity() {
         if (mVideo?.playUrl.isVideoUrl()) {
             videoController?.setRecoverActivity(VideoDetailActivity::class.java)
             videoController?.startPlay(
-                mVideo?.playUrl,
-                "${mVideoDetail?.name.noNull()}  ${mVideo?.name.noNull()}"
+                    mVideo?.playUrl,
+                    "${mVideoDetail?.name.noNull()}  ${mVideo?.name.noNull()}"
             )
 
             videoContainer.visible()
@@ -318,24 +448,24 @@ class VideoDetailActivity : BaseMediaActivity() {
 
             val currPosition = getPlayer()?.currentPosition ?: 0L
             val currTimePercent = String.format(
-                Locale.getDefault(), getString(R.string.str_player_time_percent),
-                PlayerUtils.stringForTime(currPosition.toInt()), PlayerUtils.stringForTime(
+                    Locale.getDefault(), getString(R.string.str_player_time_percent),
+                    PlayerUtils.stringForTime(currPosition.toInt()), PlayerUtils.stringForTime(
                     (getPlayer()?.duration ?: 0).toInt()
-                )
+            )
             )
             saveHistory(
-                VideoHistory(
-                    uniqueId = uniqueId,
-                    sourceKey = sourceKey,
-                    tid = mVideoDetail?.tid,
-                    vid = mVideoDetail?.id,
-                    sourceName = SourceDBUtils.searchName(key = mVideoDetail?.sourceKey),
-                    position = currentListPosition,
-                    playUrl = currentUrl,
-                    progress = getPlayer()?.currentPosition ?: 0L,
-                    timePercent = if (currPosition < 3) "" else currTimePercent,
-                    name = mVideoDetail?.name
-                )
+                    VideoHistory(
+                            uniqueId = uniqueId,
+                            sourceKey = sourceKey,
+                            tid = mVideoDetail?.tid,
+                            vid = mVideoDetail?.id,
+                            sourceName = SourceDBUtils.searchName(key = mVideoDetail?.sourceKey),
+                            position = currentListPosition,
+                            playUrl = currentUrl,
+                            progress = getPlayer()?.currentPosition ?: 0L,
+                            timePercent = if (currPosition < 3) "" else currTimePercent,
+                            name = mVideoDetail?.name
+                    )
             )
         }
     }

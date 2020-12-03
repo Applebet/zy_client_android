@@ -39,6 +39,10 @@
         </intent>
     </queries>
 
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+
     <application
         android:name=".App"
         android:allowBackup="true"
@@ -111,9 +115,10 @@
             android:configChanges="keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize"
             android:screenOrientation="portrait" />
 
-        <service android:label="@string/service_download"
+        <service
             android:name=".download.DownloadService"
-            android:exported="false" />
+            android:exported="false"
+            android:label="@string/service_download" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

@@ -2,6 +2,7 @@ package com.zy.client.utils
 
 import android.Manifest
 import android.app.Activity
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -12,25 +13,37 @@ import android.util.Log
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.zy.client.App
+import com.zy.client.BuildConfig
 import com.zy.client.utils.ext.toastLong
+import com.zy.client.utils.status.OSUtils
+
 
 /**
  * <pre>
  *      shouldShowRequestPermissionRationale -> https://blog.csdn.net/wangpf2011/article/details/80589648
  *
  *      如果返回true表示用户点了禁止获取权限，但没有勾选不再提示。
- *      返回false表示用户点了禁止获取权限，并勾选不再提示
+ *      返回false表示用户点了禁止获取权限，并勾选不再提示 or 第一次请求权限时 false
  *
  *      val shouldShow =ActivityCompat.shouldShowRequestPermissionRationale(fragment.activity,Manifest.permission.CAMERA)
  *
  *      L.w("shouldShow  $shouldShow")
  * </pre>
  * <pre>
- *     shouldShowRequestPermissionRationale
+ *   shouldShowRequestPermissionRationale
  *       1. 第一次请求权限时 ActivityCompat -> false;
  *       2. 第一次请求权限被禁止，但未选择【不再提醒】 -> true;
  *       3. 允许某权限后 -> false;
  *       4. 禁止权限，并选中【禁止后不再询问】 -> false；
+ *
+ *  从前面就可以看出来，这个方法大部分情况下是放回false的，只有被用户拒绝了权限，再次获取才会得到true；如果没有申请过，或者禁止了权限，都是返回的false。
+ *  所以很多人想要通过shouldShowRequestPermissionRationale去判断是否权限被禁止，有时候是并不准确的，真要说怎样会准确的获取到权限被禁止的情况，那就是：
+ *       1.在requestPermissions之后在onRequestPermissionsResult中获取到没给权限，
+ *          并且shouldShowRequestPermissionRationale是false，此时可以认定该权限被用户禁止了；
+ *       2.还有一个点是是在onRequestPermissionsResult的参数值第三个参数grantResults是null,此时权限也是被拒绝的。
+ *         （权限被拒绝后再次调用requestPermissions，没有返回结果）
+ *
  * </pre>
  */
 object PermissionManager {
@@ -224,50 +237,125 @@ object PermissionManager {
         }
     }
 
+    private fun createAppSettingIntent(): Intent {
+        return when {
+            OSUtils.isEmui -> {
+                gotoHuaweiPermission()
+            }
+            OSUtils.isMiui -> {
+                gotoMiuiPermission()
+            }
+            OSUtils.isFlyme -> {
+                gotoMeizuPermission()
+            }
+            else -> createAppDetailSettingIntent()
+        }
+    }
+
     /**
-     * 获取应用详情页面 Intent
+     * 获取应用详情页面 通用 Intent
      *
      * https://www.cnblogs.com/zhujiabin/p/9284835.html
      */
-    fun createAppDetailSettingIntent(context: Context): Intent {
+    private fun createAppDetailSettingIntent(): Intent {
         val localIntent = Intent()
         localIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
             localIntent.action = "android.settings.APPLICATION_DETAILS_SETTINGS"
-            localIntent.data = Uri.fromParts("package", context.packageName, null)
+            localIntent.data = Uri.fromParts("package", App.instance.packageName, null)
         } else if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.FROYO) {
             localIntent.action = Intent.ACTION_VIEW
             localIntent.setClassName(
                 "com.android.settings",
                 "com.android.settings.InstalledAppDetails"
             )
-            localIntent.putExtra("com.android.settings.ApplicationPkgName", context.packageName)
+            localIntent.putExtra(
+                "com.android.settings.ApplicationPkgName",
+                App.instance.packageName
+            )
         }
         return localIntent
     }
 
+    /**
+     * 跳转到miui的权限管理页面
+     */
+    private fun gotoMiuiPermission(): Intent {
+        return try {
+            val intent = Intent("miui.intent.action.APP_PERM_EDITOR")
+            val componentName = ComponentName(
+                "com.miui.securitycenter",
+                "com.miui.permcenter.permissions.AppPermissionsEditorActivity"
+            )
+            intent.component = componentName
+            intent.putExtra("extra_pkgname", App.instance.packageName)
+            intent
+        } catch (e: java.lang.Exception) {
+            e.printStackTrace()
+            createAppDetailSettingIntent()
+        }
+    }
+
+    /**
+     * 魅族的权限管理页面
+     */
+    private fun gotoMeizuPermission(): Intent {
+        return try {
+            val intent = Intent("com.meizu.safe.security.SHOW_APPSEC")
+            intent.addCategory(Intent.CATEGORY_DEFAULT)
+            intent.putExtra("packageName", BuildConfig.APPLICATION_ID)
+            intent
+        } catch (e: java.lang.Exception) {
+            e.printStackTrace()
+            createAppDetailSettingIntent()
+        }
+    }
+
+    /**
+     * 华为的权限管理页面
+     */
+    private fun gotoHuaweiPermission(): Intent {
+        return try {
+            val intent = Intent()
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+
+            //华为权限管理
+            val comp = ComponentName(
+                "com.huawei.systemmanager",
+                "com.huawei.permissionmanager.ui.MainActivity"
+            )
+            intent.component = comp
+            intent
+        } catch (e: Exception) {
+            e.printStackTrace()
+            createAppDetailSettingIntent()
+        }
+    }
+
     /////////////////////////
 
-     fun proceedStoragePermission(activity: Activity, block: (result: Boolean) -> Unit) {
+    fun proceedStoragePermission(activity: Activity, block: (result: Boolean) -> Unit) {
         val hasStoragePermission =
             havePermissions(activity, *PERMISSIONS_STORAGE)
+        if (hasStoragePermission) block.invoke(true)
 
         val shouldShow = checkShowRationale(
             activity,
             *PERMISSIONS_STORAGE
         )
 
+        Log.i("123", "proceedStoragePermission  shouldShow = $shouldShow")
+
         //用户点了禁止获取权限，并勾选不再提示 , 建议做成弹窗提示并提供权限申请页面的跳转
-        if (!shouldShow && !hasStoragePermission) {
-            activity.toastLong("""请开启"存储"权限! """)
-            val intent = createAppDetailSettingIntent(activity)
-            activity.startActivity(intent)
+        if (!shouldShow) {
+            verifyStoragePermissions(activity)
+
+//            activity.toastLong("""请开启"存储"权限! """)
+//            val intent = createAppSettingIntent()
+//            activity.startActivity(intent)
             return
         }
 
-        if (!hasStoragePermission) {
-            verifyStoragePermissions(activity)
-        }
         block.invoke(true)
     }
 

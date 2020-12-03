@@ -46,7 +46,7 @@
         <threadNum value="1" />
 
         <!--设置下载队列最大任务数， 默认为2-->
-        <maxTaskNum value="1" />
+        <maxTaskNum value="3" />
 
         <!--设置下载失败，重试次数，默认为10-->
         <reTryNum value="5" />

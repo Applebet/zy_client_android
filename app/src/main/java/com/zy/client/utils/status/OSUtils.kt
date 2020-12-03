@@ -24,10 +24,12 @@ object OSUtils {
     private var sName: String? = null
     private var sVersion: String? = null
 
+    //华为
     val isEmui: Boolean get() = check(ROM_EMUI)
     val isMiui: Boolean get() = check(ROM_MIUI)
     val isVivo: Boolean get() = check(ROM_VIVO)
     val isOppo: Boolean get() = check(ROM_OPPO)
+    //魅族
     val isFlyme: Boolean get() = check(ROM_FLYME)
     val isSmartisan: Boolean get() = check(ROM_SMARTISAN)
     fun is360(): Boolean = check(ROM_QIKU) || check("360")

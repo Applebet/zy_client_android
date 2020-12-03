@@ -3,9 +3,9 @@
     <!-- Base application theme. -->
     <style name="Theme.Zy_client_android" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/purple_200</item>
-        <item name="colorPrimaryVariant">@color/black</item>
-        <item name="colorOnPrimary">@color/purple_700</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryVariant">@color/colorAccent</item>
+        <item name="colorOnPrimary">@color/colorPrimaryDark</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/color_main_theme</item>
         <item name="colorSecondaryVariant">@color/color_main_theme</item>

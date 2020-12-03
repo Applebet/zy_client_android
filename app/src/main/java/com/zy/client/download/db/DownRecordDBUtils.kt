@@ -12,7 +12,7 @@ import org.litepal.LitePal
  * @author javakam
  * @date 2020/12/1  15:36
  */
-class DownRecordDBUtils {
+object DownRecordDBUtils {
     private fun save(record: DownRecordModel?): Boolean {
         if (record == null || record.uniqueId?.isBlank() == true) {
             return false
@@ -40,9 +40,9 @@ class DownRecordDBUtils {
         return LitePal.count(DownRecordModel::class.java)
     }
 
-    fun saveAllAsync(histories: List<DownRecordModel>, callback: ((Boolean) -> Unit)? = null) {
+    fun saveAllAsync(records: List<DownRecordModel>, callback: ((Boolean) -> Unit)? = null) {
         ThreadUtils.executeByCached(CustomTask({
-            LitePal.saveAll(histories)
+            LitePal.saveAll(records)
         }, {
             callback?.invoke(it ?: false)
         }))

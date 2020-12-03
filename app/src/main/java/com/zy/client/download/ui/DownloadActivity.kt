@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import com.arialyy.annotations.Download
@@ -14,8 +15,12 @@ import com.zy.client.R
 import com.zy.client.base.BaseActivity
 import com.zy.client.download.DownTaskController
 import com.zy.client.download.DownTaskManager
+import com.zy.client.download.DownTaskManager.DOWN_PATH_DEFAULT
 import com.zy.client.download.PeerIndex
 import com.zy.client.download.ProgressLayout
+import com.zy.client.download.db.DownRecordDBUtils
+import com.zy.client.utils.ext.gone
+import com.zy.client.utils.ext.noShake
 import com.zy.client.utils.ext.visible
 import com.zy.client.views.TitleView
 import org.greenrobot.eventbus.EventBus
@@ -35,17 +40,23 @@ class DownloadActivity : BaseActivity() {
 
     private lateinit var mTitleView: TitleView
     private lateinit var mProgressLayout: ProgressLayout
+    private lateinit var mContainerOne: ViewGroup
+    private lateinit var mContainerList: ViewGroup
 
     //
+    private var uniqueId: String? = null
     private var isOnlyOne: Boolean = true
+    private var isOnlyOneName: String? = null
     private var isOnlyOneUrl: String? = null
     private var taskController: DownTaskController? = null
 
     companion object {
-        fun openThis(activity: BaseActivity, isOnlyOne: Boolean, isOnlyOneUrl: String?) {
+        fun openThis(activity: BaseActivity, isOnlyOne: Boolean, isOnlyOneUrl: String?, uniqueId: String, isOnlyOneName: String? = "") {
             val intent = Intent(activity, DownloadActivity::class.java)
+            intent.putExtra("uniqueId", uniqueId)
             intent.putExtra("isOne", isOnlyOne)
             intent.putExtra("isOneUrl", isOnlyOneUrl)
+            intent.putExtra("isOneName", isOnlyOneName)
             activity.startActivity(intent)
         }
     }
@@ -55,31 +66,49 @@ class DownloadActivity : BaseActivity() {
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
         isOnlyOne = intent.getBooleanExtra("isOne", true)
+        uniqueId = intent.getStringExtra("uniqueId")
         isOnlyOneUrl = intent.getStringExtra("isOneUrl")
+        isOnlyOneName = intent.getStringExtra("isOneName")
 
         mTitleView = findViewById(R.id.titleView)
         mProgressLayout = findViewById(R.id.progress_down)
+        mContainerOne = findViewById(R.id.ll_container)
+        mContainerList = findViewById(R.id.fl_container)
         mTitleView.setTitle("下载")
 
         if (!isOnlyOneUrl.isNullOrBlank()) {
-            taskController = DownTaskController(isOnlyOneUrl ?: "", mProgressLayout)
+            taskController = DownTaskController(isOnlyOneName ?: DOWN_PATH_DEFAULT, isOnlyOneUrl ?: "", mProgressLayout)
             DownTaskManager.setMaxSpeed(0)
         }
 
+        switchOneOrList(isOnlyOne)
         if (isOnlyOne) {
-            findViewById<LinearLayout>(R.id.ll_progress_container).visible()
+            val tvRight = mTitleView.getRightText()
+            tvRight.visible()
+            tvRight.noShake {
+                switchOneOrList(false)
+                tvRight.gone()
+            }
+        }
+    }
+
+    private fun switchOneOrList(isOne: Boolean) {
+        if (isOne) {
+            mContainerList.gone()
+            mContainerOne.visible()
             proceedOnlyOne()
         } else {
-            findViewById<FrameLayout>(R.id.fl_container).visible()
+            mContainerOne.gone()
+            mContainerList.visible()
             supportFragmentManager.beginTransaction()
-                .apply { replace(R.id.fl_container, DownloadFragment.instance()) }
-                .commitAllowingStateLoss()
+                    .apply { replace(R.id.fl_container, DownloadFragment.instance()) }
+                    .commitAllowingStateLoss()
         }
     }
 
     private fun proceedOnlyOne() {
         mProgressLayout.setProgressControlListener(object :
-            ProgressLayout.OnProgressLayoutBtListener {
+                ProgressLayout.OnProgressLayoutBtListener {
             override fun create(v: View?, entity: AbsEntity?) {
                 Log.d("123", "setBtListener create")
                 taskController?.mTaskId = DownTaskManager.startTask(isOnlyOneUrl, null)
@@ -102,6 +131,25 @@ class DownloadActivity : BaseActivity() {
                 taskController?.mTaskId = -1
             }
         })
+    }
+
+    @Download.onTaskPre
+    fun onTaskPre(task: DownloadTask) {
+        if (task.key == isOnlyOneUrl) {
+            Log.e("123", "DownloadActivity onTaskPre $task")
+            mProgressLayout.setInfo(task.entity)
+
+            val downEntity = task.entity
+            //val downEntity = DownTaskManager.getAria().getFirstDownloadEntity(isOnlyOneUrl)
+            DownRecordDBUtils.searchAsync(uniqueId) {
+                if (it != null && downEntity != null && (downEntity.id != -1L) && downEntity.key.isNotBlank()) {
+                    it.downTaskId = downEntity.id
+                    it.downTaskKey = downEntity.key
+                    DownRecordDBUtils.saveAsync(it) {
+                    }
+                }
+            }
+        }
     }
 
     /**

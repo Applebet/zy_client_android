@@ -9,8 +9,6 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import androidx.appcompat.widget.AppCompatImageButton;
-
 import com.arialyy.aria.core.common.AbsEntity;
 import com.arialyy.aria.core.common.AbsGroupEntity;
 import com.arialyy.aria.core.common.AbsNormalEntity;
@@ -21,12 +19,14 @@ import com.zy.client.R;
 
 import java.math.BigDecimal;
 
+import androidx.appcompat.widget.AppCompatImageButton;
+
 /**
  * 统一的进度布局
  */
 public class ProgressLayout extends RelativeLayout implements View.OnClickListener {
     private static final String TAG = "ProgressLayout";
-    private TextView speedOrState, fileName, leftTime, fileSize;
+    private TextView speedOrState, fileName,filePath, fileUrl, leftTime, fileSize;
     private HorizontalProgressBarWithNumber pb;
     private Button handleBt;
     private OnProgressLayoutBtListener listener;
@@ -72,6 +72,8 @@ public class ProgressLayout extends RelativeLayout implements View.OnClickListen
         LayoutInflater.from(context).inflate(R.layout.layout_progress_content, this, true);
         speedOrState = findViewById(R.id.speed_or_state);
         fileName = findViewById(R.id.file_name);
+        filePath = findViewById(R.id.file_path);
+        fileUrl = findViewById(R.id.file_url);
         leftTime = findViewById(R.id.left_time);
         fileSize = findViewById(R.id.file_size);
         pb = findViewById(R.id.pb);
@@ -111,6 +113,8 @@ public class ProgressLayout extends RelativeLayout implements View.OnClickListen
 
     private void initState() {
         fileName.setText("-");
+        filePath.setText("-");
+        fileUrl.setText("-");
         leftTime.setText("");
         speedOrState.setText("");
         fileSize.setText("-/-");
@@ -150,10 +154,14 @@ public class ProgressLayout extends RelativeLayout implements View.OnClickListen
             AbsNormalEntity normalEntity = (AbsNormalEntity) entity;
             //ALog.d(TAG, "fileName = " + ((AbsNormalEntity) entity).getFileName());
             fileName.setText(normalEntity.getFileName());
+            filePath.setText(normalEntity.getFilePath());
+            fileUrl.setText(normalEntity.getKey());
         } else if (entity instanceof AbsGroupEntity) {
             AbsGroupEntity groupEntity = (AbsGroupEntity) entity;
             fileName.setText(
                     groupEntity.getAlias() == null ? groupEntity.getKey() : groupEntity.getAlias());
+            filePath.setText(groupEntity.getDirPath());
+            fileUrl.setText(groupEntity.getKey());
         }
 
         String str =

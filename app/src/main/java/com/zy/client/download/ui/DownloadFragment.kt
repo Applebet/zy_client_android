@@ -6,10 +6,13 @@ import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.zy.client.R
 import com.zy.client.base.BaseListFragment
 import com.zy.client.base.BaseLoadMoreAdapter
+import com.zy.client.download.DownTaskManager
+import com.zy.client.download.ProgressLayout
+import com.zy.client.download.db.DownRecordDBUtils
 import com.zy.client.download.db.DownRecordModel
 
 /**
- * Title:
+ * Title: DownloadFragment
  * <p>
  * Description:
  * </p>
@@ -26,6 +29,11 @@ class DownloadFragment private constructor() : BaseListFragment<DownRecordModel,
         }
     }
 
+    override fun initView() {
+        super.initView()
+        getListAdapter().loadMoreModule.isEnableLoadMore = false
+    }
+
     override fun getListAdapter(): BaseLoadMoreAdapter<DownRecordModel, BaseViewHolder> {
         return DownloadFragmentAdapter()
     }
@@ -36,21 +44,26 @@ class DownloadFragment private constructor() : BaseListFragment<DownRecordModel,
 
     override fun loadData(page: Int, callback: (list: List<DownRecordModel>?) -> Unit) {
         if (page == 1) {
-//            CollectDBUtils.searchAllAsync {
-//                callback.invoke(it)
-//            }
-
+            DownRecordDBUtils.searchAllAsync {
+                it?.map { m ->
+                    DownTaskManager.getAria().load(m.videoList?.get(0).toString())
+                }
+                callback.invoke(it)
+            }
         } else {
             callback.invoke(emptyList())
         }
     }
 
-
     inner class DownloadFragmentAdapter :
-        BaseLoadMoreAdapter<DownRecordModel, BaseViewHolder>(R.layout.item_download) {
+            BaseLoadMoreAdapter<DownRecordModel, BaseViewHolder>(R.layout.item_download) {
 
         override fun convert(holder: BaseViewHolder, item: DownRecordModel) {
             holder.setText(R.id.tvName, item.name)
+            val downEntity = DownTaskManager.getAria().load(item.downTaskId)?.entity
+            holder.getView<ProgressLayout>(R.id.progress_down).setInfo(downEntity)
+
         }
     }
+
 }

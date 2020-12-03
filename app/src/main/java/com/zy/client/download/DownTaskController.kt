@@ -21,7 +21,7 @@ import java.io.File
  * @author javakam
  * @date 2020/12/1  10:19
  */
-class DownTaskController(val url: String, private val progressLayout: ProgressLayout? = null) {
+class DownTaskController(fileName: String, val url: String, private val progressLayout: ProgressLayout? = null) {
 
     private var mCurrDownloadEntity: DownloadEntity? = null
     private var mUrl: String? = null
@@ -35,9 +35,9 @@ class DownTaskController(val url: String, private val progressLayout: ProgressLa
         if (mCurrDownloadEntity == null) {
             mCurrDownloadEntity = DownloadEntity()
             mCurrDownloadEntity?.url = url
-            val temp = File(DOWN_PATH_DEFAULT)
-            mCurrDownloadEntity?.filePath = DOWN_PATH_DEFAULT
-            mCurrDownloadEntity?.fileName = temp.name
+            val path = if (fileName.isBlank()) DOWN_PATH_DEFAULT else fileName
+            mCurrDownloadEntity?.filePath = path
+            mCurrDownloadEntity?.fileName = File(path).name
         }
 
         getView()?.setInfo(mCurrDownloadEntity)
@@ -104,8 +104,8 @@ class DownTaskController(val url: String, private val progressLayout: ProgressLa
     fun onTaskRunning(task: DownloadTask) {
         if (task.key == mUrl) {
             Log.d(
-                "123",
-                "onTaskRunning m3u8 void running, p = " + task.percent + ", speed  = " + task.convertSpeed
+                    "123",
+                    "onTaskRunning m3u8 void running, p = " + task.percent + ", speed  = " + task.convertSpeed
             )
             //如果你打开了速度单位转换配置，将可以通过以下方法获取带单位的下载速度，如：1 mb/s   task.convertSpeed
             //如果你有自己的单位格式，可以通过以下方法获取原始byte长度  val speed = task.speed
