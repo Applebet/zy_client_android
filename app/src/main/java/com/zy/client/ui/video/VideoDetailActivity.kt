@@ -245,6 +245,7 @@ class VideoDetailActivity : BaseMediaActivity() {
 //                        val downEntityDone = DownTaskManager.getAria().taskList.find {
 //                            (it.id == downEntity?.id) && (it.key == downEntity.key)
 //                        }
+
                         //已经下载完了
                         if (downEntity != null && downEntity.isComplete) {
                             DownRecordDBUtils.searchAsync(uniqueId) {

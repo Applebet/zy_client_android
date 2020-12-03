@@ -133,22 +133,44 @@ class DownloadActivity : BaseActivity() {
         })
     }
 
+
+    @Download.onPre
+    fun onPre(task: DownloadTask) {
+        if (task.key == isOnlyOneUrl) {
+            Log.d("123", "pre")
+            updateDownEntity(task)
+        }
+    }
+
+    private fun updateDownEntity(task: DownloadTask) {
+
+        mProgressLayout.setInfo(task.entity)
+
+        val downEntity = task.entity
+        //val downEntity = DownTaskManager.getAria().getFirstDownloadEntity(isOnlyOneUrl)
+        DownRecordDBUtils.searchAsync(uniqueId) {
+            if (it != null && downEntity != null && (downEntity.id != -1L) && downEntity.key.isNotBlank()) {
+                it.downTaskId = downEntity.id
+                it.downTaskKey = downEntity.key
+                DownRecordDBUtils.saveAsync(it) {
+                }
+            }
+        }
+    }
+
     @Download.onTaskPre
     fun onTaskPre(task: DownloadTask) {
         if (task.key == isOnlyOneUrl) {
             Log.e("123", "DownloadActivity onTaskPre $task")
-            mProgressLayout.setInfo(task.entity)
+            updateDownEntity(task)
+        }
+    }
 
-            val downEntity = task.entity
-            //val downEntity = DownTaskManager.getAria().getFirstDownloadEntity(isOnlyOneUrl)
-            DownRecordDBUtils.searchAsync(uniqueId) {
-                if (it != null && downEntity != null && (downEntity.id != -1L) && downEntity.key.isNotBlank()) {
-                    it.downTaskId = downEntity.id
-                    it.downTaskKey = downEntity.key
-                    DownRecordDBUtils.saveAsync(it) {
-                    }
-                }
-            }
+    @Download.onTaskStart
+    fun taskStart(task: DownloadTask) {
+        if (task.key == isOnlyOneUrl) {
+            Log.d("123", "taskStart isComplete = " + task.isComplete + ", state = " + task.state)
+            updateDownEntity(task)
         }
     }
 

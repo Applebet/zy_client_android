@@ -86,7 +86,7 @@ class DownTaskController(fileName: String, val url: String, private val progress
     @Download.onTaskStart
     fun taskStart(task: DownloadTask) {
         if (task.key == mUrl) {
-            Log.d("123", "isComplete = " + task.isComplete + ", state = " + task.state)
+            Log.d("123", "taskStart isComplete = " + task.isComplete + ", state = " + task.state)
             //getBinding().seekBar.setMax(task.entity.m3U8Entity.peerNum)
             getView()?.setInfo(task.entity)
         }
@@ -95,7 +95,7 @@ class DownTaskController(fileName: String, val url: String, private val progress
     @Download.onTaskPre
     fun onTaskPre(task: DownloadTask) {
         if (task.key == mUrl) {
-            Log.d("123", "pre")
+            Log.d("123", "pre ${task.entity}")
             getView()?.setInfo(task.entity)
         }
     }

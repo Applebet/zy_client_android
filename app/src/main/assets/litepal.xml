@@ -36,6 +36,8 @@
         <mapping class="com.zy.client.database.CollectModel" />
         <mapping class="com.zy.client.database.SourceModel" />
         <mapping class="com.zy.client.bean.VideoHistory" />
+        <mapping class="com.zy.client.download.db.DownRecordModel" />
+        <mapping class="com.zy.client.download.db.RecordVideoModel" />
     </list>
 
     <!--

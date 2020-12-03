@@ -45,9 +45,6 @@ class DownloadFragment private constructor() : BaseListFragment<DownRecordModel,
     override fun loadData(page: Int, callback: (list: List<DownRecordModel>?) -> Unit) {
         if (page == 1) {
             DownRecordDBUtils.searchAllAsync {
-                it?.map { m ->
-                    DownTaskManager.getAria().load(m.videoList?.get(0).toString())
-                }
                 callback.invoke(it)
             }
         } else {

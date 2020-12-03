@@ -91,11 +91,11 @@ object DownTaskManager {
     fun startTask(url: String?, filePath: String?): Long {
         if (url.isNullOrBlank() || !url.isVideoUrl()) return -1
         return getAria()
-            .load(url)
-            .setFilePath(if (filePath.isNullOrBlank()) DOWN_PATH_DEFAULT else filePath)
-            .ignoreFilePathOccupy()
-            .m3u8VodOption(getM3U8Option())
-            .create()
+                .load(url)
+                .setFilePath(if (filePath.isNullOrBlank()) DOWN_PATH_DEFAULT else filePath)
+                .ignoreFilePathOccupy()
+                .m3u8VodOption(getM3U8Option())
+                .create()
     }
 
     /**
@@ -110,9 +110,9 @@ object DownTaskManager {
      */
     fun resumeTask(taskId: Long?) {
         getAria()
-            .load(taskId ?: -1)
-            .m3u8VodOption(getM3U8Option())
-            .resume()
+                .load(taskId ?: -1)
+                .m3u8VodOption(getM3U8Option())
+                .resume()
     }
 
     /**
@@ -160,7 +160,7 @@ object DownTaskManager {
                 e.printStackTrace()
                 val index = m3u8Url.lastIndexOf("/")
                 return m3u8Url.substring(0, index + 1)
-            }.plus(bandWidthUrl)
+            }.plus("/$bandWidthUrl")
 
 //            val index = m3u8Url.lastIndexOf("/")
 //            return m3u8Url.substring(0, index + 1) + bandWidthUrl
