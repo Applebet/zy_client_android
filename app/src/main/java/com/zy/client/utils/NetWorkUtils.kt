@@ -8,7 +8,7 @@ object NetConstants {
     /**
      * wifi net work
      */
-    const val NETWORK_WIFI = "wifi"
+    const val NETWORK_WIFI = "WIFI"
 
     /**
      * "2G" networks

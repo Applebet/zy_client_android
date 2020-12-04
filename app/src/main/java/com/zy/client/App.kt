@@ -22,6 +22,7 @@ import com.zy.client.download.DownTaskManager
 import com.zy.client.http.ConfigManager
 import com.zy.client.utils.CrashHandler
 import com.zy.client.utils.NetWorkUtils
+import com.zy.client.utils.ext.toastLong
 import org.litepal.LitePal
 
 /**
@@ -101,6 +102,7 @@ class App : Application() {
     private fun initDownLoad() {
         Aria.init(this)
         //Aria.download(this).resumeAllTask()
+        toastLong(NetWorkUtils.getNetWorkClass(this))
         if (!NetWorkUtils.isWifi(this)) return
         Aria.download(this)?.allNotCompleteTask?.forEach {
             DownTaskManager.resumeTask(it?.m3U8Entity?.rowID)
