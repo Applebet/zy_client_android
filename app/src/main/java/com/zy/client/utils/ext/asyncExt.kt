@@ -109,8 +109,8 @@ private val crashLogger = { throwable: Throwable -> throwable.printStackTrace() 
  * @param task the code to execute asynchronously.
  */
 fun <T> T.doAsync(
-    exceptionHandler: ((Throwable) -> Unit)? = crashLogger,
-    task: AnkoAsyncContext<T>.() -> Unit
+        exceptionHandler: ((Throwable) -> Unit)? = crashLogger,
+        task: AnkoAsyncContext<T>.() -> Unit
 ): Future<Unit> {
     val context = AnkoAsyncContext(WeakReference(this))
     return BackgroundExecutor.submit {
@@ -120,17 +120,15 @@ fun <T> T.doAsync(
             val result = exceptionHandler?.invoke(thr)
             if (result != null) {
                 result
-            } else {
-                Unit
-            }
+            } else Unit
         }
     }
 }
 
 fun <T> T.doAsync(
-    exceptionHandler: ((Throwable) -> Unit)? = crashLogger,
-    executorService: ExecutorService,
-    task: AnkoAsyncContext<T>.() -> Unit
+        exceptionHandler: ((Throwable) -> Unit)? = crashLogger,
+        executorService: ExecutorService,
+        task: AnkoAsyncContext<T>.() -> Unit
 ): Future<Unit> {
     val context = AnkoAsyncContext(WeakReference(this))
     return executorService.submit<Unit> {
@@ -143,8 +141,8 @@ fun <T> T.doAsync(
 }
 
 fun <T, R> T.doAsyncResult(
-    exceptionHandler: ((Throwable) -> Unit)? = crashLogger,
-    task: AnkoAsyncContext<T>.() -> R
+        exceptionHandler: ((Throwable) -> Unit)? = crashLogger,
+        task: AnkoAsyncContext<T>.() -> R
 ): Future<R> {
     val context = AnkoAsyncContext(WeakReference(this))
     return BackgroundExecutor.submit {
@@ -158,9 +156,9 @@ fun <T, R> T.doAsyncResult(
 }
 
 fun <T, R> T.doAsyncResult(
-    exceptionHandler: ((Throwable) -> Unit)? = crashLogger,
-    executorService: ExecutorService,
-    task: AnkoAsyncContext<T>.() -> R
+        exceptionHandler: ((Throwable) -> Unit)? = crashLogger,
+        executorService: ExecutorService,
+        task: AnkoAsyncContext<T>.() -> R
 ): Future<R> {
     val context = AnkoAsyncContext(WeakReference(this))
     return executorService.submit<R> {

@@ -186,28 +186,13 @@ class VideoDetailActivity : BaseMediaActivity() {
 //                Manifest.permission.ACCESS_FINE_LOCATION,
 //                Manifest.permission.RECORD_AUDIO,
 
-//                    Manifest.permission.READ_CALENDAR,
-//                    Manifest.permission.READ_CALL_LOG,
-//                    Manifest.permission.READ_CONTACTS,
-//                    Manifest.permission.READ_PHONE_STATE,
-//                    Manifest.permission.BODY_SENSORS,
-//                    Manifest.permission.ACTIVITY_RECOGNITION,
-//                    Manifest.permission.SEND_SMS,
-//                    Manifest.permission.READ_EXTERNAL_STORAGE
                 )
-//            .onExplainRequestReason { scope, deniedList, beforeRequest ->
-////                val message = "需要以下权限才能继续"
-////                scope.showRequestReasonDialog(deniedList, message, "允许", "拒绝")
-//                val message = "请在设置中允许下列权限"
-//                val dialog = PermissionDialogFragment(message, deniedList)
-//                scope.showRequestReasonDialog(dialog)
-//            }
                 .onForwardToSettings { scope, deniedList ->
                     val message = "请在设置中手动开启以下权限"
                     // val dialog = PermissionDialog(this, message, deniedList)
-                    val dialog = PermissionDialogFragment(message, deniedList)
-                    scope.showForwardToSettingsDialog(dialog)
-                    //scope.showForwardToSettingsDialog(deniedList, "请在设置中手动开启以下权限", "允许", "取消")
+                    // val dialog = PermissionDialogFragment(message, deniedList)
+                    //scope.showForwardToSettingsDialog(dialog)
+                    scope.showForwardToSettingsDialog(deniedList, "请在设置中手动开启以下权限", "允许", "取消")
                 }
                 .request { allGranted, grantedList, deniedList ->
                     if (allGranted) {
@@ -219,32 +204,22 @@ class VideoDetailActivity : BaseMediaActivity() {
                             return@request
                         }
 
-//                   if (!BuildConfig.DEBUG) {
-//                       currUrl?.copyToClipBoard()
-//                       toastLong("地址已复制，快去下载吧~\n${currUrl}")
-//                       return@proceedStoragePermission
-//                   }
+                        //多文件处理
+                        if (mVideoList?.size ?: 0 > 1) {
+                            //toastLong("该资源已开始下载~\n${currUrl}")
+                            currUrl?.copyToClipBoard()
+                            toastLong("地址已复制，快去下载吧~\n${currUrl}")
+                            return@request
+                        }
 
                         if (mVideoDetail == null) {
                             toastShort("数据正在缓冲...")
                             return@request
                         }
 
-                        val testUrl = "https://vod3.buycar5.cn/20201118/ttum6IRH/index.m3u8"
-                        Log.i("123", "currUrl = $currUrl")
-
-                        //单文件处理
-//                  if (mVideoList?.size ?: 0 <= 1) {
-                        //toastLong("该资源已开始下载~\n${currUrl}")
-//                  }
-
-                        val uniqueId =
-                            "${mVideoDetail?.sourceKey}${mVideoDetail?.tid}${mVideoDetail?.id}"
-                        val isInTask = DownTaskManager.getAria().taskExists(testUrl)
-                        val downEntity = DownTaskManager.getAria().getFirstDownloadEntity(testUrl)
-//                        val downEntityDone = DownTaskManager.getAria().taskList.find {
-//                            (it.id == downEntity?.id) && (it.key == downEntity.key)
-//                        }
+                        val uniqueId = "${mVideoDetail?.sourceKey}${mVideoDetail?.tid}${mVideoDetail?.id}"
+                        val isInTask = DownTaskManager.getAria().taskExists(currUrl)
+                        val downEntity = DownTaskManager.getAria().getFirstDownloadEntity(currUrl)
 
                         //已经下载完了
                         if (downEntity != null && downEntity.isComplete) {
@@ -257,71 +232,35 @@ class VideoDetailActivity : BaseMediaActivity() {
                                 }
                             }
                             toastShort("已下载完成")
-                            DownloadActivity.openThis(this, true, uniqueId = uniqueId,
-                                    isOnlyOneUrl = testUrl, isOnlyOneName = mVideoDetail?.name)
+                            mVideoDetail?.let { DownloadActivity.openThis(this, it) }
                             return@request
                         }
 
                         Log.e(
                                 "123",
-                                "测试 : $isInTask  $downEntity ${downEntity?.key} ${downEntity?.id}"
+                                "测试 : $isInTask  $downEntity ${downEntity?.key} ${downEntity?.id}" +
+                                        "  ${downEntity?.percent}"
                         )
                         /*
                          测试 : true  DownloadEntity{downloadPath='/data/user/0/com.zy.client/files/video.ts',
-                         groupHash='null', fileName='video.ts', md5Code='null', disposition='null', serverFileName='null'}
+                         groupHash='null', fileName='video.ts', md5Code='null',
+                         disposition='null', serverFileName='null'}
                          https://vod3.buycar5.cn/20201118/ttum6IRH/index.m3u8 1
                          */
                         DownRecordDBUtils.searchAsync(uniqueId) { model ->
                             //本地记录和Aria下载记录不同步,两边全删重下
-                            if ((isInTask && model == null) || (!isInTask && model != null)) {
-                                DownTaskManager.cancelTask(downEntity?.id, true)
-                                DownRecordDBUtils.delete(uniqueId)
-                            }
-
-                            if (!isInTask && model == null) {
-                                val videos = mVideoDetail?.videoList?.map {
-                                    RecordVideoModel(name = it.name, playUrl = it.playUrl)
-                                }
-
-                                val record = DownRecordModel(
-                                        //注: uniqueId = sourceKey + tid + id
-                                        uniqueId = uniqueId,
-                                        sourceKey = mVideoDetail?.sourceKey,
-                                        tid = mVideoDetail?.tid,
-                                        vid = mVideoDetail?.id,
-                                        name = mVideoDetail?.name,
-                                        type = mVideoDetail?.type,
-                                        lang = mVideoDetail?.lang,
-                                        area = mVideoDetail?.area,
-                                        pic = mVideoDetail?.pic,
-                                        year = mVideoDetail?.year,
-                                        actor = mVideoDetail?.actor,
-                                        director = mVideoDetail?.director,
-                                        des = mVideoDetail?.des,
-                                        videoList = videos,
-                                        //
-                                        downTime = System.currentTimeMillis()
-                                )
-                                DownRecordDBUtils.saveAsync(record) {
-                                }
-                            }
-                            DownloadActivity.openThis(this, true, uniqueId = uniqueId, isOnlyOneUrl = testUrl)
+//                            if ((isInTask && model == null) || (!isInTask && model != null)) {
+//                                Log.e("123", "本地记录和Aria下载记录不同步,两边全删重下 $isInTask  $model")
+//                                DownTaskManager.cancelTask(downEntity?.id, true)
+//                                DownRecordDBUtils.delete(uniqueId)
+//                            }
+                            mVideoDetail?.let { DownloadActivity.openThis(this, it) }
                         }
 
                     } else {
                         toastLong("以下权限被拒绝：$deniedList")
                     }
                 }
-    }
-
-    override fun onRequestPermissionsResult(
-            requestCode: Int,
-            permissions: Array<out String>,
-            grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        //REQUEST_EXTERNAL_STORAGE
-        Log.i("123", "permission result = $requestCode ${permissions?.size} ${grantResults?.size}")
     }
 
     override fun initData() {

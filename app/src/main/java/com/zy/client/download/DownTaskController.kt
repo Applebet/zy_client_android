@@ -23,27 +23,28 @@ import java.io.File
  */
 class DownTaskController(fileName: String, val url: String, private val progressLayout: ProgressLayout? = null) {
 
-    private var mCurrDownloadEntity: DownloadEntity? = null
     private var mUrl: String? = null
     private var mFilePath: String? = null
+
+    var mCurrEntity: DownloadEntity? = null
     var mTaskId: Long = -1L
 
     init {
         Aria.download(this).register()
 
-        mCurrDownloadEntity = Aria.download(this).getFirstDownloadEntity(url)
-        if (mCurrDownloadEntity == null) {
-            mCurrDownloadEntity = DownloadEntity()
-            mCurrDownloadEntity?.url = url
+        mCurrEntity = Aria.download(this).getFirstDownloadEntity(url)
+        if (mCurrEntity == null) {
+            mCurrEntity = DownloadEntity()
+            mCurrEntity?.url = url
             val path = if (fileName.isBlank()) DOWN_PATH_DEFAULT else fileName
-            mCurrDownloadEntity?.filePath = path
-            mCurrDownloadEntity?.fileName = File(path).name
+            mCurrEntity?.filePath = path
+            mCurrEntity?.fileName = File(path).name
         }
 
-        getView()?.setInfo(mCurrDownloadEntity)
-        mTaskId = mCurrDownloadEntity?.id ?: 0L
-        mUrl = mCurrDownloadEntity?.url
-        mFilePath = mCurrDownloadEntity?.filePath
+        getView()?.setInfo(mCurrEntity)
+        mTaskId = mCurrEntity?.id ?: 0L
+        mUrl = mCurrEntity?.url
+        mFilePath = mCurrEntity?.filePath
     }
 
     private fun getView(): ProgressLayout? = progressLayout
@@ -156,6 +157,5 @@ class DownTaskController(fileName: String, val url: String, private val progress
             getView()?.setInfo(task.entity)
         }
     }
-
 
 }

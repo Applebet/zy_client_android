@@ -14,6 +14,7 @@ data class DownRecordModel(
         //注: uniqueId = sourceKey + tid + id
         var uniqueId: String? = "",
 
+        var isDownFailedReasonBandWidth: Boolean = false,
         var downTaskId: Long = 0L,
         var downTaskKey: String = "",
         //下载时间

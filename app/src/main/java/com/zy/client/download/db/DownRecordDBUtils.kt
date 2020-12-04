@@ -13,6 +13,7 @@ import org.litepal.LitePal
  * @date 2020/12/1  15:36
  */
 object DownRecordDBUtils {
+
     private fun save(record: DownRecordModel?): Boolean {
         if (record == null || record.uniqueId?.isBlank() == true) {
             return false
@@ -41,34 +42,37 @@ object DownRecordDBUtils {
     }
 
     fun saveAllAsync(records: List<DownRecordModel>, callback: ((Boolean) -> Unit)? = null) {
-        ThreadUtils.executeByCached(CustomTask({
+        ThreadUtils.executeByCpu(CustomTask({
             LitePal.saveAll(records)
         }, {
             callback?.invoke(it ?: false)
         }))
     }
 
+    @Synchronized
     fun saveAsync(record: DownRecordModel, callback: ((Boolean) -> Unit)? = null) {
-        ThreadUtils.executeByCached(CustomTask({
+        ThreadUtils.executeByCpu(CustomTask({
             save(record)
         }, {
             callback?.invoke(it ?: false)
         }))
     }
 
+    @Synchronized
     fun searchAllAsync(callback: ((List<DownRecordModel>?) -> Unit)?) {
-        ThreadUtils.executeByCached(CustomTask({
+        ThreadUtils.executeByCpu(CustomTask({
             searchAll()
         }, {
             callback?.invoke(it)
         }))
     }
 
+    @Synchronized
     fun searchAsync(
         uniqueId: String?,
         callback: ((DownRecordModel?) -> Unit)?
     ) {
-        ThreadUtils.executeByCached(CustomTask<DownRecordModel?>({
+        ThreadUtils.executeByCpu(CustomTask<DownRecordModel?>({
             search(uniqueId)
         }, {
             callback?.invoke(it)
@@ -79,12 +83,12 @@ object DownRecordDBUtils {
         return LitePal.deleteAll(DownRecordModel::class.java) > 0
     }
 
+    @Synchronized
     fun delete(uniqueId: String?): Boolean {
         if (uniqueId.isNullOrBlank()) return false
         return LitePal.where(" uniqueId = ? ", uniqueId)
             .findFirst(DownRecordModel::class.java)
             ?.delete() ?: 0 > 0
     }
-    
-    
+
 }

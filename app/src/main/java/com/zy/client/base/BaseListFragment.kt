@@ -40,7 +40,7 @@ abstract class BaseListFragment<T, H : BaseViewHolder> : BaseFragment() {
 
     //
     private var mCurrPage: Int = 1
-    private val mAdapter: BaseQuickAdapter<T, H> by lazy {
+    protected val mAdapter: BaseQuickAdapter<T, H> by lazy {
         getListAdapter().apply {
             loadMoreModule.run {
                 isAutoLoadMore = true
@@ -71,7 +71,7 @@ abstract class BaseListFragment<T, H : BaseViewHolder> : BaseFragment() {
         mSwipeRefresh = rootView.findViewById(R.id.swipe_refresh)
         mSwipeRefresh.setOnRefreshListener(object : OnRefreshListener {
             override fun onRefresh(refreshLayout: RefreshLayout) {
-                if (getListAdapter().loadMoreModule.isLoading) {
+                if (mAdapter.loadMoreModule.isLoading) {
                     mSwipeRefresh.finishRefresh()
                     return
                 }
@@ -149,7 +149,7 @@ abstract class BaseListFragment<T, H : BaseViewHolder> : BaseFragment() {
             return
         }
 
-        val adapter = getListAdapter()
+        val adapter = mAdapter
         if (adapter.loadMoreModule.isLoading) {
             adapter.loadMoreModule.loadMoreEnd(true)
         }

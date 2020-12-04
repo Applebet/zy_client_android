@@ -28,7 +28,8 @@ object DownTaskManager {
     const val M3U8_URL_KEY = "M3U8_URL_KEY"
     const val M3U8_PATH_KEY = "M3U8_PATH_KEY"
 
-    val DOWN_PATH_DEFAULT = "${App.instance.filesDir.absolutePath}/video.ts"
+    val DOWN_PATH_BASE= App.instance.getExternalFilesDir(null)
+    val DOWN_PATH_DEFAULT = "$DOWN_PATH_BASE/video.ts"
 
     /**
      * 更新文件保存路径
@@ -61,7 +62,7 @@ object DownTaskManager {
     /**
      * https://aria.laoyuyu.me/aria_doc/api/m3u8_params.html
      */
-    private fun getM3U8Option(): M3U8VodOption {
+    fun getM3U8Option(): M3U8VodOption {
         val option = M3U8VodOption()
         //option.setBandWidth(200000)
         //option.generateIndexFile()
@@ -69,8 +70,21 @@ object DownTaskManager {
         //option.setMergeHandler(TsMergeHandler())
         option.setUseDefConvert(false)
         //option.setKeyUrlConverter(new KeyUrlConverter());
-        //option.setVodTsUrlConvert(VodTsUrlConverter())
+        option.setVodTsUrlConvert(VodTsUrlConverter())
         option.setBandWidthUrlConverter(BandWidthUrlConverter())
+        return option
+    }
+
+    fun getM3U8Option2(): M3U8VodOption {
+        val option = M3U8VodOption()
+        //option.setBandWidth(200000)
+        //option.generateIndexFile()
+        option.merge(true)
+        //option.setMergeHandler(TsMergeHandler())
+        option.setUseDefConvert(false)
+        //option.setKeyUrlConverter(new KeyUrlConverter());
+        option.setVodTsUrlConvert(VodTsUrlConverter2())
+        option.setBandWidthUrlConverter(BandWidthUrlConverter2())
         return option
     }
 
@@ -82,6 +96,8 @@ object DownTaskManager {
     }
 
     fun getAria(): DownloadReceiver = Aria.download(this)
+
+    fun getAria(observer: Any): DownloadReceiver = Aria.download(observer)
 
     /**
      * 开始
@@ -95,6 +111,16 @@ object DownTaskManager {
                 .setFilePath(if (filePath.isNullOrBlank()) DOWN_PATH_DEFAULT else filePath)
                 .ignoreFilePathOccupy()
                 .m3u8VodOption(getM3U8Option())
+                .create()
+    }
+
+    fun startTask(option: M3U8VodOption, url: String?, filePath: String?): Long {
+        if (url.isNullOrBlank() || !url.isVideoUrl()) return -1
+        return getAria()
+                .load(url)
+                .setFilePath(if (filePath.isNullOrBlank()) DOWN_PATH_DEFAULT else filePath)
+                .ignoreFilePathOccupy()
+                .m3u8VodOption(option)
                 .create()
     }
 
@@ -115,6 +141,13 @@ object DownTaskManager {
                 .resume()
     }
 
+    fun resumeTask(option: M3U8VodOption, taskId: Long?) {
+        getAria()
+                .load(taskId ?: -1)
+                .m3u8VodOption(option)
+                .resume()
+    }
+
     /**
      * 删除
      *
@@ -126,7 +159,7 @@ object DownTaskManager {
     }
 
     internal class VodTsUrlConverter : IVodTsUrlConverter {
-        override fun convert(m3u8Url: String, tsUrls: List<String>): List<String> {
+        override fun convert(m3u8Url: String, tsUrls: List<String>?): List<String>? {
             //val uri = Uri.parse(m3u8Url)
             //String parentUrl = "http://devimages.apple.com/iphone/samples/bipbop/gear1/";
             //String parentUrl = "http://youku.cdn7-okzy.com/20200123/16815_fbe419ed/1000k/hls/";
@@ -136,9 +169,22 @@ object DownTaskManager {
             //String parentUrl = "https://v1.szjal.cn/20190819/Ql6UD1od/";
             //String parentUrl = "http://" + uri.getHost() + "/";
 
-            val parentUrl = m3u8Url.replace(URL(m3u8Url).path, "")
-            return tsUrls.map {
+            if (tsUrls?.get(0)?.startsWith("http") == true) return tsUrls
+            val index = m3u8Url.lastIndexOf("/")
+            val parentUrl = m3u8Url.substring(0, index + 1)
+            return tsUrls?.map {
                 Log.w("123", "VodTsUrlConverter ${parentUrl + it}")
+                parentUrl + it
+            }
+        }
+    }
+
+    internal class VodTsUrlConverter2 : IVodTsUrlConverter {
+        override fun convert(m3u8Url: String, tsUrls: List<String>?): List<String>? {
+            if (tsUrls?.get(0)?.startsWith("http") == true) return tsUrls
+            val parentUrl = m3u8Url.replace(URL(m3u8Url).path, "")
+            return tsUrls?.map {
+                Log.w("123", "VodTsUrlConverter2 ${parentUrl + it}")
                 parentUrl + it
             }
         }
@@ -153,7 +199,27 @@ object DownTaskManager {
 
     internal class BandWidthUrlConverter : IBandWidthUrlConverter {
         override fun convert(m3u8Url: String, bandWidthUrl: String): String {
-            Log.d("123", "BandWidthUrlConverter .... $m3u8Url")
+            Log.w("123", "BandWidthUrlConverter .... $m3u8Url")
+            /*
+            情形一:保留/20201203/8160_e8fdefb1
+            原始:http://iqiyi.cdn27-okzy.com/20201203/8160_e8fdefb1/index.m3u8
+            /1000k/hls/index.m3u8
+            错误:http://iqiyi.cdn27-okzy.com/index.m3u8
+            正确:http://iqiyi.cdn27-okzy.com/20201203/8160_e8fdefb1/1000k/hls/index.m3u8
+
+            情形二:移除/20201118/ttum6IRH
+            原始:https://vod3.buycar5.cn/20201118/ttum6IRH/index.m3u8
+            /20201118/ttum6IRH/1000kb/hls/index.m3u8
+            正确:https://vod3.buycar5.cn//20201118/ttum6IRH/1000kb/hls/index.m3u8
+             */
+            val index = m3u8Url.lastIndexOf("/")
+            return m3u8Url.substring(0, index + 1) + bandWidthUrl
+        }
+    }
+
+    internal class BandWidthUrlConverter2 : IBandWidthUrlConverter {
+        override fun convert(m3u8Url: String, bandWidthUrl: String): String {
+            Log.w("123", "BandWidthUrlConverter2 .... $m3u8Url")
             return try {
                 m3u8Url.replace(URL(m3u8Url).path, "")
             } catch (e: MalformedURLException) {
@@ -161,9 +227,6 @@ object DownTaskManager {
                 val index = m3u8Url.lastIndexOf("/")
                 return m3u8Url.substring(0, index + 1)
             }.plus("/$bandWidthUrl")
-
-//            val index = m3u8Url.lastIndexOf("/")
-//            return m3u8Url.substring(0, index + 1) + bandWidthUrl
         }
     }
 

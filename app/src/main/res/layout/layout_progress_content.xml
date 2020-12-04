@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/white">
+    android:layout_height="wrap_content">
 
     <TextView
         android:id="@+id/file_name"
@@ -18,9 +17,10 @@
 
     <TextView
         android:id="@+id/file_path"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/file_name"
+        android:layout_alignEnd="@id/content"
         android:layout_marginTop="@dimen/dp_8"
         android:maxLines="3"
         android:textColor="@color/color_font_gray"
@@ -29,12 +29,13 @@
 
     <TextView
         android:id="@+id/file_url"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/file_path"
+        android:layout_alignEnd="@id/content"
         android:layout_marginTop="@dimen/dp_8"
         android:maxLines="3"
-        android:textColor="@color/color_font_gray"
+        android:textColor="@color/color_font_black"
         android:textSize="@dimen/font_12"
         tools:text="File Url" />
 
@@ -45,7 +46,7 @@
         android:layout_below="@id/file_url"
         android:layout_marginStart="0dp"
         android:layout_marginTop="@dimen/dp_8"
-        android:layout_marginEnd="@dimen/dp_12"
+        android:layout_marginEnd="0dp"
         android:layout_toStartOf="@id/del_bt">
 
         <TextView
@@ -108,7 +109,7 @@
     <Button
         android:id="@+id/handle_bt"
         style="?buttonStyleSmall"
-        android:layout_width="@dimen/dp_70"
+        android:layout_width="@dimen/dp_65"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"

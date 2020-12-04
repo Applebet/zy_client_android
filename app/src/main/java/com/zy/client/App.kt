@@ -21,6 +21,7 @@ import com.zy.client.database.SourceModel
 import com.zy.client.download.DownTaskManager
 import com.zy.client.http.ConfigManager
 import com.zy.client.utils.CrashHandler
+import com.zy.client.utils.NetWorkUtils
 import org.litepal.LitePal
 
 /**
@@ -55,8 +56,8 @@ class App : Application() {
         super.onCreate()
         instance = this
         CrashHandler.init(
-            this,
-            "${getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)?.absolutePath}/HealthCrash/"
+                this,
+                "${getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)?.absolutePath}/HealthCrash/"
         )
 
         LitePal.initialize(this)
@@ -65,14 +66,14 @@ class App : Application() {
         initDownLoad()
 
         OkGo.getInstance().init(this)
-            //建议设置OkHttpClient，不设置将使用默认的
-            //.setOkHttpClient( OkHttpClient.Builder().build())
-            //全局统一缓存模式，默认不使用缓存，可以不传
-            .setCacheMode(CacheMode.FIRST_CACHE_THEN_REQUEST)
-            //全局统一缓存时间，默认永不过期，可以不传
-            .setCacheTime(CacheEntity.CACHE_NEVER_EXPIRE)
-            //全局统一超时重连次数，默认为三次，那么最差的情况会请求4次(一次原始请求，三次重连请求)，不需要可以设置为0
-            .retryCount = 2
+                //建议设置OkHttpClient，不设置将使用默认的
+                //.setOkHttpClient( OkHttpClient.Builder().build())
+                //全局统一缓存模式，默认不使用缓存，可以不传
+                .setCacheMode(CacheMode.FIRST_CACHE_THEN_REQUEST)
+                //全局统一缓存时间，默认永不过期，可以不传
+                .setCacheTime(CacheEntity.CACHE_NEVER_EXPIRE)
+                //全局统一超时重连次数，默认为三次，那么最差的情况会请求4次(一次原始请求，三次重连请求)，不需要可以设置为0
+                .retryCount = 2
 
         //播放器使用 Exo
 //        PlayerFactory.setPlayManager(Exo2PlayerManager::class.java)
@@ -81,18 +82,18 @@ class App : Application() {
 
         //播放器配置，注意：此为全局配置，按需开启
         VideoViewManager.setConfig(
-            VideoViewConfig.newBuilder()
-                .setLogEnabled(BuildConfig.DEBUG)
-                .setPlayerFactory(IjkPlayerFactory.create())
-                //.setPlayerFactory(ExoMediaPlayerFactory.create())
-                //.setRenderViewFactory(SurfaceRenderViewFactory.create())
-                //.setEnableOrientation(true)
-                //.setEnableAudioFocus(false)
-                //.setScreenScaleType(VideoView.SCREEN_SCALE_MATCH_PARENT)
-                //.setAdaptCutout(false)
-                //.setPlayOnMobileNetwork(true)
-                .setProgressManager(ProgressManagerImpl())
-                .build()
+                VideoViewConfig.newBuilder()
+                        .setLogEnabled(BuildConfig.DEBUG)
+                        .setPlayerFactory(IjkPlayerFactory.create())
+                        //.setPlayerFactory(ExoMediaPlayerFactory.create())
+                        //.setRenderViewFactory(SurfaceRenderViewFactory.create())
+                        //.setEnableOrientation(true)
+                        //.setEnableAudioFocus(false)
+                        //.setScreenScaleType(VideoView.SCREEN_SCALE_MATCH_PARENT)
+                        //.setAdaptCutout(false)
+                        //.setPlayOnMobileNetwork(true)
+                        .setProgressManager(ProgressManagerImpl())
+                        .build()
         )
         PIPManager.init(this)
     }
@@ -100,14 +101,15 @@ class App : Application() {
     private fun initDownLoad() {
         Aria.init(this)
         //Aria.download(this).resumeAllTask()
+        if (!NetWorkUtils.isWifi(this)) return
         Aria.download(this)?.allNotCompleteTask?.forEach {
             DownTaskManager.resumeTask(it?.m3U8Entity?.rowID)
         }
 
         Log.w(
-            "123",
-            "initDownload allNotCompleteTask = ${Aria.download(this)?.allNotCompleteTask?.size}  " +
-                    "allCompleteTask=${Aria.download(this)?.allCompleteTask}"
+                "123",
+                "initDownload allNotCompleteTask = ${Aria.download(this)?.allNotCompleteTask?.size}  " +
+                        "allCompleteTask=${Aria.download(this)?.allCompleteTask}"
         )
     }
 

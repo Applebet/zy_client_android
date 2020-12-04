@@ -10,6 +10,7 @@
         android:id="@id/titleView"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_45"
+        android:background="@color/white"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -17,8 +18,8 @@
     <LinearLayout
         android:id="@+id/ll_container"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="@color/white"
+        android:layout_height="wrap_content"
+        android:background="#FAFAFA"
         android:orientation="vertical"
         android:padding="@dimen/dp_15"
         android:visibility="gone"
@@ -26,6 +27,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/titleView"
+        app:layout_constraintVertical_bias="0"
         tools:visibility="visible">
 
         <com.zy.client.download.ProgressLayout
