@@ -64,7 +64,6 @@
         android:layout_height="match_parent"
         android:background="@color/color_container_bg"
         android:overScrollMode="always"
-        app:fastScrollEnabled="false"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+        app:fastScrollEnabled="false" />
 
 </LinearLayout>

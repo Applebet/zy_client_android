@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.TextView
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
@@ -34,11 +35,17 @@ class VideoTvActivity : BaseMediaActivity() {
     private lateinit var mRvMenuList: RecyclerView
     private var liveSt: Long = 0L
     private var adapter: TvMenuAdapter? = null
+    private val mRepo: NetRepository by lazy { NetRepository(CommonRequest()) }
 
-    private var mTimer = object : CountDownTimer(Long.MAX_VALUE, 5000L) {
+    private var mTimer = object : CountDownTimer(Long.MAX_VALUE, 10000L) {
         override fun onTick(millisUntilFinished: Long) {
-            Log.i("123", "VideoTvActivity onTick")
-            adapter?.notifyDataSetChanged()
+            Log.w("123", "VideoTvActivity onTick")
+            mRepo.getCCTVMenu(ConfigManager.parseTvMenu(mVideoEntity?.tvUrl)) { tv ->
+                liveSt = tv?.liveSt ?: 0L
+                tv?.list?.let {
+                    adapter?.setList(it)
+                }
+            }
         }
 
         override fun onFinish() {
@@ -56,6 +63,7 @@ class VideoTvActivity : BaseMediaActivity() {
         mRvMenuList = findViewById(R.id.rv_tv_detail)
         mRvMenuList.setHasFixedSize(true)
         mRvMenuList.itemAnimator = null
+        mRvMenuList.layoutManager = LinearLayoutManager(this)
         mRvMenuList.addItemDecoration(object : RecyclerView.ItemDecoration() {
             override fun getItemOffsets(
                 outRect: Rect,
@@ -89,7 +97,6 @@ class VideoTvActivity : BaseMediaActivity() {
 
         //详情
         val tvId = ConfigManager.parseTvMenu(mVideoEntity?.tvUrl)
-        val mRepo = NetRepository(CommonRequest())
         mRepo.getCCTVMenu(tvId) {
             it?.apply { initTvDetail(this) }
         }
@@ -114,7 +121,7 @@ class VideoTvActivity : BaseMediaActivity() {
         adapter = TvMenuAdapter()
         mRvMenuList.adapter = adapter
         detail.list?.let {
-            adapter?.addData(newData = it)
+            adapter?.setList(it)
         }
     }
 
