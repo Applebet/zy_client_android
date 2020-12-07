@@ -2,6 +2,7 @@ package com.zy.client.ui.home
 
 import android.widget.ImageView
 import android.widget.TextView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BasePopupView
 import com.zy.client.R
@@ -13,7 +14,6 @@ import com.zy.client.common.isHealthLife
 import com.zy.client.common.switchHealthLife
 import com.zy.client.utils.ext.noNull
 import com.zy.client.utils.ext.toastShort
-import kotlinx.android.synthetic.main.fragment_home.*
 
 /**
  * @author javakam
@@ -22,6 +22,7 @@ import kotlinx.android.synthetic.main.fragment_home.*
  */
 class HomeFragment : BaseFragment() {
 
+    private lateinit var floatBtn: FloatingActionButton
     private lateinit var ivHistory: ImageView
     private lateinit var tvSearch: TextView
     private var mContainer: HomeTabPagerFragment? = null
@@ -33,6 +34,7 @@ class HomeFragment : BaseFragment() {
     override fun initView() {
         super.initView()
         mRepo = ConfigManager.curUseSourceConfig()
+        floatBtn = rootView.findViewById(R.id.floatBtn)
         ivHistory = rootView.findViewById(R.id.iv_home_history)
         tvSearch = rootView.findViewById(R.id.tv_home_search)
     }
@@ -60,7 +62,7 @@ class HomeFragment : BaseFragment() {
             AppRouter.toSearchActivity(baseActivity)
         }
 
-        faBtn.setOnClickListener {
+        floatBtn.setOnClickListener {
             //选择视频源
             if (mSourceDialog == null) {
                 val values = ConfigManager.sourceConfigs.values

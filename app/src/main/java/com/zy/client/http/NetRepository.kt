@@ -1,14 +1,20 @@
 package com.zy.client.http
 
+import com.google.gson.Gson
+import com.google.gson.JsonElement
+import com.google.gson.JsonObject
+import com.google.gson.JsonParser
 import com.lzy.okgo.OkGo
 import com.lzy.okgo.callback.StringCallback
 import com.lzy.okgo.model.Response
 import com.zy.client.bean.*
 import com.zy.client.common.HOME_LIST_TID_NEW
-import com.zy.client.http.NetSourceParser.parseVideoDetail
 import com.zy.client.http.NetSourceParser.parseChannelList
 import com.zy.client.http.NetSourceParser.parseHomeData
 import com.zy.client.http.NetSourceParser.parseSearch
+import com.zy.client.http.NetSourceParser.parseVideoDetail
+import com.zy.client.utils.Utils
+import org.json.JSONObject
 
 /**
  * 通用的解析视频源
@@ -122,4 +128,44 @@ class NetRepository(val req: CommonRequest) : IRepository {
             })
     }
 
+    /**
+     *  https://api.cntv.cn/epg/getEpgInfoByChannelNew
+     *  ?c=cctv1 & serviceId=tvcctv & d=20201207 & cb=t HTTP/1.1
+     */
+    override fun getCCTVMenu(tvId: String, callback: (t: Cctv?) -> Unit) {
+        val key = "tv_$tvId"
+        OkGo.get<String>("https://api.cntv.cn/epg/getEpgInfoByChannelNew?c=${tvId}&serviceId=tvcctv&d=${Utils.getToday()}&cb=t HTTP/1.1")
+            .tag(key)
+            .execute(object : StringCallback() {
+                override fun onSuccess(response: Response<String>?) {
+                    try {
+                        val body: String = response?.body() ?: ""
+                        if (body.isBlank()) {
+                            callback.invoke(null)
+                            return
+                        }
+                        val realBody = body.substring(body.indexOf("{"), body.length - 2)
+                        val jsonData: JsonObject = JsonParser.parseString(realBody).asJsonObject
+                        val jsonCCTV: JsonObject? =
+                            jsonData.get("data")?.asJsonObject?.get(tvId)?.asJsonObject
+                        if (jsonCCTV == null) {
+                            callback.invoke(null)
+                        } else {
+                            callback.invoke(Gson().fromJson(jsonCCTV, Cctv::class.java))
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
+
+                override fun onError(response: Response<String>?) {
+                    super.onError(response)
+                    try {
+                        callback.invoke(null)
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
+            })
+    }
 }

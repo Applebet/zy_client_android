@@ -4,10 +4,11 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
+import android.widget.ImageView
+import co.lujun.androidtagview.TagContainerLayout
 import co.lujun.androidtagview.TagView
 import com.zy.client.R
 import com.zy.client.database.SearchHistoryDBUtils
-import kotlinx.android.synthetic.main.layout_search_history.view.*
 
 /**
  * 搜索历史
@@ -18,6 +19,9 @@ class SearchHistoryView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
 
+    var tagGroup: TagContainerLayout
+    private var ivDelete: ImageView
+
     init {
         // 添加Popup窗体内容View
         val contentView =
@@ -25,6 +29,9 @@ class SearchHistoryView @JvmOverloads constructor(
         // 事先隐藏，等测量完毕恢复，避免View影子跳动现象。
         contentView.alpha = 0f
         addView(contentView)
+
+        ivDelete = contentView.findViewById(R.id.ivDelete)
+        tagGroup = contentView.findViewById(R.id.tagGroup)
 
         ivDelete.setOnClickListener {
             //清除全部记录

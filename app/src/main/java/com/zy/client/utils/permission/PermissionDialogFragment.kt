@@ -12,14 +12,13 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.permissionx.guolindev.dialog.RationaleDialogFragment
 import com.permissionx.guolindev.dialog.getPermissionMapOnQ
 import com.permissionx.guolindev.dialog.getPermissionMapOnR
 import com.zy.client.R
-import kotlinx.android.synthetic.main.item_permissionx.view.*
-import kotlinx.android.synthetic.main.layout_permission_dialog.*
 
 @TargetApi(30)
 class PermissionDialogFragment() : RationaleDialogFragment() {
@@ -68,6 +67,10 @@ class PermissionDialogFragment() : RationaleDialogFragment() {
     )
 
     private val groupSet = HashSet<String>()
+    private lateinit var messageText: TextView
+    private lateinit var permissionsLayout: LinearLayout
+    private lateinit var negativeBtn: View
+    private lateinit var positiveBtn: View
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -75,8 +78,14 @@ class PermissionDialogFragment() : RationaleDialogFragment() {
         savedInstanceState: Bundle?
     ): View? {
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        return LayoutInflater.from(context)
+
+        val view = LayoutInflater.from(context)
             .inflate(R.layout.layout_permission_dialog, container, false)
+        messageText = view.findViewById(R.id.messageText)
+        permissionsLayout = view.findViewById(R.id.permissionsLayout)
+        negativeBtn = view.findViewById(R.id.negativeBtn)
+        positiveBtn = view.findViewById(R.id.positiveBtn)
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -134,14 +143,14 @@ class PermissionDialogFragment() : RationaleDialogFragment() {
                 val layout = LayoutInflater.from(context)
                     .inflate(R.layout.item_permissionx, permissionsLayout, false) as LinearLayout
                 context?.apply {
-                    layout.tv_permission_name.text =
+                    layout.findViewById<TextView>(R.id.tv_permission_name).text =
                         getString(
                             packageManager.getPermissionGroupInfo(
                                 permissionGroup,
                                 0
                             ).labelRes
                         )
-                    layout.iv_permission_icon.setImageResource(
+                    layout.findViewById<ImageView>(R.id.iv_permission_icon).setImageResource(
                         packageManager.getPermissionGroupInfo(permissionGroup, 0).icon
                     )
                 }

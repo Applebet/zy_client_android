@@ -11,13 +11,13 @@ import android.view.ViewGroup
 import android.webkit.SslErrorHandler
 import android.webkit.WebView
 import android.widget.FrameLayout
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.just.agentweb.AgentWeb
 import com.just.agentweb.BaseIndicatorView
 import com.zy.client.R
 import com.zy.client.utils.ext.gone
 import com.zy.client.utils.ext.visible
-import kotlinx.android.synthetic.main.layout_web_indicator.view.*
 
 /**
  * 网页控制器
@@ -83,13 +83,15 @@ class WebController {
     inner class CustomIndicator @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
     ) : BaseIndicatorView(context, attrs, defStyleAttr) {
+        private var tvProgress: TextView
 
         init {
-            View.inflate(context, R.layout.layout_web_indicator, this)
+            val view = View.inflate(context, R.layout.layout_web_indicator, this)
+            tvProgress = view.findViewById(R.id.tvProgress)
         }
 
         override fun offerLayoutParams(): LayoutParams {
-            return FrameLayout.LayoutParams(
+            return LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT
             )

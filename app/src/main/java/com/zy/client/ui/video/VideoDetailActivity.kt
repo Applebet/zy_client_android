@@ -6,6 +6,9 @@ import android.os.Bundle
 import android.text.Html
 import android.util.Log
 import android.widget.FrameLayout
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
 import com.dueeeke.videoplayer.util.PlayerUtils
 import com.lxj.xpopup.XPopup
 import com.permissionx.guolindev.PermissionX
@@ -26,7 +29,6 @@ import com.zy.client.utils.Utils
 import com.zy.client.utils.ext.*
 import com.zy.client.views.loader.LoadState
 import com.zy.client.views.loader.LoaderLayout
-import kotlinx.android.synthetic.main.activity_video_detail.*
 import org.greenrobot.eventbus.EventBus
 import java.util.*
 
@@ -46,6 +48,20 @@ class VideoDetailActivity : BaseMediaActivity() {
     private lateinit var playerWebContainer: FrameLayout
     private lateinit var videoContainer: FrameLayout
     private lateinit var statusView: LoaderLayout
+    private lateinit var llAnthology: LinearLayout
+    private lateinit var tvCurPlayName: TextView
+    private lateinit var ivPlayMore: ImageView
+    private lateinit var ivWebPlay: ImageView
+    private lateinit var ivDownload: ImageView
+    private lateinit var ivCollect: ImageView
+    private lateinit var tvName: TextView
+    private lateinit var tvDirector: TextView
+    private lateinit var tvActor: TextView
+    private lateinit var tvLanguage: TextView
+    private lateinit var tvType: TextView
+    private lateinit var tvYear: TextView
+    private lateinit var tvIntro: TextView
+    private lateinit var tvDesc: TextView
 
     //
     private var mVideoDetail: VideoDetail? = null
@@ -62,6 +78,20 @@ class VideoDetailActivity : BaseMediaActivity() {
 
         statusView = findViewById(R.id.statusView)
         statusView.setLoadState(LoadState.LOADING)
+        llAnthology = findViewById(R.id.llAnthology)
+        tvCurPlayName = findViewById(R.id.tvCurPlayName)
+        ivPlayMore = findViewById(R.id.ivPlayMore)
+        ivWebPlay = findViewById(R.id.ivWebPlay)
+        ivDownload = findViewById(R.id.ivDownload)
+        ivCollect = findViewById(R.id.ivCollect)
+        tvName = findViewById(R.id.tvName)
+        tvDirector = findViewById(R.id.tvDirector)
+        tvActor = findViewById(R.id.tvActor)
+        tvLanguage = findViewById(R.id.tvLanguage)
+        tvType = findViewById(R.id.tvType)
+        tvYear = findViewById(R.id.tvYear)
+        tvIntro = findViewById(R.id.tvIntro)
+        tvDesc = findViewById(R.id.tvDesc)
 
         //Player Container
         playerWebContainer = findViewById(R.id.playerWebContainer)
@@ -101,8 +131,8 @@ class VideoDetailActivity : BaseMediaActivity() {
             }
 
             browser(
-                    if (mVideo?.playUrl.isVideoUrl()) "${BROWSER_URL}${mVideo?.playUrl?.noNull()}"
-                    else mVideo?.playUrl.noNull()
+                if (mVideo?.playUrl.isVideoUrl()) "${BROWSER_URL}${mVideo?.playUrl?.noNull()}"
+                else mVideo?.playUrl.noNull()
             )
         }
 
@@ -111,7 +141,7 @@ class VideoDetailActivity : BaseMediaActivity() {
         val isNotchScreen = NotchUtils.hasNotchScreen(this)
         val dialogHeight =
             (screenHeight - resources.getDimensionPixelSize(VIDEO_VIEW_HEIGHT))
-                    .minus(if (isNotchScreen) 0 else Utils.getStatusBarHeight())
+                .minus(if (isNotchScreen) 0 else Utils.getStatusBarHeight())
 
         llAnthology.setOnClickListener {
             if (mVideoList?.size ?: 0 > 1) {
@@ -119,19 +149,19 @@ class VideoDetailActivity : BaseMediaActivity() {
                 mSelectListDialog = null
 
                 mSelectListDialog = XPopup.Builder(this)
-                        .hasShadowBg(false)
-                        .maxHeight(dialogHeight)
-                        .asBottomList(
-                                "选集",
-                                mVideoList?.map { it.name }?.toTypedArray(),
-                                null,
-                                videoController?.currentListPosition ?: 0 //传0会显示选中的✔号
-                        ) { position, _ ->
-                            videoController?.currentListPosition = position
-                            videoController?.updateVodViewPosition()
-                            playVideo(mVideoList?.get(position))
-                        }
-                        .bindLayout(R.layout.fragment_search_result)
+                    .hasShadowBg(false)
+                    .maxHeight(dialogHeight)
+                    .asBottomList(
+                        "选集",
+                        mVideoList?.map { it.name }?.toTypedArray(),
+                        null,
+                        videoController?.currentListPosition ?: 0 //传0会显示选中的✔号
+                    ) { position, _ ->
+                        videoController?.currentListPosition = position
+                        videoController?.updateVodViewPosition()
+                        playVideo(mVideoList?.get(position))
+                    }
+                    .bindLayout(R.layout.fragment_search_result)
                 mSelectListDialog?.popupInfo
                 mSelectListDialog?.show()
             }
@@ -169,39 +199,39 @@ class VideoDetailActivity : BaseMediaActivity() {
 
     private fun requestStoragePermission() {
         PermissionX.init(this)
-                .permissions(
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                        Manifest.permission.READ_EXTERNAL_STORAGE,
-                )
-                .onForwardToSettings { scope, deniedList ->
-                    val message = "请在设置中手动开启以下权限"
-                    // val dialog = PermissionDialog(this, message, deniedList)
-                    // val dialog = PermissionDialogFragment(message, deniedList)
-                    //scope.showForwardToSettingsDialog(dialog)
-                    scope.showForwardToSettingsDialog(deniedList, message, "允许", "取消")
-                }
-                .request { allGranted, _, deniedList ->
-                    if (allGranted) {
-                        //toastLong("已授予所有权限")
+            .permissions(
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+            )
+            .onForwardToSettings { scope, deniedList ->
+                val message = "请在设置中手动开启以下权限"
+                // val dialog = PermissionDialog(this, message, deniedList)
+                // val dialog = PermissionDialogFragment(message, deniedList)
+                //scope.showForwardToSettingsDialog(dialog)
+                scope.showForwardToSettingsDialog(deniedList, message, "允许", "取消")
+            }
+            .request { allGranted, _, deniedList ->
+                if (allGranted) {
+                    //toastLong("已授予所有权限")
 
-                        val currUrl = mVideo?.playUrl
-                        //mRepo.requestDownloadData(id)
-                        if (!currUrl.isVideoUrl()) {
-                            toastLong("该资源暂不支持下载哦~")
-                            return@request
-                        }
-
-                        //多文件处理
-                        if (mVideoList?.size ?: 0 > 1) {
-                            currUrl?.copyToClipBoard()
-                            toastLong("该资源地址已复制~\n${currUrl}")
-                            return@request
-                        }
-
-                    } else {
-                        toastLong("以下权限被拒绝：$deniedList")
+                    val currUrl = mVideo?.playUrl
+                    //mRepo.requestDownloadData(id)
+                    if (!currUrl.isVideoUrl()) {
+                        toastLong("该资源暂不支持下载哦~")
+                        return@request
                     }
+
+                    //多文件处理
+                    if (mVideoList?.size ?: 0 > 1) {
+                        currUrl?.copyToClipBoard()
+                        toastLong("该资源地址已复制~\n${currUrl}")
+                        return@request
+                    }
+
+                } else {
+                    toastLong("以下权限被拒绝：$deniedList")
                 }
+            }
     }
 
     override fun initData() {
@@ -299,8 +329,8 @@ class VideoDetailActivity : BaseMediaActivity() {
         if (mVideo?.playUrl.isVideoUrl()) {
             videoController?.setRecoverActivity(VideoDetailActivity::class.java)
             videoController?.startPlay(
-                    mVideo?.playUrl,
-                    "${mVideoDetail?.name.noNull()}  ${mVideo?.name.noNull()}"
+                mVideo?.playUrl,
+                "${mVideoDetail?.name.noNull()}  ${mVideo?.name.noNull()}"
             )
 
             videoContainer.visible()
@@ -330,24 +360,24 @@ class VideoDetailActivity : BaseMediaActivity() {
 
             val currPosition = getPlayer()?.currentPosition ?: 0L
             val currTimePercent = String.format(
-                    Locale.getDefault(), getString(R.string.str_player_time_percent),
-                    PlayerUtils.stringForTime(currPosition.toInt()), PlayerUtils.stringForTime(
+                Locale.getDefault(), getString(R.string.str_player_time_percent),
+                PlayerUtils.stringForTime(currPosition.toInt()), PlayerUtils.stringForTime(
                     (getPlayer()?.duration ?: 0).toInt()
-            )
+                )
             )
             saveHistory(
-                    VideoHistory(
-                            uniqueId = uniqueId,
-                            sourceKey = sourceKey,
-                            tid = mVideoDetail?.tid,
-                            vid = mVideoDetail?.id,
-                            sourceName = SourceDBUtils.searchName(key = mVideoDetail?.sourceKey),
-                            position = currentListPosition,
-                            playUrl = currentUrl,
-                            progress = getPlayer()?.currentPosition ?: 0L,
-                            timePercent = if (currPosition < 3) "" else currTimePercent,
-                            name = mVideoDetail?.name
-                    )
+                VideoHistory(
+                    uniqueId = uniqueId,
+                    sourceKey = sourceKey,
+                    tid = mVideoDetail?.tid,
+                    vid = mVideoDetail?.id,
+                    sourceName = SourceDBUtils.searchName(key = mVideoDetail?.sourceKey),
+                    position = currentListPosition,
+                    playUrl = currentUrl,
+                    progress = getPlayer()?.currentPosition ?: 0L,
+                    timePercent = if (currPosition < 3) "" else currTimePercent,
+                    name = mVideoDetail?.name
+                )
             )
         }
     }

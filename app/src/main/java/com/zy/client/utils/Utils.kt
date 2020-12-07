@@ -18,6 +18,7 @@ object Utils {
     private const val DATE_FORMAT = "yyyy-MM-dd HH:mm:ss"
     private const val DATE_FORMAT1 = "yyyy-MM-dd HH:mm"
     private const val DATE_FORMAT2 = "yyyy-MM-dd"
+    private const val DATE_FORMAT3 = "yyyyMMdd"
 
     fun parseTimeLong(time: String?): Long {
         if (time.isNullOrBlank()) return 0L
@@ -36,6 +37,14 @@ object Utils {
     fun isToday(timeLong: Long): Boolean {
         val sdf = SimpleDateFormat(DATE_FORMAT2, Locale.getDefault())
         return sdf.format(Date(timeLong)) == sdf.format(Date())
+    }
+
+    /**
+     * 返回今天日期: 20201207
+     */
+    fun getToday(): String {
+        val sdf = SimpleDateFormat(DATE_FORMAT3, Locale.getDefault())
+        return sdf.format(Date())
     }
 
     /**

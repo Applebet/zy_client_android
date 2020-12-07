@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.AppCompatImageView
 import co.lujun.androidtagview.TagView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BasePopupView
 import com.zy.client.R
@@ -15,8 +16,6 @@ import com.zy.client.base.BaseActivity
 import com.zy.client.database.SearchHistoryDBUtils
 import com.zy.client.http.ConfigManager
 import com.zy.client.utils.ext.*
-import kotlinx.android.synthetic.main.activity_search.*
-import kotlinx.android.synthetic.main.layout_search_history.view.*
 
 /**
  * 搜索页
@@ -26,6 +25,8 @@ import kotlinx.android.synthetic.main.layout_search_history.view.*
 class SearchActivity : BaseActivity() {
 
     private lateinit var sourceKey: String
+    private lateinit var faBtnExchange: FloatingActionButton
+    private lateinit var mViewHistory: SearchHistoryView
     private lateinit var mEditSearch: AppCompatEditText
     private lateinit var mIvSearchDelete: AppCompatImageView
     private lateinit var mTvCancel: TextView
@@ -39,8 +40,10 @@ class SearchActivity : BaseActivity() {
         initSearchView()
         sourceKey = ConfigManager.curUseSourceConfig().req.key
         changeEditHint()
-        viewHistory.visible()
-        viewHistory.updateHistory()
+        faBtnExchange = findViewById(R.id.faBtnExchange)
+        mViewHistory = findViewById(R.id.viewHistory)
+        mViewHistory.visible()
+        mViewHistory.updateHistory()
         initListener()
     }
 
@@ -104,7 +107,7 @@ class SearchActivity : BaseActivity() {
         }
 
         //历史记录 Item点击监听
-        viewHistory.tagGroup.setOnTagClickListener(object : TagView.OnTagClickListener {
+        mViewHistory.tagGroup.setOnTagClickListener(object : TagView.OnTagClickListener {
             override fun onTagClick(position: Int, text: String?) {
                 if (!text.isNullOrBlank()) {
                     searchWord = text
@@ -126,11 +129,11 @@ class SearchActivity : BaseActivity() {
 
     override fun initData() {
         super.initData()
-        viewHistory.updateHistory()//搜索历史 tip: saveAsync后执行
+        mViewHistory.updateHistory()//搜索历史 tip: saveAsync后执行
 
         if (searchWord.isBlank()) return
         SearchHistoryDBUtils.saveAsync(searchWord) {
-            if (it) viewHistory.updateHistory()
+            if (it) mViewHistory.updateHistory()
         }
         supportFragmentManager
             .beginTransaction()

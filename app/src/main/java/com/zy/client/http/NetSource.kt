@@ -9,7 +9,6 @@ import com.zy.client.database.SourceModel
 import com.zy.client.utils.Utils
 import com.zy.client.utils.ext.noNull
 import org.json.JSONArray
-import kotlin.collections.LinkedHashMap
 
 /**
  * Title: 网络资源
@@ -29,7 +28,6 @@ data class SourceConfig(val key: String, val name: String, val generate: () -> N
 object ConfigManager {
 
     private const val DATA_VIDEO = "source.json"
-    private const val DATA_IPTV = "iptv.json"
     private const val DATA_IPTV_IVI = "iptv_ivi.json"
 
     /**
@@ -113,6 +111,26 @@ object ConfigManager {
         return sourceTvConfigs.keys.filter { it.isNotBlank() }.map {
             Classify((index++).toString(), it)
         }
+    }
+
+    //http://ivi.bupt.edu.cn/hls/cctv12hd.m3u8  -> cctv12
+    //特殊情形 cctv5phd -> cctv5plus
+    fun parseTvMenu(tvUrl: String?): String {
+        if (tvUrl.isNullOrBlank()) return ""
+        try {
+            var url = tvUrl
+            url = url.substringBeforeLast(".")
+            url = url.substring(url.lastIndexOf("/") + 1)
+                .replace("hd", "", true)
+            println("tv url = $url")
+
+            if (url.equals("cctv5p", true)) {
+                url = "cctv5plus"
+            }
+            return url
+        } catch (e: Exception) {
+        }
+        return ""
     }
 
     /**

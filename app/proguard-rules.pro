@@ -166,10 +166,6 @@
 -dontwarn com.lxj.xpopup.widget.**
 -keep class com.lxj.xpopup.widget.**{*;}
 
-#Bugly
--dontwarn com.tencent.bugly.**
--keep public class com.tencent.bugly.**{*;}
-
 #Glide
 -keep public class * implements com.bumptech.glide.module.GlideModule
 -keep class * extends com.bumptech.glide.module.AppGlideModule {
@@ -217,15 +213,6 @@
     <init>(java.lang.Throwable);
 }
 
-
-#GSYVideoPlayer
--keep class com.shuyu.gsyvideoplayer.video.** { *; }
--dontwarn com.shuyu.gsyvideoplayer.video.**
--keep class com.shuyu.gsyvideoplayer.video.base.** { *; }
--dontwarn com.shuyu.gsyvideoplayer.video.base.**
--keep class com.shuyu.gsyvideoplayer.utils.** { *; }
--dontwarn com.shuyu.gsyvideoplayer.utils.**
-
 # dueeeke DKVideoPlayer
 -keep class com.dueeeke.videoplayer.** { *; }
 -dontwarn com.dueeeke.videoplayer.**
@@ -235,16 +222,3 @@
 # ExoPlayer
 -keep class com.google.android.exoplayer2.** { *; }
 -dontwarn com.google.android.exoplayer2.**
-
-# Aria Downloader
--dontwarn com.arialyy.aria.**
--keep class com.arialyy.aria.**{*;}
--keep class **$$DownloadListenerProxy{ *; }
--keep class **$$UploadListenerProxy{ *; }
--keep class **$$DownloadGroupListenerProxy{ *; }
--keep class **$$DGSubListenerProxy{ *; }
--keepclasseswithmembernames class * {
-    @Download.* <methods>;
-    @Upload.* <methods>;
-    @DownloadGroup.* <methods>;
-}

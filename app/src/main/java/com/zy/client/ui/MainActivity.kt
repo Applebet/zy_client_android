@@ -8,6 +8,7 @@ import android.view.MenuItem
 import android.view.ViewGroup
 import androidx.core.util.forEach
 import androidx.core.view.children
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.zy.client.App
 import com.zy.client.R
 import com.zy.client.base.BaseActivity
@@ -17,11 +18,11 @@ import com.zy.client.ui.home.HomeFragment
 import com.zy.client.ui.iptv.IPTVFragment
 import com.zy.client.utils.NoShakeClickListener2
 import com.zy.client.utils.ext.ToastUtils
-import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : BaseActivity() {
 
     private val fragmentArray = SparseArray<BaseFragment>(3)
+    private lateinit var navView: BottomNavigationView
 
     var mHits = LongArray(2)
 
@@ -47,6 +48,7 @@ class MainActivity : BaseActivity() {
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
+        navView = findViewById(R.id.navView)
         fragmentArray.put(R.id.navigation_home, HomeFragment())
         fragmentArray.put(R.id.navigation_iptv, IPTVFragment())
         fragmentArray.put(R.id.navigation_collect, CollectFragment())

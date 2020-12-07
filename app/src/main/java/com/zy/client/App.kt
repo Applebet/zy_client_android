@@ -54,8 +54,8 @@ class App : Application() {
         super.onCreate()
         instance = this
         CrashHandler.init(
-                this,
-                "${getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)?.absolutePath}/HealthCrash/"
+            this,
+            "${getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)?.absolutePath}/HealthCrash/"
         )
 
         LitePal.initialize(this)
@@ -63,14 +63,14 @@ class App : Application() {
         initSourceConfig()
 
         OkGo.getInstance().init(this)
-                //建议设置OkHttpClient，不设置将使用默认的
-                //.setOkHttpClient( OkHttpClient.Builder().build())
-                //全局统一缓存模式，默认不使用缓存，可以不传
-                .setCacheMode(CacheMode.FIRST_CACHE_THEN_REQUEST)
-                //全局统一缓存时间，默认永不过期，可以不传
-                .setCacheTime(CacheEntity.CACHE_NEVER_EXPIRE)
-                //全局统一超时重连次数，默认为三次，那么最差的情况会请求4次(一次原始请求，三次重连请求)，不需要可以设置为0
-                .retryCount = 2
+            //建议设置OkHttpClient，不设置将使用默认的
+            //.setOkHttpClient( OkHttpClient.Builder().build())
+            //全局统一缓存模式，默认不使用缓存，可以不传
+            .setCacheMode(CacheMode.FIRST_CACHE_THEN_REQUEST)
+            //全局统一缓存时间，默认永不过期，可以不传
+            .setCacheTime(CacheEntity.CACHE_NEVER_EXPIRE)
+            //全局统一超时重连次数，默认为三次，那么最差的情况会请求4次(一次原始请求，三次重连请求)，不需要可以设置为0
+            .retryCount = 2
 
         initMediaPlayer()
     }
@@ -96,18 +96,18 @@ class App : Application() {
 
         //播放器配置，注意：此为全局配置，按需开启
         VideoViewManager.setConfig(
-                VideoViewConfig.newBuilder()
-                        .setLogEnabled(BuildConfig.DEBUG)
-                        .setPlayerFactory(IjkPlayerFactory.create())
-                        //.setPlayerFactory(ExoMediaPlayerFactory.create())
-                        //.setRenderViewFactory(SurfaceRenderViewFactory.create())
-                        //.setEnableOrientation(true)
-                        //.setEnableAudioFocus(false)
-                        //.setScreenScaleType(VideoView.SCREEN_SCALE_MATCH_PARENT)
-                        //.setAdaptCutout(false)
-                        //.setPlayOnMobileNetwork(true)
-                        .setProgressManager(ProgressManagerImpl())
-                        .build()
+            VideoViewConfig.newBuilder()
+                .setLogEnabled(BuildConfig.DEBUG)
+                .setPlayerFactory(IjkPlayerFactory.create())
+                //.setPlayerFactory(ExoMediaPlayerFactory.create())
+                //.setRenderViewFactory(SurfaceRenderViewFactory.create())
+                //.setEnableOrientation(true)
+                //.setEnableAudioFocus(false)
+                //.setScreenScaleType(VideoView.SCREEN_SCALE_MATCH_PARENT)
+                //.setAdaptCutout(false)
+                //.setPlayOnMobileNetwork(true)
+                .setProgressManager(ProgressManagerImpl())
+                .build()
         )
         PIPManager.init(this)
 
@@ -116,7 +116,7 @@ class App : Application() {
                 toastLong("移动网络")
             }
             PlayerUtils.NETWORK_WIFI -> {
-                toastLong("Wifi")
+                toastLong("WIFI")
             }
             PlayerUtils.NETWORK_ETHERNET -> {
                 toastLong("以太网网络")

@@ -1,5 +1,6 @@
 package com.zy.client.http
 
+import com.zy.client.bean.Cctv
 import com.zy.client.bean.HomeData
 import com.zy.client.bean.VideoDetail
 import com.zy.client.bean.VideoEntity
@@ -32,5 +33,10 @@ interface IRepository {
      * 视频详情
      */
     fun getVideoDetail(id: String, callback: (t: VideoDetail?) -> Unit)
+
+    /**
+     * 电视预告
+     */
+    fun getCCTVMenu(tvId: String, callback: (t: Cctv?) -> Unit)
 
 }

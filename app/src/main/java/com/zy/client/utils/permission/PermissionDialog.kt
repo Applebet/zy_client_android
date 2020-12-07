@@ -6,10 +6,10 @@ import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.LinearLayout
 import android.widget.TextView
 import com.permissionx.guolindev.dialog.RationaleDialog
 import com.zy.client.R
-import kotlinx.android.synthetic.main.layout_permission_dialog.*
 
 @TargetApi(30)
 class PermissionDialog(
@@ -53,10 +53,19 @@ class PermissionDialog(
     )
 
     private val groupSet = HashSet<String>()
+    private lateinit var messageText: TextView
+    private lateinit var permissionsLayout: LinearLayout
+    private lateinit var negativeBtn: View
+    private lateinit var positiveBtn: View
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.layout_permission_dialog)
+        messageText = findViewById(R.id.messageText)
+        permissionsLayout = findViewById(R.id.permissionsLayout)
+        negativeBtn = findViewById(R.id.negativeBtn)
+        positiveBtn = findViewById(R.id.positiveBtn)
+
         messageText.text = message
         buildPermissionsLayout()
         window?.let {

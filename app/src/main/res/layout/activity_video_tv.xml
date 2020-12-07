@@ -58,5 +58,13 @@
             tools:text="七龙珠七龙珠七龙珠七龙珠七龙珠七龙珠七龙珠七龙珠" />
     </LinearLayout>
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_tv_detail"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/color_container_bg"
+        android:overScrollMode="always"
+        app:fastScrollEnabled="false"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
 </LinearLayout>
