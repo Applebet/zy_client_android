@@ -126,6 +126,7 @@ internal object FlymeStatusBar {
      * @param view
      * @param dark
      */
+    @Suppress("DEPRECATION")
     private fun setStatusBarDarkIcon(view: View, dark: Boolean) {
         val oldVis = view.systemUiVisibility
         var newVis = oldVis

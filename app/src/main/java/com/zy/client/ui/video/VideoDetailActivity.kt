@@ -6,8 +6,6 @@ import android.os.Bundle
 import android.text.Html
 import android.util.Log
 import android.widget.FrameLayout
-import com.arialyy.aria.core.Aria
-import com.arialyy.aria.core.download.DownloadEntity
 import com.dueeeke.videoplayer.util.PlayerUtils
 import com.lxj.xpopup.XPopup
 import com.permissionx.guolindev.PermissionX
@@ -21,17 +19,11 @@ import com.zy.client.common.VIDEO_VIEW_HEIGHT
 import com.zy.client.database.CollectDBUtils
 import com.zy.client.database.CollectModel
 import com.zy.client.database.SourceDBUtils
-import com.zy.client.download.DownTaskManager
-import com.zy.client.download.db.DownRecordDBUtils
-import com.zy.client.download.db.DownRecordModel
-import com.zy.client.download.db.RecordVideoModel
 import com.zy.client.http.ConfigManager
 import com.zy.client.http.NetRepository
-import com.zy.client.download.ui.DownloadActivity
 import com.zy.client.utils.NotchUtils
 import com.zy.client.utils.Utils
 import com.zy.client.utils.ext.*
-import com.zy.client.utils.permission.PermissionDialogFragment
 import com.zy.client.views.loader.LoadState
 import com.zy.client.views.loader.LoaderLayout
 import kotlinx.android.synthetic.main.activity_video_detail.*
@@ -176,85 +168,34 @@ class VideoDetailActivity : BaseMediaActivity() {
     }
 
     private fun requestStoragePermission() {
-
         PermissionX.init(this)
                 .permissions(
                         Manifest.permission.WRITE_EXTERNAL_STORAGE,
                         Manifest.permission.READ_EXTERNAL_STORAGE,
-
-//                Manifest.permission.CAMERA,
-//                Manifest.permission.ACCESS_FINE_LOCATION,
-//                Manifest.permission.RECORD_AUDIO,
-
                 )
                 .onForwardToSettings { scope, deniedList ->
                     val message = "请在设置中手动开启以下权限"
                     // val dialog = PermissionDialog(this, message, deniedList)
                     // val dialog = PermissionDialogFragment(message, deniedList)
                     //scope.showForwardToSettingsDialog(dialog)
-                    scope.showForwardToSettingsDialog(deniedList, "请在设置中手动开启以下权限", "允许", "取消")
+                    scope.showForwardToSettingsDialog(deniedList, message, "允许", "取消")
                 }
-                .request { allGranted, grantedList, deniedList ->
+                .request { allGranted, _, deniedList ->
                     if (allGranted) {
-                        toastLong("已授予所有权限")
+                        //toastLong("已授予所有权限")
+
                         val currUrl = mVideo?.playUrl
                         //mRepo.requestDownloadData(id)
                         if (!currUrl.isVideoUrl()) {
-                            toastShort("该资源暂不支持下载哦~")
+                            toastLong("该资源暂不支持下载哦~")
                             return@request
                         }
 
                         //多文件处理
                         if (mVideoList?.size ?: 0 > 1) {
-                            //toastLong("该资源已开始下载~\n${currUrl}")
                             currUrl?.copyToClipBoard()
-                            toastLong("地址已复制，快去下载吧~\n${currUrl}")
+                            toastLong("该资源地址已复制~\n${currUrl}")
                             return@request
-                        }
-
-                        if (mVideoDetail == null) {
-                            toastShort("数据正在缓冲...")
-                            return@request
-                        }
-
-                        val uniqueId = "${mVideoDetail?.sourceKey}${mVideoDetail?.tid}${mVideoDetail?.id}"
-                        val isInTask = DownTaskManager.getAria().taskExists(currUrl)
-                        val downEntity = DownTaskManager.getAria().getFirstDownloadEntity(currUrl)
-
-                        //已经下载完了
-                        if (downEntity != null && downEntity.isComplete) {
-                            DownRecordDBUtils.searchAsync(uniqueId) {
-                                if (it != null) {
-                                    it.downTaskId = downEntity.id
-                                    it.downTaskKey = downEntity.key
-                                    DownRecordDBUtils.saveAsync(it) {
-                                    }
-                                }
-                            }
-                            toastShort("已下载完成")
-                            mVideoDetail?.let { DownloadActivity.openThis(this, it) }
-                            return@request
-                        }
-
-                        Log.e(
-                                "123",
-                                "测试 : $isInTask  $downEntity ${downEntity?.key} ${downEntity?.id}" +
-                                        "  ${downEntity?.percent}"
-                        )
-                        /*
-                         测试 : true  DownloadEntity{downloadPath='/data/user/0/com.zy.client/files/video.ts',
-                         groupHash='null', fileName='video.ts', md5Code='null',
-                         disposition='null', serverFileName='null'}
-                         https://vod3.buycar5.cn/20201118/ttum6IRH/index.m3u8 1
-                         */
-                        DownRecordDBUtils.searchAsync(uniqueId) { model ->
-                            //本地记录和Aria下载记录不同步,两边全删重下
-//                            if ((isInTask && model == null) || (!isInTask && model != null)) {
-//                                Log.e("123", "本地记录和Aria下载记录不同步,两边全删重下 $isInTask  $model")
-//                                DownTaskManager.cancelTask(downEntity?.id, true)
-//                                DownRecordDBUtils.delete(uniqueId)
-//                            }
-                            mVideoDetail?.let { DownloadActivity.openThis(this, it) }
                         }
 
                     } else {
@@ -344,6 +285,7 @@ class VideoDetailActivity : BaseMediaActivity() {
                     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
                         tvDesc.text = Html.fromHtml(it, Html.FROM_HTML_MODE_LEGACY)
                     } else {
+                        @Suppress("DEPRECATION")
                         tvDesc.text = Html.fromHtml(it)
                     }
                 }

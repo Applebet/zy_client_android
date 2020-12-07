@@ -196,7 +196,7 @@ object PermissionManager {
             for (permission in permissions) {
                 if (ContextCompat.checkSelfPermission(
                         context,
-                        permission ?: continue
+                        permission
                     ) != PackageManager.PERMISSION_GRANTED
                 ) {
                     return false

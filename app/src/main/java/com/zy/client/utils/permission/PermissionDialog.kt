@@ -18,6 +18,7 @@ class PermissionDialog(
     private val permissions: List<String>
 ) : RationaleDialog(context, R.style.PermissionXDialog) {
 
+    @Suppress("DEPRECATION")
     private val permissionMap = mapOf(
         Manifest.permission.READ_CALENDAR to Manifest.permission_group.CALENDAR,
         Manifest.permission.WRITE_CALENDAR to Manifest.permission_group.CALENDAR,

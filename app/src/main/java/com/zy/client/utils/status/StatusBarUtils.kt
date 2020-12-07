@@ -71,6 +71,7 @@ object StatusBarUtils {
     /**
      * 设置状态栏透明
      */
+    @Suppress("DEPRECATION")
     fun transparentStatusBar(window: Window) {
         if (isMiui || isFlyme) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -85,6 +86,7 @@ object StatusBarUtils {
         }
     }
 
+    @Suppress("DEPRECATION")
     @TargetApi(21)
     private fun transparentStatusBarAbove21(window: Window) {
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
@@ -113,17 +115,23 @@ object StatusBarUtils {
      * 设置状态栏图片黑色主题
      */
     fun setDarkMode(window: Window) {
-        if (isMiui) {
-            setMIUIStatusBarDarkMode(window, true)
-        } else if (isFlyme) {
-            setFlymeStatusBarDarkMode(window, true)
-        } else if (isOppo) {
-            setOppoStatusBarDarkMode(window, true)
-        } else {
-            setStatusBarDarkMode(window, true)
+        when {
+            isMiui -> {
+                setMIUIStatusBarDarkMode(window, true)
+            }
+            isFlyme -> {
+                setFlymeStatusBarDarkMode(window, true)
+            }
+            isOppo -> {
+                setOppoStatusBarDarkMode(window, true)
+            }
+            else -> {
+                setStatusBarDarkMode(window, true)
+            }
         }
     }
 
+    @Suppress("DEPRECATION")
     private fun setStatusBarDarkMode(window: Window, darkMode: Boolean) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (darkMode) {
@@ -135,6 +143,7 @@ object StatusBarUtils {
         }
     }
 
+    @SuppressLint("PrivateApi")
     private fun setMIUIStatusBarDarkMode(window: Window, darkMode: Boolean) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             val clazz: Class<out Window> = window.javaClass
@@ -159,6 +168,8 @@ object StatusBarUtils {
     }
 
     private const val SYSTEM_UI_FLAG_OP_STATUS_BAR_TINT = 0x00000010
+
+    @Suppress("DEPRECATION")
     private fun setOppoStatusBarDarkMode(window: Window, darkMode: Boolean) {
         var vis = window.decorView.systemUiVisibility
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

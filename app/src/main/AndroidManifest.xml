@@ -3,9 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.zy.client">
 
-    <!--  判断是否为4G网络  -->
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.SYSTEM_OVERLAY_WINDOW" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -112,16 +109,6 @@
             android:name=".ui.HistoryActivity"
             android:configChanges="keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize"
             android:screenOrientation="portrait" />
-
-        <activity
-            android:name=".download.ui.DownloadActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize"
-            android:screenOrientation="portrait" />
-
-        <service
-            android:name=".download.DownloadService"
-            android:exported="false"
-            android:label="@string/service_download" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

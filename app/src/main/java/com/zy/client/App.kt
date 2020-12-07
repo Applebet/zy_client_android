@@ -4,13 +4,12 @@ import ando.player.pip.PIPManager
 import ando.player.utils.ProgressManagerImpl
 import android.app.Application
 import android.os.Environment
-import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
-import com.arialyy.aria.core.Aria
 import com.dueeeke.videoplayer.BuildConfig
 import com.dueeeke.videoplayer.ijk.IjkPlayerFactory
 import com.dueeeke.videoplayer.player.VideoViewConfig
 import com.dueeeke.videoplayer.player.VideoViewManager
+import com.dueeeke.videoplayer.util.PlayerUtils
 import com.lzy.okgo.OkGo
 import com.lzy.okgo.cache.CacheEntity
 import com.lzy.okgo.cache.CacheMode
@@ -18,10 +17,8 @@ import com.scwang.smart.refresh.header.MaterialHeader
 import com.scwang.smart.refresh.layout.SmartRefreshLayout
 import com.zy.client.database.SourceDBUtils
 import com.zy.client.database.SourceModel
-import com.zy.client.download.DownTaskManager
 import com.zy.client.http.ConfigManager
 import com.zy.client.utils.CrashHandler
-import com.zy.client.utils.NetWorkUtils
 import com.zy.client.utils.ext.toastLong
 import org.litepal.LitePal
 
@@ -64,7 +61,6 @@ class App : Application() {
         LitePal.initialize(this)
 
         initSourceConfig()
-        initDownLoad()
 
         OkGo.getInstance().init(this)
                 //建议设置OkHttpClient，不设置将使用默认的
@@ -75,6 +71,23 @@ class App : Application() {
                 .setCacheTime(CacheEntity.CACHE_NEVER_EXPIRE)
                 //全局统一超时重连次数，默认为三次，那么最差的情况会请求4次(一次原始请求，三次重连请求)，不需要可以设置为0
                 .retryCount = 2
+
+        initMediaPlayer()
+    }
+
+    private fun initSourceConfig() {
+        SourceDBUtils.isIPTVExit().apply {
+            if (!this) {
+                val list = mutableListOf<SourceModel>()
+                ConfigManager.getSources().values.forEach { list.addAll(it) }
+                SourceDBUtils.saveAllAsync(list) {
+                    //Log.i("123", ".............. $it ${LitePal.count(TvModel::class.java)}")
+                }
+            }
+        }
+    }
+
+    private fun initMediaPlayer() {
 
         //播放器使用 Exo
 //        PlayerFactory.setPlayManager(Exo2PlayerManager::class.java)
@@ -97,39 +110,25 @@ class App : Application() {
                         .build()
         )
         PIPManager.init(this)
-    }
 
-    private fun initDownLoad() {
-        Aria.init(this)
-        //Aria.download(this).resumeAllTask()
-        toastLong(NetWorkUtils.getNetWorkClass(this))
-        if (!NetWorkUtils.isWifi(this)) return
-        Aria.download(this)?.allNotCompleteTask?.forEach {
-            DownTaskManager.resumeTask(it?.m3U8Entity?.rowID)
-        }
-
-        Log.w(
-                "123",
-                "initDownload allNotCompleteTask = ${Aria.download(this)?.allNotCompleteTask?.size}  " +
-                        "allCompleteTask=${Aria.download(this)?.allCompleteTask}"
-        )
-    }
-
-    private fun initSourceConfig() {
-        SourceDBUtils.isIPTVExit().apply {
-            if (!this) {
-                val list = mutableListOf<SourceModel>()
-                ConfigManager.getSources().values.forEach { list.addAll(it) }
-                SourceDBUtils.saveAllAsync(list) {
-                    //Log.i("123", ".............. $it ${LitePal.count(TvModel::class.java)}")
-                }
+        when (PlayerUtils.getNetworkType(this)) {
+            PlayerUtils.NETWORK_MOBILE -> {
+                toastLong("移动网络")
+            }
+            PlayerUtils.NETWORK_WIFI -> {
+                toastLong("Wifi")
+            }
+            PlayerUtils.NETWORK_ETHERNET -> {
+                toastLong("以太网网络")
+            }
+            PlayerUtils.NO_NETWORK -> {
+                toastLong("没有网络")
             }
         }
     }
 
     fun exitSys() {
         //PIPManager.get()?.clearCacheData()
-        Aria.download(this).stopAllTask()
     }
 
 }

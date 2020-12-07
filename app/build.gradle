@@ -139,19 +139,10 @@ dependencies {
     implementation 'co.lujun:androidtagview:1.1.7'
     implementation 'com.lxj:xpopup:1.8.17'
 
-
     implementation 'com.just.agentweb:agentweb-androidx:4.1.4'
     implementation 'com.github.bumptech.glide:glide:4.11.0'
     kapt 'com.github.bumptech.glide:compiler:4.11.0'
     implementation 'org.greenrobot:eventbus:3.2.0'
-
-
-    api 'com.arialyy.aria:core:3.8.12'
-    kapt 'com.arialyy.aria:compiler:3.8.12'
-    api 'com.arialyy.aria:m3u8Component:3.8.12'
-
-    //https://github.com/sujudz/M3U8Manger/tree/master
-    //implementation 'com.jwkj:M3U8Manger:v2.3.0'
 
     implementation project(':lib_player')
 
