@@ -132,6 +132,18 @@
     void *(**On*Listener);
 }
 
+# 如果在xml中直接配置了 LayoutManager , 需要做如下配置
+# https://android.googlesource.com/platform/frameworks/support/+/androidx-master-dev/recyclerview/recyclerview/proguard-rules.pro
+# When layoutManager xml attribute is used, RecyclerView inflates LayoutManagers' constructors using reflection.
+-keep public class * extends androidx.recyclerview.widget.RecyclerView$LayoutManager {
+    public <init>(android.content.Context, android.util.AttributeSet, int, int);
+    public <init>();
+}
+-keepclassmembers class androidx.recyclerview.widget.RecyclerView {
+    public void suppressLayout(boolean);
+    public boolean isLayoutSuppressed();
+}
+
 # webView的混淆处理
 -keepclassmembers class fqcn.of.javascript.interface.for.webview {
     public *;
@@ -152,6 +164,7 @@
     public <init>(android.content.Context);
     public <init>(android.content.Context, android.util.AttributeSet);
     public <init>(android.content.Context, android.util.AttributeSet, int);
+    public <init>(android.content.Context, android.util.AttributeSet, int,int);
 }
 
 #okhttp
