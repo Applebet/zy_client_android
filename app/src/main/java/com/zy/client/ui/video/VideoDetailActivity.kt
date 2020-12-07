@@ -193,7 +193,16 @@ class VideoDetailActivity : BaseMediaActivity() {
 
         //下载
         ivDownload.setOnClickListener {
-            requestStoragePermission()
+            //requestStoragePermission()
+
+            val currUrl = mVideo?.playUrl
+            //mRepo.requestDownloadData(id)
+            if (!currUrl.isVideoUrl()) {
+                toastLong("该资源暂不支持下载哦~")
+            } else {
+                currUrl?.copyToClipBoard()
+                toastLong("该资源地址已复制~\n${currUrl}")
+            }
         }
     }
 
