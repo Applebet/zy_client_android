@@ -8,6 +8,7 @@ plugins {
 static def releaseTime() {
     return new Date().format("yyyyMMddHHmmss", TimeZone.getTimeZone("GMT+08:00"))
 }
+
 def keystoreFile = rootProject.file('key.properties')
 def keystoreProperties = new Properties()
 keystoreProperties.load(new FileInputStream(keystoreFile))
@@ -30,7 +31,7 @@ android {
 
         ndk {
             // 'armeabi', 'armeabi-v7a', 'arm64-v8a' , 'x86' , 'x86_64', 'mips','mips64'
-            abiFilters 'armeabi-v7a', 'arm64-v8a' , 'x86'
+            abiFilters 'armeabi-v7a', 'arm64-v8a'
         }
     }
 
@@ -133,8 +134,8 @@ dependencies {
 
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.4'
     implementation 'com.github.anzaizai:EasySwipeMenuLayout:1.1.4'
-    implementation  'com.scwang.smart:refresh-layout-kernel:2.0.1'
-    implementation  'com.scwang.smart:refresh-header-material:2.0.1'
+    implementation 'com.scwang.smart:refresh-layout-kernel:2.0.1'
+    implementation 'com.scwang.smart:refresh-header-material:2.0.1'
     implementation 'co.lujun:androidtagview:1.1.7'
     implementation 'com.lxj:xpopup:1.8.17'
 
