@@ -35,7 +35,7 @@ https://github.com/vicedev/ZY-Player-Android
 
 https://github.com/Hunlongyu/ZY-Player-APP
 ```
-> 本项目主色采用`Bilibili`的粉色并使用的了部分图标 。
+> 本项目主色采用`Bilibili`的粉色并使用了部分图标 , 亮色主题参照了[vicedev/ZY-Player-Android](https://github.com/vicedev/ZY-Player-Android)。
 
 ## TODO
 
