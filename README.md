@@ -11,6 +11,7 @@
 |![](https://raw.githubusercontent.com/javakam/zy_client_android/main/screenshot/img_video_detail.png)| ![](https://raw.githubusercontent.com/javakam/zy_client_android/main/screenshot/img_tv_detail.png) |
 
 | 小窗 | 全屏 | 全屏选集 |
+|:---:|:---:|:---:|
 |![](https://raw.githubusercontent.com/javakam/zy_client_android/main/screenshot/img_tiny_window.png)| ![](https://raw.githubusercontent.com/javakam/zy_client_android/main/screenshot/img_video_full.png) | ![](https://raw.githubusercontent.com/javakam/zy_client_android/main/screenshot/img_video_full_list.png) |
 
 ## 数据来源
