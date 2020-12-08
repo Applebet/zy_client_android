@@ -7,7 +7,7 @@
 |![](https://raw.githubusercontent.com/javakam/zy_client_android/main/screenshot/img_home.png)|![](https://raw.githubusercontent.com/javakam/zy_client_android/main/screenshot/img_tv.png)|![](https://raw.githubusercontent.com/javakam/zy_client_android/main/screenshot/img_collect.png)|
 
 | 视频详情 | 电视直播 |
-|:---:|:---:|:---:|
+|:---:|:---:|
 |![](https://raw.githubusercontent.com/javakam/zy_client_android/main/screenshot/img_video_detail.png)| ![](https://raw.githubusercontent.com/javakam/zy_client_android/main/screenshot/img_tv_detail.png) |
 
 | 小窗 | 全屏 | 全屏选集 |
