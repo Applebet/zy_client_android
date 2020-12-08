@@ -4,14 +4,14 @@
 
 | 首页 | 电视 | 收藏 |
 |:---:|:---:|:---:|
-|![](https://raw.githubusercontent.com/javakam/zy_client_android/master/screenshot/img_home.png)|![](https://raw.githubusercontent.com/javakam/zy_client_android/master/screenshot/img_tv.png)|![](https://raw.githubusercontent.com/javakam/zy_client_android/master/screenshot/img_collect.png)|
+|![](https://raw.githubusercontent.com/javakam/zy_client_android/main/screenshot/img_home.png)|![](https://raw.githubusercontent.com/javakam/zy_client_android/main/screenshot/img_tv.png)|![](https://raw.githubusercontent.com/javakam/zy_client_android/main/screenshot/img_collect.png)|
 
 | 视频详情 | 电视直播 |
 |:---:|:---:|:---:|
-|![](https://raw.githubusercontent.com/javakam/zy_client_android/master/screenshot/img_video_detail.png)| ![](https://raw.githubusercontent.com/javakam/zy_client_android/master/screenshot/img_tv_detail.png) |
+|![](https://raw.githubusercontent.com/javakam/zy_client_android/main/screenshot/img_video_detail.png)| ![](https://raw.githubusercontent.com/javakam/zy_client_android/main/screenshot/img_tv_detail.png) |
 
 | 小窗 | 全屏 | 全屏选集 |
-|![](https://raw.githubusercontent.com/javakam/zy_client_android/master/screenshot/img_tiny_window.png)| ![](https://raw.githubusercontent.com/javakam/zy_client_android/master/screenshot/img_video_full.png) | ![](https://raw.githubusercontent.com/javakam/zy_client_android/master/screenshot/img_video_full_list.png) |
+|![](https://raw.githubusercontent.com/javakam/zy_client_android/main/screenshot/img_tiny_window.png)| ![](https://raw.githubusercontent.com/javakam/zy_client_android/main/screenshot/img_video_full.png) | ![](https://raw.githubusercontent.com/javakam/zy_client_android/main/screenshot/img_video_full_list.png) |
 
 ## 数据来源
 
