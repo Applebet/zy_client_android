@@ -12,7 +12,6 @@ import com.zy.client.utils.status.StatusBarUtils
  * Description: 音视频播放
  * </p>
  * @author javakam
- * @date 2020/11/20  14:16
  */
 abstract class BaseMediaActivity : BaseActivity() {
 

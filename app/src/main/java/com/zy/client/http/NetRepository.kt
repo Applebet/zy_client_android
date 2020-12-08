@@ -1,7 +1,6 @@
 package com.zy.client.http
 
 import com.google.gson.Gson
-import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import com.lzy.okgo.OkGo
@@ -14,14 +13,9 @@ import com.zy.client.http.NetSourceParser.parseHomeData
 import com.zy.client.http.NetSourceParser.parseSearch
 import com.zy.client.http.NetSourceParser.parseVideoDetail
 import com.zy.client.utils.Utils
-import org.json.JSONObject
 
 /**
  * 通用的解析视频源
- *
- * @author javakam
- *
- * @date 2020/9/2 21:17
  */
 class NetRepository(val req: CommonRequest) : IRepository {
 

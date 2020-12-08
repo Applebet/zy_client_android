@@ -24,7 +24,6 @@ import org.litepal.LitePal
 
 /**
  * @author javakam
- * @date 2020/6/8 16:42
  */
 class App : Application() {
 

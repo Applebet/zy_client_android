@@ -15,9 +15,6 @@ import com.zy.client.R
  * Title:Loader
  *
  * Description: 网络请求加载页,在请求完毕后通过[.setLoadState]设置请求结果
- *
- * @author javakam
- * @date 2019/11/15 15:03
  */
 abstract class Loader @JvmOverloads constructor(
     private val mContext: Context,

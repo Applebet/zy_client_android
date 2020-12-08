@@ -10,15 +10,6 @@ import com.zy.client.utils.Utils
 import com.zy.client.utils.ext.noNull
 import org.json.JSONArray
 
-/**
- * Title: 网络资源
- * <p>
- * Description:
- * </p>
- * @author javakam
- * @date 2020/11/11  15:50
- */
-
 data class SourceConfig(val key: String, val name: String, val generate: () -> NetRepository) {
     fun generateSource(): NetRepository {
         return generate.invoke()

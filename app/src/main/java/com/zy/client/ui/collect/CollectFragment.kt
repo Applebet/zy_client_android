@@ -1,5 +1,6 @@
 package com.zy.client.ui.collect
 
+import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -22,12 +23,7 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
 /**
- * Title: 收藏
- * <p>
- * Description: 收藏
- * </p>
- * @author javakam
- * @date 2020/11/12 14:33
+ * 收藏
  */
 class CollectFragment : BaseListFragment<CollectModel, BaseViewHolder>() {
 
@@ -37,43 +33,30 @@ class CollectFragment : BaseListFragment<CollectModel, BaseViewHolder>() {
         mTitleView.visible()
         mTitleView.getLeftView().gone()
         mTitleView.setTitle("收藏")
+        mTitleView.getRightImage().setOnClickListener {
+            if (mAdapter.data.isNullOrEmpty()) {
+                toastShort("没有数据")
+                return@setOnClickListener
+            }
+            unCollectAll()
+        }
+
+        mRvList.setBackgroundResource(R.color.color_container_bg)
+        mRvList.addItemDecoration(object : RecyclerView.ItemDecoration() {
+            override fun getItemOffsets(
+                outRect: Rect,
+                view: View,
+                parent: RecyclerView,
+                state: RecyclerView.State
+            ) {
+                super.getItemOffsets(outRect, view, parent, state)
+                outRect.set(0, 1, 0, 1)
+            }
+        })
     }
 
     override fun getListAdapter(): BaseLoadMoreAdapter<CollectModel, BaseViewHolder> {
-        return CollectAdapter().apply {
-            setOnItemClickListener { _, _, position ->
-                AppRouter.toVideoDetailActivity(
-                    baseActivity,
-                    data[position].sourceKey.noNull(),
-                    data[position].videoId.noNull()
-                )
-            }
-            val headerView = View.inflate(requireActivity(), R.layout.layout_collect_head, null)
-            this.addHeaderView(headerView)
-            //删除全部
-            headerView.findViewById<View>(R.id.ivDeleteAll).setOnClickListener {
-                if (data.isNullOrEmpty()) {
-                    toastShort("没有数据")
-                    return@setOnClickListener
-                }
-
-                XPopup.Builder(context)
-                    .asConfirm("确定删除全部收藏 ?", "") {
-                        try {
-                            val delete = CollectDBUtils.deleteAll()
-                            if (delete) {
-                                setNewInstance(null)
-                                if (data.isEmpty()) {
-                                    mStatusView.setLoadState(LoadState.EMPTY)
-                                }
-                            } else toastShort("删除失败")
-                        } catch (e: Exception) {
-                            toastShort("删除失败")
-                        }
-                    }.show()
-            }
-
-        }
+        return CollectAdapter()
     }
 
     override fun getListLayoutManager(): RecyclerView.LayoutManager {
@@ -96,24 +79,47 @@ class CollectFragment : BaseListFragment<CollectModel, BaseViewHolder>() {
         override fun convert(holder: BaseViewHolder, item: CollectModel) {
             holder.setText(R.id.tvName, item.name)
             holder.setText(R.id.tvSourceName, item.sourceName)
-
-            holder.getView<View>(R.id.ivDelete).setOnClickListener {
-                XPopup.Builder(context)
-                    .asConfirm("确定删除 ?", "") {
-                        try {
-                            val delete = CollectDBUtils.delete(item.uniqueKey)
-                            if (delete) {
-                                remove(item)
-                                if (data.isEmpty()) {
-                                    mStatusView.setLoadState(LoadState.EMPTY)
-                                }
-                            } else toastShort("删除失败")
-                        } catch (e: Exception) {
-                            toastShort("删除失败")
-                        }
-                    }
-                    .show()
+            holder.getView<View>(R.id.content).setOnClickListener {
+                AppRouter.toVideoDetailActivity(
+                    baseActivity,
+                    item.sourceKey.noNull(),
+                    item.videoId.noNull()
+                )
             }
+            holder.getView<View>(R.id.right).setOnClickListener {
+                unCollect(item)
+            }
+        }
+    }
+
+    private fun unCollectAll() {
+        XPopup.Builder(context)
+            .asConfirm("确定删除全部收藏 ?", "") {
+                try {
+                    val delete = CollectDBUtils.deleteAll()
+                    if (delete) {
+                        mAdapter.setNewInstance(null)
+                        if (mAdapter.data.isEmpty()) {
+                            mStatusView.setLoadState(LoadState.EMPTY)
+                        }
+                    } else toastShort("删除失败")
+                } catch (e: Exception) {
+                    toastShort("删除失败")
+                }
+            }.show()
+    }
+
+    private fun unCollect(model: CollectModel) {
+        try {
+            val delete = CollectDBUtils.delete(model.uniqueKey)
+            if (delete) {
+                mAdapter.remove(model)
+                if (mAdapter.data.isEmpty()) {
+                    mStatusView.setLoadState(LoadState.EMPTY)
+                }
+            } else toastShort("删除失败")
+        } catch (e: Exception) {
+            toastShort("删除失败")
         }
     }
 

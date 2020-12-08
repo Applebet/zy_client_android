@@ -12,7 +12,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
-import com.guanaj.easyswipemenulibrary.EasySwipeMenuLayout
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BasePopupView
 import com.zy.client.R
@@ -25,15 +24,6 @@ import com.zy.client.utils.ext.toastShort
 import com.zy.client.views.loader.LoadState
 import com.zy.client.views.loader.LoaderLayout
 
-
-/**
- * Title:
- *
- * Description:
- *
- * @author javakam
- * @date 2020/11/23  17:11
- */
 class HistoryActivity : BaseActivity() {
 
     private lateinit var ivBack: ImageView
@@ -135,7 +125,7 @@ class HistoryActivity : BaseActivity() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HistoryHolder {
             return HistoryHolder(
                 LayoutInflater.from(parent.context)
-                    .inflate(R.layout.item_video_history, parent, false)
+                    .inflate(R.layout.item_history, parent, false)
             )
         }
 
@@ -175,7 +165,6 @@ class HistoryActivity : BaseActivity() {
             var tvUrl: TextView = itemView.findViewById(R.id.tv_history_url)
             var tvTimePercent: TextView = itemView.findViewById(R.id.tv_history_time_percent)
             var tvSource: TextView = itemView.findViewById(R.id.tv_history_source)
-            var swipeMenu: EasySwipeMenuLayout = itemView.findViewById(R.id.swipe_menu)
             var swipeContent: ConstraintLayout = itemView.findViewById(R.id.content)
             var swipeMenuDelete: TextView = itemView.findViewById(R.id.right)
         }

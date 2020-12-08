@@ -62,11 +62,9 @@ class HomeListFragment : BaseLazyListFragment<VideoEntity, BaseViewHolder>() {
                 }
             })
         } else {
+            val padding = Utils.dp2px(12.0f)
             recyclerView.addItemDecoration(
-                GridDividerItemDecoration(
-                    Utils.dp2px(12.0f),
-                    true
-                )
+                GridDividerItemDecoration(padding, true)
             )
         }
     }

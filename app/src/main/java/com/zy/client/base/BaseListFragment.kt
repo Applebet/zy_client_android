@@ -33,14 +33,14 @@ abstract class BaseLazyListFragment<T, H : BaseViewHolder> : BaseListFragment<T,
  */
 abstract class BaseListFragment<T, H : BaseViewHolder> : BaseFragment() {
 
-    private lateinit var mRvList: RecyclerView
+    protected lateinit var mRvList: RecyclerView
     protected lateinit var mTitleView: TitleView
     protected lateinit var mStatusView: LoaderLayout
     protected lateinit var mSwipeRefresh: SmartRefreshLayout
 
     //
     private var mCurrPage: Int = 1
-    protected val mAdapter: BaseQuickAdapter<T, H> by lazy {
+    protected val mAdapter: BaseLoadMoreAdapter<T, H> by lazy {
         getListAdapter().apply {
             loadMoreModule.run {
                 isAutoLoadMore = true

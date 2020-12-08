@@ -3,12 +3,7 @@ package com.zy.client.views.loader
 /**
  * Title:LoadState
  *
- *
  * Description:加载状态
- *
- *
- * @author javakam
- * @date 2019/11/15 15:02
  */
 enum class LoadState(private val state: String, private val value: Int) {
     /**

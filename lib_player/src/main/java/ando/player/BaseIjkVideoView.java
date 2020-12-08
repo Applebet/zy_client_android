@@ -14,9 +14,6 @@ import com.dueeeke.videoplayer.player.VideoView;
  * <p>
  * Description: 自定义播放器
  * </p>
- *
- * @author javakam
- * @date 2020-03-29
  */
 public abstract class BaseIjkVideoView<P extends AbstractPlayer> extends VideoView<P> {
 

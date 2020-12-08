@@ -11,11 +11,6 @@ import com.zy.client.R
 
 /**
  * Title: TitleView
- * <p>
- * Description:
- * </p>
- * @author javakam
- * @date 2020/12/1  15:07
  */
 class TitleView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0, defStyleRes: Int = 0
@@ -57,7 +52,15 @@ class TitleView @JvmOverloads constructor(
     }
 
     fun getRightText(): TextView {
+        mIvRight.visibility = GONE
+        mTvRight.visibility = VISIBLE
         return mTvRight
+    }
+
+    fun getRightImage(): ImageView {
+        mTvRight.visibility = GONE
+        mIvRight.visibility = VISIBLE
+        return mIvRight
     }
 
 }

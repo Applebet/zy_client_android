@@ -13,9 +13,6 @@ import com.dueeeke.videoplayer.player.PlayerFactory;
  * <p>
  * Description: 自定义播放器 -> 音频
  * </p>
- *
- * @author javakam
- * @date 2020-03-29
  */
 public class IjkAudioView extends BaseIjkVideoView<BaseIjkPlayer> {
 

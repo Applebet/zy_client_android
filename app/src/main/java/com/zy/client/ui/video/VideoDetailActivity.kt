@@ -34,9 +34,6 @@ import java.util.*
 
 /**
  * 视频详情页
- *
- * @author javakam
- * @date 2020-11-12 15:00:17
  */
 class VideoDetailActivity : BaseMediaActivity() {
 
@@ -176,13 +173,15 @@ class VideoDetailActivity : BaseMediaActivity() {
                     EventBus.getDefault().postSticky(CollectEvent())
                 } else toastShort("取消收藏失败")
             } else {
-                val collectModel = CollectModel()
-                collectModel.uniqueKey = id + mRepo.req.key
-                collectModel.videoId = id
-                collectModel.name = mVideoDetail?.name
-                collectModel.sourceKey = mRepo.req.key
-                collectModel.sourceName = mRepo.req.name
-                CollectDBUtils.saveAsync(collectModel) {
+                if (mVideoDetail == null) return@setOnClickListener
+
+                val model = CollectModel()
+                model.uniqueKey = id + mRepo.req.key
+                model.videoId = id
+                model.name = mVideoDetail?.name
+                model.sourceKey = mRepo.req.key
+                model.sourceName = mRepo.req.name
+                CollectDBUtils.saveAsync(model) {
                     if (it) {
                         ivCollect.isSelected = true
                         EventBus.getDefault().postSticky(CollectEvent())

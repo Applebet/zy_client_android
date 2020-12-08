@@ -10,9 +10,6 @@ import com.zy.client.utils.ext.noShake
  * Title:LoaderLayout
  *
  * Description: 网络请求加载页,在请求完毕后通过[.setLoadState]设置请求结果
- *
- * @author javakam
- * @date 2019/11/18 14:51
  */
 class LoaderLayout @JvmOverloads constructor(
     context: Context,

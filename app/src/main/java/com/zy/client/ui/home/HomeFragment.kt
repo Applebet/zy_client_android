@@ -15,11 +15,6 @@ import com.zy.client.common.switchHealthLife
 import com.zy.client.utils.ext.noNull
 import com.zy.client.utils.ext.toastShort
 
-/**
- * @author javakam
- *
- * @date 2020/9/2 22:39
- */
 class HomeFragment : BaseFragment() {
 
     private lateinit var floatBtn: FloatingActionButton

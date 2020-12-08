@@ -21,12 +21,7 @@ import com.zy.client.utils.status.OSUtils.isOppo
 /**
  * Title:StatusBarUtils
  *
- *
  * Description: https://github.com/wuhenzhizao/android-titlebar
- *
- *
- * @author javakam
- * @date 2020/11/25 13:41
  */
 object StatusBarUtils {
     /**

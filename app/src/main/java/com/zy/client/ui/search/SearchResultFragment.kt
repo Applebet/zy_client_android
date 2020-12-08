@@ -15,10 +15,7 @@ import com.zy.client.base.BaseListFragment
 import com.zy.client.common.AppRouter
 
 /**
- * @author javakam
- *
- * @date 2020/9/7 21:19
- * @desc 搜索结果页
+ * 搜索结果页
  */
 class SearchResultFragment : BaseListFragment<VideoEntity, BaseViewHolder>() {
 
@@ -66,7 +63,8 @@ class SearchResultFragment : BaseListFragment<VideoEntity, BaseViewHolder>() {
     }
 
     //搜索结果适配器
-    inner class SearchResultAdapter : BaseLoadMoreAdapter<VideoEntity, BaseViewHolder>(R.layout.item_search_result) {
+    inner class SearchResultAdapter :
+        BaseLoadMoreAdapter<VideoEntity, BaseViewHolder>(R.layout.item_search_result) {
         override fun convert(holder: BaseViewHolder, item: VideoEntity) {
             holder.setText(R.id.tvName, item.name.noNull("--"))
             holder.setText(R.id.tvType, item.type.noNull("--"))

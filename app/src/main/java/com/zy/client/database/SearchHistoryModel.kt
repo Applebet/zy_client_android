@@ -5,9 +5,6 @@ import org.litepal.crud.LitePalSupport
 import java.util.*
 
 /**
- * @author javakam
- *
- * @date 2020/9/12 20:46
  * @desc 搜索历史的数据库类
  */
 class SearchHistoryModel : LitePalSupport() {

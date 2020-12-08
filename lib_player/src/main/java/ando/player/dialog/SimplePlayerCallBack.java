@@ -2,15 +2,6 @@ package ando.player.dialog;
 
 import org.jetbrains.annotations.NotNull;
 
-/**
- * Title:
- * <p>
- * Description:
- * </p>
- *
- * @author javakam
- * @date 2020/11/19  16:07
- */
 public class SimplePlayerCallBack implements IPlayerCallBack {
     @Override
     public void onItemClick() {

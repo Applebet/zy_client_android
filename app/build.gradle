@@ -4,7 +4,6 @@ plugins {
     id 'kotlin-kapt'
 }
 
-//获取当前系统的时间
 static def releaseTime() {
     return new Date().format("yyyyMMddHHmmss", TimeZone.getTimeZone("GMT+08:00"))
 }
@@ -54,9 +53,6 @@ android {
 
     buildTypes {
         debug {
-//            minifyEnabled true
-//            zipAlignEnabled true
-//            shrinkResources true
             signingConfig signingConfigs.debug
         }
         release {
@@ -67,10 +63,12 @@ android {
             signingConfig signingConfigs.release
         }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
     kotlinOptions {
         jvmTarget = '1.8'
     }
@@ -102,7 +100,6 @@ android {
 
     packagingOptions {
         exclude 'META-INF/*.kotlin_module'
-
         exclude 'META-INF/rxjava.properties'
         exclude 'META-INF/DEPENDENCIES.txt'
         exclude 'META-INF/LICENSE.txt'

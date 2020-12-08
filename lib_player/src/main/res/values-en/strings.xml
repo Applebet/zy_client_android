@@ -13,11 +13,11 @@
     <string name="str_player_speed">Speed</string>
     <string name="str_player_definition">Definition</string>
 
-    <string name="str_player_speed05">0.5X</string>
-    <string name="str_player_speed75">0.75X</string>
-    <string name="str_player_speed100">1.0X</string>
-    <string name="str_player_speed125">1.25X</string>
-    <string name="str_player_speed150">1.5X</string>
-    <string name="str_player_speed200">2.0X</string>
+    <string name="str_player_speed05">0.5</string>
+    <string name="str_player_speed75">0.75</string>
+    <string name="str_player_speed100">1.0</string>
+    <string name="str_player_speed125">1.25</string>
+    <string name="str_player_speed150">1.5</string>
+    <string name="str_player_speed200">2.0</string>
     <string name="str_player_list_size">Video (%1$d)</string>
 </resources>

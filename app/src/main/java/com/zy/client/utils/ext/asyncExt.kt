@@ -12,11 +12,6 @@ import java.util.concurrent.Future
 
 /**
  * Title: AsyncExt
- * <p>
- * Description:
- * </p>
- * @author javakam
- * @date 2020/11/9  16:20
  */
 
 /**

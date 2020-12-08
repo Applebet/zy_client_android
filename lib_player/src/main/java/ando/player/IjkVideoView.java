@@ -19,9 +19,6 @@ import tv.danmaku.ijk.media.player.IjkMediaPlayer;
  * <p>
  * Description: 自定义播放器 -> 视频
  * </p>
- *
- * @author javakam
- * @date 2020-03-29
  */
 public class IjkVideoView extends BaseIjkVideoView<BaseIjkPlayer> {
 

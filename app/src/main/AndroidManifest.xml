@@ -84,7 +84,7 @@
 
         <activity
             android:name=".ui.video.VideoDetailActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize"
+            android:configChanges="uiMode|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AlphaActivity"
@@ -92,7 +92,7 @@
 
         <activity
             android:name=".ui.video.VideoTvActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize"
+            android:configChanges="uiMode|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AlphaActivity"

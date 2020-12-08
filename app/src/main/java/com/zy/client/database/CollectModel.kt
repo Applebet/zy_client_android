@@ -3,13 +3,6 @@ package com.zy.client.database
 import org.litepal.annotation.Column
 import org.litepal.crud.LitePalSupport
 
-/**
- * @author javakam
- *
- * @date 2020/9/12 21:56
- * @desc 收藏的数据库类
- */
-
 class CollectModel : LitePalSupport() {
 
     //id+sourceKey

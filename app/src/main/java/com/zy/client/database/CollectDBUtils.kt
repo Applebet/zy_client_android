@@ -5,21 +5,15 @@ import com.zy.client.utils.thread.CustomTask
 import org.litepal.LitePal
 import java.util.*
 
-/**
- * @author javakam
- *
- * @date 2020/9/12 20:55
- * @desc 收藏的数据库操作工具类
- */
 object CollectDBUtils {
 
     private fun save(collectModel: CollectModel): Boolean {
         if (collectModel.uniqueKey.isNullOrBlank() || collectModel.videoId.isNullOrBlank() || collectModel.sourceKey.isNullOrBlank()) {
             return false
         }
-        if (collectModel.isSaved) return true
-        //val videoId = collectModel.videoId
-        //val c=LitePal.where("videoId = ?", videoId).findFirst(collectModel::class.java)
+        if (collectModel.isSaved) {
+            collectModel.delete()
+        }
         return collectModel.save()
     }
 

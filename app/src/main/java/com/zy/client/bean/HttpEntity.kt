@@ -6,9 +6,7 @@ import java.io.Serializable
 
 /**
  * @author javakam
- * @date 2020/6/10 10:47
  */
-
 data class HomeData(val videoList: ArrayList<VideoEntity>, val classifyList: ArrayList<Classify>)
 
 //Channel Item

@@ -3,16 +3,6 @@ package ando.player.dialog
 import ando.player.setting.Theme
 import android.view.ViewGroup
 
-/**
- * Title:
- *
- *
- * Description:
- *
- *
- * @author javakam
- * @date 2020/11/19  15:54
- */
 internal object DialogFactory {
 
     fun createFullSpeedDialog(

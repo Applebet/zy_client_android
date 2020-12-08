@@ -12,7 +12,7 @@ import com.dueeeke.videoplayer.player.ProgressManager;
 public class ProgressManagerImpl extends ProgressManager {
 
     //保存100条记录
-    private static LruCache<Integer, Long> mCache = new LruCache<>(100);
+    private static final LruCache<Integer, Long> CACHE = new LruCache<>(100);
 
     @Override
     public void saveProgress(String url, long progress) {
@@ -23,7 +23,7 @@ public class ProgressManagerImpl extends ProgressManager {
             clearSavedProgressByUrl(url);
             return;
         }
-        mCache.put(url.hashCode(), progress);
+        CACHE.put(url.hashCode(), progress);
     }
 
     @Override
@@ -31,7 +31,7 @@ public class ProgressManagerImpl extends ProgressManager {
         if (TextUtils.isEmpty(url)) {
             return 0;
         }
-        Long pro = mCache.get(url.hashCode());
+        Long pro = CACHE.get(url.hashCode());
         if (pro == null) {
             return 0;
         }
@@ -39,11 +39,11 @@ public class ProgressManagerImpl extends ProgressManager {
     }
 
     public void clearAllSavedProgress() {
-        mCache.evictAll();
+        CACHE.evictAll();
     }
 
     public void clearSavedProgressByUrl(String url) {
-        mCache.remove(url.hashCode());
+        CACHE.remove(url.hashCode());
     }
 
 }

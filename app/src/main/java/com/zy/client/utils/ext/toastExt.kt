@@ -9,11 +9,6 @@ import com.zy.client.App
 
 /**
  * Title: ToastExt
- *
- * Description:
- *
- * @author javakam
- * @date 2019/1/19
  */
 
 fun Context.toastShort(text: String?) = ToastUtils.showShort(text)

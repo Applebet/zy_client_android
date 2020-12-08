@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 
 /**
  * @author javakam
- * @date 2020/6/8 15:16
  */
 abstract class BaseFragment : Fragment(), IBackPressed {
 

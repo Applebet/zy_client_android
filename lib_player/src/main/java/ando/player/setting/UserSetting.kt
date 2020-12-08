@@ -7,9 +7,6 @@ import android.content.SharedPreferences
  * Title: UserSetting
  *
  * Description: 保存用户设置
- *
- * @author javakam
- * @date 2020/11/17  10:52
  */
 data class FloatPosition(var mDownX: Int = 0, var mDownY: Int = 0)
 

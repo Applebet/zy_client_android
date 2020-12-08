@@ -24,11 +24,6 @@ import java.util.*
 
 /**
  * Title: 扩展函数
- * <p>
- * Description:
- * </p>
- * @author javakam
- * @date 2020/11/11  15:53
  */
 
 fun View?.visibleOrGone(visible: Boolean) {
@@ -264,15 +259,16 @@ fun noAnimate(placeholder: Int = -1, error: Int = -1): RequestOptions {
 fun loadImage(imageView: ImageView, url: String?, placeholder: Int = R.drawable.ic_placeholder) {
     if (url != null && url.startsWith("http")) {
         Glide.with(imageView.context)
+            .asBitmap()
+            .centerCrop()
             .load(url)
-            .transition(DrawableTransitionOptions.withCrossFade())
+            .skipMemoryCache(false)
             .apply(noAnimate(placeholder))
             .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
-            .into(imageView)
     } else {
-        Glide.with(imageView.context).load(placeholder).centerCrop()
-            .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC).into(imageView)
-    }
+        Glide.with(imageView.context).asBitmap().load(placeholder).centerCrop()
+            .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+    }.into(imageView)
 }
 
 fun loadImage(imageView: ImageView, path: Any?, placeholder: Drawable?) {
